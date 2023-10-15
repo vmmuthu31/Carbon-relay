@@ -1,4 +1,4 @@
-import React, { Fragment, useState,useCallback } from 'react'
+import React, { Fragment, useState,useCallback, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {RxCrossCircled} from "react-icons/rx"
 import {AiOutlineHome,AiFillSound,AiFillCaretDown,AiOutlineMenu,AiOutlineArrowLeft, AiOutlineDown,AiOutlineArrowRight } from "react-icons/ai"
@@ -7,9 +7,12 @@ import {FiUpload} from "react-icons/fi";
 import {FaLock, FaUnlock} from "react-icons/fa"
 import {RxCross2} from "react-icons/rx"
 import {BsChevronLeft, BsThreeDots} from "react-icons/bs"
-import 'reactjs-popup/dist/index.css';
 import {HiArrowLongRight} from "react-icons/hi2"
 import Modal from 'react-modal'; // Adjust the import path as needed
+import { useSession } from 'next-auth/react'
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5000')
 
 const navigation = [
   { name: 'Home', href: '#', icon: AiOutlineHome, current: false },
@@ -42,7 +45,12 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rowStates, setRowStates] = useState(Array(3).fill(true)); // Initialize with 3 rows
   const [selectedRowData, setSelectedRowData] = useState(null);
-
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const recipientID="vairamuthu@jec.ac.in"
+  const [isTyping, setIsTyping] = useState(false);
+  const { data: session } = useSession();
+  const userID = session?.user?.email; 
   // Function to toggle the lock/unlock state for a specific row
   const toggleLock = (rowIndex) => {
     // Create a copy of the current rowStates
@@ -55,6 +63,57 @@ export default function Dashboard() {
   const openRowPopup = (rowData) => {
     setSelectedRowData(rowData);
   };
+  useEffect(() => {
+    socket.emit('user joined', userID);
+
+    socket.on('private message', (msg) => {
+        setMessages(prevMessages => [...prevMessages, msg]);
+    });
+
+    socket.on('user typing', (typingUserID) => {
+        if (typingUserID === recipientID) {
+            setIsTyping(true);
+            setTimeout(() => {
+                setIsTyping(false);
+            }, 1000); // Remove typing status after 1 second
+        }
+    });
+
+    socket.on('disconnect', () => {
+        console.error('You have been disconnected from the server');
+    });
+
+    return () => {
+        socket.off('private message');
+        socket.off('user typing');
+        socket.off('disconnect');
+    };
+}, [recipientID]);
+console.log(messages)
+const handleSend = (e) => {
+  e.preventDefault();
+const messageObj = {
+    id: Date.now(),
+    from: userID,
+    to: recipientID,
+    message: input,
+    timestamp: new Date()
+};
+
+// Update the local state immediately to reflect the sent message in the UI
+setMessages(prevMessages => [...prevMessages, messageObj]);
+
+// Emit the message to the server
+socket.emit('private message', messageObj);
+setInput('');
+};
+
+
+const handleTyping = (e) => {
+    setInput(e.target.value);
+    socket.emit('user typing', userID);
+};
+
 
   const closeRowPopup = () => {
     setSelectedRowData(null);
@@ -77,12 +136,16 @@ export default function Dashboard() {
   
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalIsOpen1, setModalIsOpen1] = useState(false);
+  const [modalIsOpen2, setModalIsOpen2] = useState(false);
 
   const openModal = () => {
       setModalIsOpen(true);
   }
   const openModal1 = () => {
     setModalIsOpen1(true);
+}
+const openModal2 = () => {
+  setModalIsOpen2(true);
 }
   
   const closeModal = () => {
@@ -91,6 +154,9 @@ export default function Dashboard() {
   const closeModal1 = () => {
     setModalIsOpen1(false);
 }
+const closeModal2 = () => {
+  setModalIsOpen2(false);
+}
   
 
   function afterOpenModal() {
@@ -98,6 +164,10 @@ export default function Dashboard() {
     subtitle.style.color = '#f00';
   }
   function afterOpenModal1() {
+    // references are now sync'd and can be accessed.
+    subtitle.style.color = '#f00';
+  }
+  function afterOpenModal2() {
     // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
@@ -280,7 +350,7 @@ export default function Dashboard() {
         {/* Static sidebar for desktop */}
         <div className="hidden md:flex md:w-52 md:flex-col md:fixed md:inset-y-0">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className={`border-r border-gray-200 py-2 flex flex-col  flex-grow ${modalIsOpen || modalIsOpen1 ? 'opacity-50' : ''} overflow-y-auto`}>
+          <div className={`border-r border-gray-200 py-2 flex flex-col  flex-grow ${modalIsOpen || modalIsOpen1 || modalIsOpen2 ? 'opacity-50' : ''} overflow-y-auto`}>
             <div className=" sticky top-0 z-10 flex-shrink-0 py-3 bg-white border-b border-gray-200 flex px-4 items-center">
          
               <img
@@ -407,8 +477,8 @@ export default function Dashboard() {
         </div>
 
         <div className="md:pl-52">
-          <div className={`flex flex-col ${modalIsOpen || modalIsOpen1 ? 'opacity-20 bg-gray-800' : ''} bg-[#f4f6f9]  md:px-8 xl:px-0`}>
-            <div className={`sticky top-0 z-10 flex-shrink-0 h-16 ${modalIsOpen || modalIsOpen1 ? 'opacity-20 bg-gray-200' : ''} bg-white border-b border-gray-200 flex`}>
+          <div className={`flex flex-col ${modalIsOpen || modalIsOpen1 || modalIsOpen2 ? 'opacity-20 bg-gray-800' : ''} bg-[#f4f6f9]  md:px-8 xl:px-0`}>
+            <div className={`sticky top-0 z-10 flex-shrink-0 h-16 ${modalIsOpen || modalIsOpen1 || modalIsOpen2 ? 'opacity-20 bg-gray-200' : ''} bg-white border-b border-gray-200 flex`}>
               <button
                 type="button"
                 className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
@@ -563,7 +633,7 @@ export default function Dashboard() {
         </div>
         <div className="px-4 sm:px-6 md:px-0">
           <div className="pt-3">
-            <div className={`h-[605px] flex flex-col justify-between ${modalIsOpen || modalIsOpen1 ? 'opacity-50 bg-gray-50' : ''} bg-white rounded-lg`}>
+            <div className={`h-[605px] flex flex-col justify-between ${modalIsOpen || modalIsOpen1 || modalIsOpen2 ? 'opacity-50 bg-gray-50' : ''} bg-white rounded-lg`}>
               <div className='flex flex-col justify-between'>
                 <div className="flex space-x-5 mx-6 py-4 border-b border-gray-200">
                   <button>All Offers</button>
@@ -686,7 +756,7 @@ export default function Dashboard() {
             </div>
             <div className='bg-gray-100 px-3 py-1 rounded-lg'>
               <p className='text-center font-semibold'>Chat</p>
-              <p className='text-[12px]'>Click To Chat </p>
+              <button onClick={() => { openModal2(); closeModal1(); }}><p className='text-[12px]'>Click To Chat </p></button>
             </div>
             </div>
             <div className='flex justify-center  gap-20 '>
@@ -708,7 +778,7 @@ export default function Dashboard() {
             </div>
             <div className='bg-gray-100 px-3 py-1 rounded-lg'>
               <p className='text-center font-semibold'>Chat</p>
-              <p className='text-[12px]'>Click To Chat </p>
+              <button onClick={() => { openModal2(); closeModal1(); }}> <p className='text-[12px]'>Click To Chat </p></button>
             </div>
             </div>
             <div className='flex justify-center  gap-16 '>
@@ -730,7 +800,10 @@ export default function Dashboard() {
             </div>
             <div className='bg-gray-100 px-3 py-1 rounded-lg'>
               <p className='text-center font-semibold'>Chat</p>
-              <p className='text-[12px]'>Click To Chat </p>
+              <button onClick={() => { openModal2(); closeModal1(); }}>
+  <p className="text-[12px]">Click To Chat</p>
+</button>
+
             </div>
             </div>
             <div className='flex justify-center  gap-16 '>
@@ -742,6 +815,96 @@ export default function Dashboard() {
           </div>
         </div>
       </Modal>
+      
+      <Modal  isOpen={modalIsOpen2}
+        onAfterOpen={afterOpenModal2}
+        onRequestClose={closeModal2}
+        className='pb-1 rounded-l-xl rounded-lg min-h-full  flex justify-end   text-black '>
+          <div className='bg-[#e7e4e4]  min-h-screen'>
+
+        <div className=' cs2 rounded-b-lg   '>
+          <div className='flex cs2 gap-40 pr-5 pl-2 justify-between'>
+   <div className='flex'>     <h2 ref={(_subtitle) => (subtitle = _subtitle)}  className='ml-2 '></h2>
+   </div>
+  <button
+   onClick={closeModal2} className="ml-auto text-white inline-flex items-center rounded-lg bg-transparent pr-1.5 text-xl  hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+    <svg
+      className="h-8 w-8"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        fillRule="evenodd"
+        d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414L11.414 10l2.293 2.293a1 1 0 11-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 010-1.414z"
+        clipRule="evenodd"
+      />
+    </svg>
+  </button>
+  </div>
+  <div className='flex mx-5 mt-2 justify-between'>
+<div className='flex text-white font-semibold text-xl flex-col'>
+    <p>Company A</p>
+    <p>if company</p>
+    <p>name extends</p>
+    </div>
+    <div className='flex text-white font-thin text-xl flex-col'>
+    <div className='flex space-x-4'>
+      <p>
+        Offer
+      </p>
+      <p className='bg-white text-black font-semibold pl-1 pr-10 rounded-sm '>$26</p>
+      </div>
+      <div className='flex  space-x-8 mt-2'>
+      <p>Bid</p>
+      <p className='bg-white  text-black font-semibold pl-1 pr-7 rounded-sm '>$27.5</p>
+      </div>
+    </div>
+    
+  </div>
+  <div className='flex justify-center pb-6  gap-28 mx-4 '>
+              <select className='border flex space-x-5 mt-2  text-gray-500 py-1 rounded-md  pr-20'>
+                <option>Evaluating</option>
+              </select>
+              <p className='text-green-400 text-md  flex '><span className='text-4xl'>•</span><span className='mt-3'> Active</span></p>
+            </div>
+  
+        </div>
+        {isTyping && <div className='text-center'><em>User is typing...</em></div>}
+        
+        <div className='container'>
+        {messages.map((msg) => (
+        <div 
+            key={msg.id}
+            className={msg.from === userID ? "my-message" : "other-message"}
+        >
+             {msg.message}
+        </div>
+    ))}
+        <div className='mt-4    sticky-bottom    py-2'>
+        <div className="flex">
+  <form className="relative">
+    <input
+      className="px-3 w-[340px] py-4 outline-none border rounded-sm mx-3"
+      value={input} 
+      onChange={handleTyping}
+      placeholder="Type your message here..."
+    />
+    <button
+    onClick={handleSend} 
+     className="absolute top-2 right-5 px-3 py-2 rounded-md bg-[#203682] text-white "
+    >
+      Send
+    </button>
+  </form>
+</div>
+
+          </div>
+          </div>
+         
+        </div>
+      </Modal>
+      
                   </tbody>
                 </table>
              
