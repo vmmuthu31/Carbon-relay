@@ -16,12 +16,15 @@ const io = socketIo(server, {
 });
 
 mongoose.connect(
-  "mongodb+srv://admin:admin@cluster0.rxnpu.mongodb.net/Cdash-V2",
+  "mongodb+srv://admin:admin@cluster0.rxnpu.mongodb.net/Cdash-V2-Project",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }
 );
+app.use(express.json());
+const projRoutes = require("./routes/data");
+app.use("/auth", projRoutes);
 
 const ChatSchema = new mongoose.Schema({
   username: String,
@@ -42,7 +45,7 @@ io.on("connection", (socket) => {
       id: Date.now(),
       from: "Server",
       to: userID,
-      message: "Test message from server.",
+      message: "",
       timestamp: new Date(),
     });
   });
@@ -81,6 +84,12 @@ io.on("connection", (socket) => {
         break;
       }
     }
+  });
+});
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "🦄🌈✨👋🌎🌍🌏✨🌈🦄",
   });
 });
 

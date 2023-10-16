@@ -1,4 +1,4 @@
-import React, { Fragment, useState,useCallback } from 'react'
+import React, { Fragment, useState,useCallback, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {RxCrossCircled} from "react-icons/rx"
 import {AiOutlineHome,AiFillSound,AiFillCaretDown,AiOutlineMenu,AiOutlineArrowLeft, AiOutlineDown,AiOutlineArrowRight } from "react-icons/ai"
@@ -7,9 +7,12 @@ import {FiUpload} from "react-icons/fi";
 import {FaLock, FaUnlock} from "react-icons/fa"
 import {RxCross2} from "react-icons/rx"
 import {BsChevronLeft, BsThreeDots} from "react-icons/bs"
-import 'reactjs-popup/dist/index.css';
 import {HiArrowLongRight} from "react-icons/hi2"
 import Modal from 'react-modal'; // Adjust the import path as needed
+import { useSession } from 'next-auth/react'
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:5000')
 
 const navigation = [
   { name: 'Home', href: '#', icon: AiOutlineHome, current: false },
@@ -42,7 +45,15 @@ export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rowStates, setRowStates] = useState(Array(3).fill(true)); // Initialize with 3 rows
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const { data: session } = useSession();
+  const [input, setInput] = useState(''); 
+  const recipientID = session?.user?.email == "vairamuthu@jec.ac.in" ? "mvairamuthu2003@gmail.com"  : "vairamuthu@jec.ac.in" ;
 
+
+  console.log(recipientID,"receipt")
+  const [isTyping, setIsTyping] = useState(false);
+  const userID = session?.user?.email; 
   // Function to toggle the lock/unlock state for a specific row
   const toggleLock = (rowIndex) => {
     // Create a copy of the current rowStates
@@ -55,10 +66,73 @@ export default function Dashboard() {
   const openRowPopup = (rowData) => {
     setSelectedRowData(rowData);
   };
+  useEffect(() => {
+    socket.emit('user joined', userID);
+
+    socket.on('private message', (msg) => {
+        setMessages(prevMessages => [...prevMessages, msg]);
+    });
+
+    socket.on('user typing', (typingUserID) => {
+        if (typingUserID === recipientID) {
+            setIsTyping(true);
+            setTimeout(() => {
+                setIsTyping(false);
+            }, 1000); // Remove typing status after 1 second
+        }
+    });
+
+    socket.on('disconnect', () => {
+        console.error('You have been disconnected from the server');
+    });
+
+    return () => {
+        socket.off('private message');
+        socket.off('user typing');
+        socket.off('disconnect');
+    };
+}, [recipientID]);
+console.log(messages)
+const handleSend = (e) => {
+  e.preventDefault();
+const messageObj = {
+    id: Date.now(),
+    from: userID,
+    to: recipientID,
+    message: input,
+    timestamp: new Date()
+};
+
+// Update the local state immediately to reflect the sent message in the UI
+setMessages(prevMessages => [...prevMessages, messageObj]);
+
+// Emit the message to the server
+socket.emit('private message', messageObj);
+setInput('');
+};
+
+
+const handleTyping = (e) => {
+    setInput(e.target.value);
+    socket.emit('user typing', userID);
+};
+
 
   const closeRowPopup = () => {
     setSelectedRowData(null);
   };
+  const [projectId, setProjectId] = useState('');
+  const [projectData, setProjectData] = useState({});
+
+  useEffect(() => {
+    if (projectId) {
+        // Replace the following with your data fetching logic
+        // Example: Fetch data from an API endpoint using the projectId
+        fetch(`http://localhost:5000/auth/projectData/${projectId}`)
+            .then(response => response.json())
+            .then(data => setProjectData(data));
+    }
+}, [projectId]);
 
 
 
@@ -77,12 +151,17 @@ export default function Dashboard() {
   
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalIsOpen1, setModalIsOpen1] = useState(false);
-
+  const [modalIsOpen2, setModalIsOpen2] = useState(false);
+console.log("projectid",projectId)
+console.log("projectdata",projectData)
   const openModal = () => {
       setModalIsOpen(true);
   }
   const openModal1 = () => {
     setModalIsOpen1(true);
+}
+const openModal2 = () => {
+  setModalIsOpen2(true);
 }
   
   const closeModal = () => {
@@ -91,13 +170,32 @@ export default function Dashboard() {
   const closeModal1 = () => {
     setModalIsOpen1(false);
 }
+const closeModal2 = () => {
+  setModalIsOpen2(false);
+}
   
+const [showDatePicker1, setShowDatePicker1] = useState(false);
+  const [showDatePicker2, setShowDatePicker2] = useState(false);
+
+  const handleYearSelect = (e, pickerNum) => {
+    if (e.target.value === "Year") {
+      if (pickerNum === 1) {
+        setShowDatePicker1(true);
+      } else if (pickerNum === 2) {
+        setShowDatePicker2(true);
+      }
+    }
+  };
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
   function afterOpenModal1() {
+    // references are now sync'd and can be accessed.
+    subtitle.style.color = '#f00';
+  }
+  function afterOpenModal2() {
     // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
@@ -280,7 +378,7 @@ export default function Dashboard() {
         {/* Static sidebar for desktop */}
         <div className="hidden md:flex md:w-52 md:flex-col md:fixed md:inset-y-0">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className={`border-r border-gray-200 py-2 flex flex-col  flex-grow ${modalIsOpen || modalIsOpen1 ? 'opacity-50' : ''} overflow-y-auto`}>
+          <div className={`border-r border-gray-200 py-2 flex flex-col  flex-grow ${modalIsOpen || modalIsOpen1 || modalIsOpen2 ? 'opacity-50' : ''} overflow-y-auto`}>
             <div className=" sticky top-0 z-10 flex-shrink-0 py-3 bg-white border-b border-gray-200 flex px-4 items-center">
          
               <img
@@ -407,8 +505,8 @@ export default function Dashboard() {
         </div>
 
         <div className="md:pl-52">
-          <div className={`flex flex-col ${modalIsOpen || modalIsOpen1 ? 'opacity-20 bg-gray-800' : ''} bg-[#f4f6f9]  md:px-8 xl:px-0`}>
-            <div className={`sticky top-0 z-10 flex-shrink-0 h-16 ${modalIsOpen || modalIsOpen1 ? 'opacity-20 bg-gray-200' : ''} bg-white border-b border-gray-200 flex`}>
+          <div className={`flex flex-col ${modalIsOpen || modalIsOpen1 || modalIsOpen2 ? 'opacity-90 bg-gray-200' : ''} bg-[#f4f6f9]  md:px-8 xl:px-0`}>
+            <div className={`sticky top-0 z-10 flex-shrink-0 h-16 ${modalIsOpen || modalIsOpen1 || modalIsOpen2 ? 'opacity-60 bg-gray-200' : ''} bg-white border-b border-gray-200 flex`}>
               <button
                 type="button"
                 className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
@@ -466,7 +564,12 @@ export default function Dashboard() {
           <div className='flex mx-20 justify-between'>
             <div>
               <label htmlFor="" className="block font-semi text-blue-600 mb-2 ml-1 text-sm mt-2 ">Project ID</label>
-              <input className='border-black border px-14  py-2 rounded-md' type='text' />
+              <input 
+                className='border-black border px-4  py-2 rounded-md' 
+                type='text' 
+                value={projectId} 
+                onChange={(e) => setProjectId(e.target.value)}
+            />
               <p className='text-sm '>Enter Your Project ID</p>
             </div>
             <div>
@@ -483,26 +586,46 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className='flex mx-20 my-3 justify-between'>
-            <div className='flex flex-col my-1'>
-            <label className='text-blue-600'>Vintage</label>
-            <div className='flex'>
-            <select defaultValue="year" className="text-lg my-2 px-4 bg-gray-100 rounded-sm border  py-1"  >
-            <option value="center" >Year</option>
-            </select>
-            <p className='text-3xl  mt-2 mx-6'><HiArrowLongRight/></p>
-            <select defaultValue="year" className="text-lg my-2 px-4  bg-gray-100 rounded-sm border  py-1"  >
-            <option value="center" >Year</option>
-            </select>
-            </div>
-            </div>
+          <div className='flex mx-20 mt-2 justify-between'>
+          <div className='flex flex-col my-1'>
+      <label className='text-blue-600'>Vintage</label>
+      <div className='flex'>
+        <div className="relative">
+          <input 
+            type="date" 
+            className="appearance-none text-lg my-2 pl-2 bg-gray-100 rounded-sm border py-1 cursor-pointer" 
+            placeholder="Year"
+          />
+          <div className="absolute inset-y-0 right-1 flex items-center pointer-events-none">
+            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M6.293 9.293L10 13l3.707-3.707a.999.999 0 111.414 1.414l-4 4a.999.999 0 01-1.414 0l-4-4a.997.997 0 010-1.414.999.999 0 011.414 0z"/>
+            </svg>
+          </div>
+        </div>
+        
+        <p className='text-3xl mt-3 mx-3'><HiArrowLongRight/></p>
+        
+        <div className="relative">
+          <input 
+            type="date" 
+            className="appearance-none text-lg my-2 pl-2 bg-gray-100 rounded-sm border py-1 cursor-pointer" 
+            placeholder="Year"
+          />
+          <div className="absolute inset-y-0 right-1 flex items-center pointer-events-none">
+            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M6.293 9.293L10 13l3.707-3.707a.999.999 0 111.414 1.414l-4 4a.999.999 0 01-1.414 0l-4-4a.997.997 0 010-1.414.999.999 0 011.414 0z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
             <div>
-              <label htmlFor="" className="block mb-2 ml-1 text-blue-600 text-sm mt-2 ">Offer Price</label>
-              <input className='border-black border px-16  py-2 rounded-md' type='text' />
+              <label htmlFor="" className="block ml-1 text-blue-600 text-sm mt-2 ">Offer Price</label>
+              <input className='border-black border px-4 w-[305px] py-2 rounded-md' type='text' />
               <p className='text-sm'>Enter Offer Price</p>
             </div>
           </div>
-          <div className='flex mx-20 my-3 mb-6 justify-between'>
+          <div className='flex mx-20  mb-6 justify-between'>
           <div>
               <label htmlFor="" className="block mb-2 ml-1 text-sm text-blue-600 ">CORISA</label>
               <select defaultValue="Select One" className='border-black border pl-5 pr-40 text-left  py-2 rounded-md' >
@@ -511,44 +634,44 @@ export default function Dashboard() {
             </div>
           </div>
           <div className='bg-[#f4f6f9] px-1 py-1'>
-          <div className='flex mx-20 my-5 space-x-2 justify-between'>
+          <div className='flex mx-5 my-5 text-center space-x-2 justify-between'>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2  ml-1 mt-1 ">Project Name</label>
-            <p>|</p>
+              <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">Project Name</label>
+            <p className='text-[13px] line-clamp-3 '>{projectData?.Name || '|'}</p>
             </div>
-            <div className='w-full text-sm px-3 py-1 rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 mt-1">Project Type</label>
-              <p>|</p>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1">Project Type</label>
+              <p className='text-[12px]' >{projectData?.ProjectType || '|'}</p>
             </div>
-            <div className='w-full text-sm px-3 py-1 rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 mt-1 ">Proponent</label>
-              <p>|</p>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1 ">Proponent</label>
+              <p className='text-[12px]'>{projectData?.Proponent || '|'}</p>
             </div>
-            <div className='w-full text-sm px-3 py-1 rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 mt-1 ">Country</label>
-              <p>|</p>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1 ">Country</label>
+              <p className='text-[12px]'>{projectData?.Country || '|'}</p>
             </div>
-            <div className='w-full text-sm px-3 py-1 rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 mt-4 ">Methodology</label>
-              <p>|</p>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 ml-1 mt-4 font-semibold">Methodology</label>
+              <p className='text-[12px]'>{projectData?.Methodology || '|'}</p>
             </div>
-            <div className='w-full text-sm px-3 py-1 rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 mt-1 ">SDGs</label>
-              <p>|</p>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">SDGs</label>
+              <p className='text-[12px]'> {projectData?.SDGs || '|'}</p>
             </div>
           </div>
-          <div className='flex mx-20 my-5  space-x-3 justify-between'>
-            <div className='w-full text-sm px-5 pr-20 py-1 rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2  ml-1 mt-4 ">Additional Certificates 1</label>
-            <p>|</p>
+          <div className='flex mx-20 my-3 text-center space-x-3 justify-between'>
+            <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 font-semibold  ml-1 mt-4 ">Additional Certificates 1</label>
+            <p className='text-[12px]'>{projectData?.AdditionalAttributes?.Attribute1 || '|'}</p>
             </div>
-            <div className='w-full text-sm px-5 pr-20 py-1 rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 mt-4 ">Additional Certificates 2</label>
-              <p>|</p>
+            <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-4 ">Additional Certificates 2</label>
+              <p className='text-[12px]'>{projectData?.AdditionalAttributes?.Attribute2 || '|'}</p>
             </div>
-            <div className='w-full text-sm px-5 pr-20 py-1 rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 mt-4 ">Additional Certificates 3</label>
-              <p>|</p>
+            <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-4 ">Additional Certificates 3</label>
+              <p className='text-[12px]'>{projectData?.AdditionalAttributes?.Attribute3 || '|'}</p>
             </div>
           </div>
           </div>
@@ -563,7 +686,7 @@ export default function Dashboard() {
         </div>
         <div className="px-4 sm:px-6 md:px-0">
           <div className="pt-3">
-            <div className={`h-[605px] flex flex-col justify-between ${modalIsOpen || modalIsOpen1 ? 'opacity-50 bg-gray-50' : ''} bg-white rounded-lg`}>
+            <div className={`h-[605px] flex flex-col justify-between ${modalIsOpen || modalIsOpen1 || modalIsOpen2 ? 'opacity-90 bg-gray-200' : ''} bg-white rounded-lg`}>
               <div className='flex flex-col justify-between'>
                 <div className="flex space-x-5 mx-6 py-4 border-b border-gray-200">
                   <button>All Offers</button>
@@ -686,7 +809,7 @@ export default function Dashboard() {
             </div>
             <div className='bg-gray-100 px-3 py-1 rounded-lg'>
               <p className='text-center font-semibold'>Chat</p>
-              <p className='text-[12px]'>Click To Chat </p>
+              <button onClick={() => { openModal2(); closeModal1(); }}><p className='text-[12px]'>Click To Chat </p></button>
             </div>
             </div>
             <div className='flex justify-center  gap-20 '>
@@ -708,7 +831,7 @@ export default function Dashboard() {
             </div>
             <div className='bg-gray-100 px-3 py-1 rounded-lg'>
               <p className='text-center font-semibold'>Chat</p>
-              <p className='text-[12px]'>Click To Chat </p>
+              <button onClick={() => { openModal2(); closeModal1(); }}> <p className='text-[12px]'>Click To Chat </p></button>
             </div>
             </div>
             <div className='flex justify-center  gap-16 '>
@@ -730,7 +853,10 @@ export default function Dashboard() {
             </div>
             <div className='bg-gray-100 px-3 py-1 rounded-lg'>
               <p className='text-center font-semibold'>Chat</p>
-              <p className='text-[12px]'>Click To Chat </p>
+              <button onClick={() => { openModal2(); closeModal1(); }}>
+  <p className="text-[12px]">Click To Chat</p>
+</button>
+
             </div>
             </div>
             <div className='flex justify-center  gap-16 '>
@@ -742,6 +868,91 @@ export default function Dashboard() {
           </div>
         </div>
       </Modal>
+      
+      <Modal isOpen={modalIsOpen2} onAfterOpen={afterOpenModal2} onRequestClose={closeModal2} className='pb-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black '>
+  <div className='bg-[#e7e4e4] w-[400px] min-h-screen'>
+    <div className='cs2 rounded-b-lg'>
+      <div className='flex cs2 gap-40 pr-5 pl-2 justify-between'>
+        <div className='flex'>
+          <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'></h2>
+        </div>
+        <button onClick={closeModal2} className="ml-auto text-white inline-flex items-center rounded-lg bg-transparent pr-1.5 text-xl hover:bg-gray-200 hover:text-gray-900 dark:hover-bg-gray-600 dark:hover-text-white">
+          <svg className="h-8 w-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414L11.414 10l2.293 2.293a1 1 0 11-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+      <div className='flex mx-5 mt-2 justify-between'>
+        <div className='flex text-white font-semibold text-xl flex-col'>
+          <p>Company A</p>
+          <p>if company</p>
+          <p>name extends</p>
+        </div>
+        <div className='flex text-white font-thin text-xl flex-col'>
+          <div className='flex space-x-4'>
+            <p>Offer</p>
+            <p className='bg-white text-black font-semibold pl-1 pr-10 rounded-sm'>$26</p>
+          </div>
+          <div className='flex space-x-8 mt-2'>
+            <p>Bid</p>
+            <p className='bg-white text-black font-semibold pl-1 pr-7 rounded-sm'>$27.5</p>
+          </div>
+        </div>
+      </div>
+      <div className='flex justify-center pb-6 gap-28 mx-4'>
+        <select className='border flex space-x-5 mt-2 text-gray-500 py-1 rounded-md pr-20'>
+          <option>Evaluating</option>
+        </select>
+        <p className='text-green-400 text-md flex'>
+          <span className='text-4xl'>•</span>
+          <span className='mt-3'>Active</span>
+        </p>
+      </div>
+    </div>
+    {isTyping && <div className='text-center'><em>User is typing...</em></div>}
+    
+  <div >
+    <p>Conversation Between You and Trader has Started been established</p>
+    
+  </div>
+
+
+  <div className="container" style={{ maxHeight: "400px", maxWidth: "400px", overflowY: "scroll", overflowX: "hidden" }}>
+  {messages
+    .filter((msg) => msg.from !== 'server') // Replace 'server' with the actual server identifier
+    .map((msg) => (
+      <div key={msg.id} className={msg.from === userID ? "my-message" : "other-message"}>
+        <div className="text-[10px] font-bold sender-name">
+          {msg.from === userID ? <p>You</p> : msg.from.slice(0, -10)}
+        </div>
+        <div style={{ wordBreak: "break-word" }}>{msg.message}</div>
+      </div>
+    ))}
+</div>
+
+
+    <div className='mt-4 sticky-bottom py-2'>
+      <div className="flex">
+        <form className="relative">
+          <input
+            className="px-3 w-[340px] py-4 outline-none border rounded-sm mx-3"
+            value={input}
+            onChange={handleTyping}
+            placeholder="Type your message here..."
+          />
+          <button
+            onClick={handleSend}
+            className="absolute top-2 right-5 px-3 py-2 rounded-md bg-[#203682] text-white"
+          >
+            Send
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</Modal>
+
+      
                   </tbody>
                 </table>
              

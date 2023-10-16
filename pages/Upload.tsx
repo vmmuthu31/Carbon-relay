@@ -1,35 +1,41 @@
-"use client";
+"use strict";
 import React, { useState } from "react";
 import Navbar from "./Navbar";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";  // Changed from "next/navigation" which seems to be incorrect.
 import Link from "next/link";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const Upload: React.FC = () => {
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string>(""); // New state for file name
+  
   const handleFileChange = (event: any) => {
-    setFile(event.target.files[0]);
+    if (event.target.files[0]) {
+      setFile(event.target.files[0]);
+      setFileName(event.target.files[0].name);  // Set the name of the uploaded file
+    }
   };
  
-  const handleUpload = async () => {
+  const handleUpload = async (e) => {
+    e.preventDefault();
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
 
       try {
         const response = await fetch(
-          "https://carbon-relay-backend.vercel.app/DataRoute/uploadProjectData",
+          "http://localhost:5000/auth/uploadProjectData",
           {
             method: "POST",
             body: formData,
           }
         );
         const result = await response.json();
-        console.log(result.message);
+        toast.success(result.message);  // Display a success toast on successful upload
       } catch (error) {
         console.error("Error uploading file:", error);
+        toast.error("Error uploading file."); // Display an error toast on upload failure
       }
     }
   };
@@ -60,8 +66,11 @@ const Upload: React.FC = () => {
             <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
             </svg>
-            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">PDF (MAX. 1 MB)</p>
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              {fileName ? fileName : <span className="font-semibold">Click to upload</span>} 
+              or drag and drop
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Excel File (MAX. 5 MB) {/* Updated file type and size */}</p>
         </div>
         <input id="dropzone-file" type="file" onChange={handleFileChange} className="hidden" />
     </label>

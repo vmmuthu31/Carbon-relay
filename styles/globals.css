@@ -6,7 +6,25 @@
     width: 100%;
     height: 400px;
   }
+
+  .cs1{
+    background: linear-gradient(99deg, #6271A7 -9.71%, #203682 82.31%);
+}
+.cs2{
+  background: var(--gradient-3, linear-gradient(99deg, #2E385D -20.62%, #2A4191 109.09%));
+}
+.container {
+  position: relative;
+  height: 100vh; /* Adjust this value to match the height of the parent container */
+}
+
+.sticky-bottom {
+  position: fixed;
+  bottom: 0;
+}
   
+
+
 
   .scrollable-cell {
     max-height: 100px;  /* or whatever height you prefer */
