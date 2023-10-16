@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
       id: Date.now(),
       from: "Server",
       to: userID,
-      message: "",
+      message: "How can we help? We're here for you!",
       timestamp: new Date(),
     });
   });
@@ -65,7 +65,6 @@ io.on("connection", (socket) => {
         const toSocket = users[messageObj.to];
         if (toSocket) {
           // Forward the complete message object to the intended recipient
-          toSocket.emit("private message", messageObj);
         } else {
           console.warn(`User ${messageObj.to} is not connected.`);
         }
