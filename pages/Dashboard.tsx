@@ -12,7 +12,8 @@ import Modal from 'react-modal'; // Adjust the import path as needed
 import { useSession } from 'next-auth/react'
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000')
+const socket = new WebSocket('ws://localhost:5000');
+
 
 const navigation = [
   { name: 'Home', href: '#', icon: AiOutlineHome, current: false },
@@ -48,8 +49,9 @@ export default function Dashboard() {
   const [messages, setMessages] = useState([]);
   const { data: session } = useSession();
   const [input, setInput] = useState(''); 
-  const recipientID = session?.user?.email == "mvairamuthu2003@gmail.com" ? "vairamuthu@jec.ac.in"  : "mvairamuthu2003@gmail.com" ;
-
+  const currentUserEmail = session?.user?.email;
+  const recipientID = currentUserEmail === "mvairamuthu2003@gmail.com" ? "vairamuthu@jec.ac.in" : "mvairamuthu2003@gmail.com";
+  
 
   console.log(recipientID,"receipt")
   const [isTyping, setIsTyping] = useState(false);
@@ -67,55 +69,58 @@ export default function Dashboard() {
     setSelectedRowData(rowData);
   };
   useEffect(() => {
-    socket.emit('user joined', userID);
+    socket.onopen = () => {
+        socket.send(JSON.stringify({ type: 'user joined', userID }));
+    };
 
-    socket.on('private message', (msg) => {
-        setMessages(prevMessages => [...prevMessages, msg]);
-    });
-
-    socket.on('user typing', (typingUserID) => {
-        if (typingUserID === recipientID) {
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'private message') {
+            setMessages(prevMessages => [...prevMessages, data]);
+        } else if (data.type === 'user typing' && data.userID === recipientID) {
             setIsTyping(true);
             setTimeout(() => {
                 setIsTyping(false);
             }, 1000); // Remove typing status after 1 second
         }
-    });
+    };
 
-    socket.on('disconnect', () => {
+    socket.onclose = () => {
         console.error('You have been disconnected from the server');
-    });
+    };
 
     return () => {
-        socket.off('private message');
-        socket.off('user typing');
-        socket.off('disconnect');
+        socket.close();
     };
 }, [recipientID]);
+
 console.log(messages)
 const handleSend = (e) => {
   e.preventDefault();
-const messageObj = {
-    id: Date.now(),
-    from: userID,
-    to: recipientID,
-    message: input,
-    timestamp: new Date()
+  const messageObj = {
+      type: 'private message',
+      id: Date.now(),
+      from: userID,
+      to: recipientID,
+      message: input,
+      timestamp: new Date()
+  };
+
+  // Update the local state immediately to reflect the sent message in the UI
+  setMessages(prevMessages => [...prevMessages, messageObj]);
+
+  // Emit the message to the server
+  socket.send(JSON.stringify(messageObj));
+  setInput('');
 };
 
-// Update the local state immediately to reflect the sent message in the UI
-setMessages(prevMessages => [...prevMessages, messageObj]);
-
-// Emit the message to the server
-socket.emit('private message', messageObj);
-setInput('');
-};
 
 
 const handleTyping = (e) => {
-    setInput(e.target.value);
-    socket.emit('user typing', userID);
+  setInput(e.target.value);
+  socket.send(JSON.stringify({ type: 'user typing', userID }));
 };
+
 
 
   const closeRowPopup = () => {

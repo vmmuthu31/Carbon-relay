@@ -1,6 +1,6 @@
 const express = require("express");
 const http = require("http");
-const socketIo = require("socket.io");
+const WebSocket = require("ws");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
@@ -8,12 +8,7 @@ const app = express();
 app.use(cors());
 
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: ["http://localhost:3000", "http://localhost:3001"], // Multiple origins in an array
-    methods: ["GET", "POST"],
-  },
-});
+const wss = new WebSocket.Server({ server });
 
 mongoose.connect(
   "mongodb+srv://admin:admin@cluster0.rxnpu.mongodb.net/Cdash-V2-Project",
@@ -35,50 +30,41 @@ const ChatSchema = new mongoose.Schema({
 const Chat = mongoose.model("Chat", ChatSchema);
 let users = {}; // user ID -> socket mapping
 
-io.on("connection", (socket) => {
+wss.on("connection", (ws) => {
   console.log("a user connected");
 
-  // When a user logs in or joins the chat:
-  socket.on("user joined", (userID) => {
-    users[userID] = socket; // store the user's socket in the 'users' dictionary
-    socket.emit("private message", {
-      id: Date.now(),
-      from: "Server",
-      to: userID,
-      message: "How can we help? We're here for you!",
-      timestamp: new Date(),
-    });
-  });
-
-  socket.on("private message", (messageObj) => {
-    // Create a new chat instance with the received message
-    const chat = new Chat({
-      username: messageObj.from,
-      message: messageObj.message,
-      timestamp: messageObj.timestamp, // use the timestamp from the sent message
-    });
-
-    chat
-      .save()
-      .then(() => {
-        // Assuming 'users' is a dictionary with userIDs as keys and their respective sockets as values
-        const toSocket = users[messageObj.to];
-        if (toSocket) {
-          // Forward the complete message object to the intended recipient
-        } else {
-          console.warn(`User ${messageObj.to} is not connected.`);
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to save chat:", err);
+  ws.on("message", (message) => {
+    const data = JSON.parse(message);
+    if (data.type === "user joined") {
+      const userID = data.userID;
+      users[userID] = ws;
+    } else if (data.type === "private message") {
+      const chat = new Chat({
+        username: data.from,
+        message: data.message,
+        timestamp: data.timestamp,
       });
+
+      chat
+        .save()
+        .then(() => {
+          const toSocket = users[data.to];
+          if (toSocket) {
+            toSocket.send(JSON.stringify(data));
+          } else {
+            console.warn(`User ${data.to} is not connected.`);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to save chat:", err);
+        });
+    }
   });
 
-  socket.on("disconnect", () => {
+  ws.on("close", () => {
     console.log("user disconnected");
-    // Remove the user from the mapping when they disconnect
     for (let userID in users) {
-      if (users[userID] === socket) {
+      if (users[userID] === ws) {
         delete users[userID];
         break;
       }
