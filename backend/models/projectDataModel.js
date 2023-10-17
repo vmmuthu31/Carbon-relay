@@ -9,7 +9,7 @@ const projectDataSchema = new mongoose.Schema({
   ProjectType: String,
   Methodology: String,
   Country_Area: String,
-  SDGs: [Number],
+  SDGs: String,
 
   AdditionalAttributes: {
     Attribute1: String,

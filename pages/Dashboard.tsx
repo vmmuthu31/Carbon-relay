@@ -48,7 +48,7 @@ export default function Dashboard() {
   const [messages, setMessages] = useState([]);
   const { data: session } = useSession();
   const [input, setInput] = useState(''); 
-  const recipientID = session?.user?.email == "vairamuthu@jec.ac.in" ? "mvairamuthu2003@gmail.com"  : "vairamuthu@jec.ac.in" ;
+  const recipientID = session?.user?.email == "mvairamuthu2003@gmail.com" ? "vairamuthu@jec.ac.in"  : "mvairamuthu2003@gmail.com" ;
 
 
   console.log(recipientID,"receipt")
@@ -649,7 +649,7 @@ const [showDatePicker1, setShowDatePicker1] = useState(false);
             </div>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1 ">Country</label>
-              <p className='text-[12px]'>{projectData?.Country || '|'}</p>
+              <p className='text-[12px]'>{projectData?.Country_Area || '|'}</p>
             </div>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 ml-1 mt-4 font-semibold">Methodology</label>

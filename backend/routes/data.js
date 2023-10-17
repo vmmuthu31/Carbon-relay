@@ -34,17 +34,6 @@ router.post("/uploadProjectData", async (req, res) => {
     // Compute Project ID
     const projectID = `${datum["Standard"]}${datum["ID"]}`;
 
-    // Process SDGs
-    let sdgs = [];
-    if (typeof datum["SDGs"] === "number") {
-      sdgs = [datum["SDGs"]];
-    } else if (typeof datum["SDGs"] === "string") {
-      sdgs = datum["SDGs"]
-        .split(",")
-        .map((s) => parseInt(s.trim()))
-        .filter(Number.isInteger); // filtering out NaN or non-integer values
-    }
-
     // Return the processed object
     return {
       ProjectID: projectID,
@@ -55,7 +44,7 @@ router.post("/uploadProjectData", async (req, res) => {
       ProjectType: datum["Project Type"],
       Methodology: datum["Methodology"],
       Country_Area: datum["Country/Area"],
-      SDGs: sdgs,
+      SDGs: datum["SDGs"],
       AdditionalAttributes: {
         Attribute1: datum["Additional Attribute 1"] || null,
         Attribute2: datum["Additional Attribute 2"] || null,
