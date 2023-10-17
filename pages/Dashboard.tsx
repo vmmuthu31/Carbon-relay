@@ -174,18 +174,67 @@ const closeModal2 = () => {
   setModalIsOpen2(false);
 }
   
-const [showDatePicker1, setShowDatePicker1] = useState(false);
-  const [showDatePicker2, setShowDatePicker2] = useState(false);
+const [startingYear, setStartingYear] = useState("");
+const [endingYear, setEndingYear] = useState("");
+const [offerPrice, setOfferPrice] = useState("");
+const [corisa, setCorisa] = useState("");
 
-  const handleYearSelect = (e, pickerNum) => {
-    if (e.target.value === "Year") {
-      if (pickerNum === 1) {
-        setShowDatePicker1(true);
-      } else if (pickerNum === 2) {
-        setShowDatePicker2(true);
+  const handleSubmit = async () => {
+    const data = {
+      projectId,
+      quantity,
+      startingYear,
+      endingYear,
+      offerPrice,
+      corisa,
+      projectName: projectData?.Name,
+      projectType: projectData?.ProjectType,
+      proponent: projectData?.Proponent,
+      country: projectData?.Country_Area,
+      methodology: projectData?.Methodology,
+      sdgs: projectData?.SDGs,
+      additionalCertificates1: projectData?.AdditionalAttributes?.Attribute1,
+      additionalCertificates2: projectData?.AdditionalAttributes?.Attribute2,
+      additionalCertificates3: projectData?.AdditionalAttributes?.Attribute3,
+    };
+    console.log(data)
+  
+    try {
+      const response = await fetch("http://localhost:5000/auth/offers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        // Handle success - maybe show a success message or redirect the user
+      } else {
+        // Handle errors - maybe show an error message to the user
+        console.error("Failed to submit data");
       }
+    } catch (error) {
+      console.error("There was an error sending the data", error);
     }
   };
+  
+  const [quantity, setQuantity] = useState("");
+
+  const increaseQuantity = () => {
+    setQuantity(prevQuantity => (prevQuantity === "" ? 1 : prevQuantity + 1));
+  };
+
+
+  const decreaseQuantity = () => {
+    if (quantity > 0) {
+      setQuantity(prevQuantity => prevQuantity - 1);
+    }
+  };
+
+
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
@@ -574,62 +623,91 @@ const [showDatePicker1, setShowDatePicker1] = useState(false);
             </div>
             <div>
             <label htmlFor="" className="block mb-2 ml-1 text-blue-600 text-md mt-4 ">Quantity</label>
-            <div className='flex'>
-            <input className='border-black border px-4  py-2 rounded-md' type='text' />
-            <div className='flex justify-center flex-col'>
-              <div>
-              <button className='text-2xl px-2 mx-1 ml-4 rounded-3xl bg-gray-100'>-</button>
-              <span className='mt-2  '>1</span>
-              <button className='text-xl px-2 mx-1 rounded-3xl bg-gray-100'>+</button>
-              </div>
-              </div>
-              </div>
-            </div>
+<div className='flex'>
+  <input 
+    className='border-black border px-4 py-2 rounded-md' 
+    type='text' 
+    value={quantity} 
+    onChange={e => {
+      const val = parseInt(e.target.value, 10);
+      if (!isNaN(val) && val >= 0) { // Ensure the value is a non-negative number
+        setQuantity(val);
+      } else if (e.target.value === "") { // Allow the input to be empty
+        setQuantity("");
+      }
+    }}
+  />
+  <div className='flex justify-center flex-col'>
+    <div>
+      <button onClick={decreaseQuantity} className='text-2xl px-2 mx-1 ml-4 rounded-3xl bg-gray-100'>-</button>
+      <span className='mt-2'>{quantity}</span>
+      <button onClick={increaseQuantity} className='text-xl px-2 mx-1 rounded-3xl bg-gray-100'>+</button>
+    </div>
+  </div>
+</div>
+
+    </div>
           </div>
           <div className='flex mx-20 mt-2 justify-between'>
           <div className='flex flex-col my-1'>
       <label className='text-blue-600'>Vintage</label>
-      <div className='flex'>
-        <div className="relative">
-          <input 
-            type="date" 
-            className="appearance-none text-lg my-2 pl-2 bg-gray-100 rounded-sm border py-1 cursor-pointer" 
-            placeholder="Year"
-          />
-          <div className="absolute inset-y-0 right-1 flex items-center pointer-events-none">
-            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path d="M6.293 9.293L10 13l3.707-3.707a.999.999 0 111.414 1.414l-4 4a.999.999 0 01-1.414 0l-4-4a.997.997 0 010-1.414.999.999 0 011.414 0z"/>
-            </svg>
-          </div>
-        </div>
-        
-        <p className='text-3xl mt-3 mx-3'><HiArrowLongRight/></p>
-        
-        <div className="relative">
-          <input 
-            type="date" 
-            className="appearance-none text-lg my-2 pl-2 bg-gray-100 rounded-sm border py-1 cursor-pointer" 
-            placeholder="Year"
-          />
-          <div className="absolute inset-y-0 right-1 flex items-center pointer-events-none">
-            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path d="M6.293 9.293L10 13l3.707-3.707a.999.999 0 111.414 1.414l-4 4a.999.999 0 01-1.414 0l-4-4a.997.997 0 010-1.414.999.999 0 011.414 0z"/>
-            </svg>
-          </div>
-        </div>
-      </div>
+      <div className='flex '>
+  <div className="relative ">
+  <select 
+    value={startingYear}
+    onChange={(e) => setStartingYear(e.target.value)}
+    className="appearance-none text-lg my-2 pl-2 pr-9 outline-none bg-gray-100 rounded-sm border py-1 cursor-pointer"
+  >
+    <option value="">Year</option>
+    {Array.from({ length: 50 }, (_, i) => 2023 - i).map(year => (
+      <option key={year} value={year}>{year}</option>
+    ))}
+  </select>
+    <div className="absolute inset-y-0 text-center right-2  flex items-center pointer-events-none">
+      <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <path d="M6.293 9.293L10 13l3.707-3.707a.999.999 0 111.414 1.414l-4 4a.999.999 0 01-1.414 0l-4-4a.997.997 0 010-1.414.999.999 0 011.414 0z"/>
+      </svg>
+    </div>
+  </div>
+  
+  <p className='text-3xl mt-3 mx-3'><HiArrowLongRight/></p>
+  
+  <div className="relative">
+  <select 
+    value={endingYear}
+    onChange={(e) => setEndingYear(e.target.value)}
+    className="appearance-none text-lg my-2 pl-2 pr-9 outline-none bg-gray-100 rounded-sm border py-1 cursor-pointer"
+  >
+    <option value="">Year</option>
+    {Array.from({ length: 50 }, (_, i) => 2023 - i).map(year => (
+      <option key={year} value={year}>{year}</option>
+    ))}
+  </select>
+    <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+      <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <path d="M6.293 9.293L10 13l3.707-3.707a.999.999 0 111.414 1.414l-4 4a.999.999 0 01-1.414 0l-4-4a.997.997 0 010-1.414.999.999 0 011.414 0z"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
     </div>
             <div>
               <label htmlFor="" className="block ml-1 text-blue-600 text-sm mt-2 ">Offer Price</label>
-              <input className='border-black border px-4 w-[305px] py-2 rounded-md' type='text' />
+              <input className='border-black border px-4 w-[305px] py-2 rounded-md'
+                 value={offerPrice} 
+                 onChange={(e) => setOfferPrice(e.target.value)}
+              type='text' />
               <p className='text-sm'>Enter Offer Price</p>
             </div>
           </div>
           <div className='flex mx-20  mb-6 justify-between'>
           <div>
               <label htmlFor="" className="block mb-2 ml-1 text-sm text-blue-600 ">CORISA</label>
-              <select defaultValue="Select One" className='border-black border pl-5 pr-40 text-left  py-2 rounded-md' >
-              <option value="center"  >Select One</option>
+              <select defaultValue="Select One" className='border-black border pl-5 pr-40 text-left  py-2 rounded-md'    value={corisa} 
+                onChange={(e) => setCorisa(e.target.value)}>
+              <option value="No">Select One</option>
+              <option value="Yes">Yes</option>
               </select>
             </div>
           </div>
@@ -676,7 +754,7 @@ const [showDatePicker1, setShowDatePicker1] = useState(false);
           </div>
           </div>
           <div className='flex justify-end my-2 mx-10'>
-            <button className='bg-[rgb(47,84,235)] px-3  py-2 rounded-md text-white' >Create New Offer</button>
+            <button className='bg-[rgb(47,84,235)] px-3  py-2 rounded-md text-white' onClick={handleSubmit}>Create New Offer</button>
             </div>
         </div>
         
@@ -813,8 +891,11 @@ const [showDatePicker1, setShowDatePicker1] = useState(false);
             </div>
             </div>
             <div className='flex justify-center  gap-20 '>
-              <select className='border flex space-x-5 mt-2  text-gray-500 py-1 rounded-md font-semibold pr-20'>
+              <select className='border flex outline-none space-x-5 mt-2  text-gray-500 py-1 rounded-md font-semibold pr-20'>
                 <option>Evaluating</option>
+                <option>Accept</option>
+                <option>Reject</option>
+                <option>On hold</option>
               </select>
               <p className='text-green-400 text-md  flex '><span className='text-4xl'>•</span><span className='mt-3'> Active</span></p>
             </div>
@@ -835,8 +916,11 @@ const [showDatePicker1, setShowDatePicker1] = useState(false);
             </div>
             </div>
             <div className='flex justify-center  gap-16 '>
-              <select className='border flex space-x-5 mt-2  text-gray-500 py-1 rounded-md font-semibold pr-20'>
-                <option>Evaluating</option>
+              <select className='border outline-none flex space-x-5 mt-2  text-gray-500 py-1 rounded-md font-semibold pr-20'>
+              <option>Evaluating</option>
+                <option>Accept</option>
+                <option>Reject</option>
+                <option>On hold</option>
               </select>
               <p className='text-orange-400 text-md  flex '><span className='text-4xl'>•</span><span className='mt-3'> On Hold</span></p>
             </div>
@@ -860,8 +944,11 @@ const [showDatePicker1, setShowDatePicker1] = useState(false);
             </div>
             </div>
             <div className='flex justify-center  gap-16 '>
-              <select className='border flex space-x-5 mt-2  text-gray-500 py-1 rounded-md font-semibold pr-20'>
-                <option>Evaluating</option>
+              <select className='border outline-none flex space-x-5 mt-2  text-gray-500 py-1 rounded-md font-semibold pr-20'>
+              <option>Evaluating</option>
+                <option>Accept</option>
+                <option>Reject</option>
+                <option>On hold</option>
               </select>
               <p className='text-red-400 text-md  flex '><span className='text-4xl'>•</span><span className='mt-3'> Withdraw</span></p>
             </div>
@@ -900,8 +987,11 @@ const [showDatePicker1, setShowDatePicker1] = useState(false);
         </div>
       </div>
       <div className='flex justify-center pb-6 gap-28 mx-4'>
-        <select className='border flex space-x-5 mt-2 text-gray-500 py-1 rounded-md pr-20'>
-          <option>Evaluating</option>
+        <select className='border flex outline-none space-x-5 mt-2 text-gray-500 py-1 rounded-md pr-20'>
+        <option>Evaluating</option>
+                <option>Accept</option>
+                <option>Reject</option>
+                <option>On hold</option>
         </select>
         <p className='text-green-400 text-md flex'>
           <span className='text-4xl'>•</span>

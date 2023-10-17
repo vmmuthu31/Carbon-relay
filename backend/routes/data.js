@@ -4,6 +4,7 @@ const fileUpload = require("express-fileupload");
 const XLSX = require("xlsx");
 
 const ProjectData = require("../models/projectDataModel");
+const Offer = require("../models/Offer");
 
 router.use(fileUpload());
 router.post("/uploadProjectData", async (req, res) => {
@@ -81,6 +82,26 @@ router.get("/projectData/:projectId", async (req, res) => {
   } catch (error) {
     console.error("Error fetching project data:", error);
     res.status(500).json({ error: "Error fetching project data." });
+  }
+});
+
+router.post("/offers", async (req, res) => {
+  try {
+    const offer = new Offer(req.body);
+    await offer.save();
+    res.status(201).send(offer);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// GET route to retrieve all offers
+router.get("/getoffers", async (req, res) => {
+  try {
+    const offers = await Offer.find();
+    res.status(200).send(offers);
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 
