@@ -13,8 +13,7 @@ const Chat = () => {
     const [recipientID, setRecipientID] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const { data: session } = useSession();
-    const userID = session?.user?.email;  // This should be dynamic based on the logged-in user
-
+    const userID = session?.user?.email;  
     useEffect(() => {
         socket.emit('user joined', userID);
 
