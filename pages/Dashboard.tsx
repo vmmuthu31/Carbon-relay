@@ -10,7 +10,8 @@ import {BsChevronLeft, BsThreeDots} from "react-icons/bs"
 import {HiArrowLongRight} from "react-icons/hi2"
 import Modal from 'react-modal'; // Adjust the import path as needed
 import { useSession } from 'next-auth/react'
-import io from 'socket.io-client';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const socket = new WebSocket('ws://localhost:5000');
 
@@ -56,13 +57,9 @@ export default function Dashboard() {
   console.log(recipientID,"receipt")
   const [isTyping, setIsTyping] = useState(false);
   const userID = session?.user?.email; 
-  // Function to toggle the lock/unlock state for a specific row
   const toggleLock = (rowIndex) => {
-    // Create a copy of the current rowStates
     const updatedRowStates = [...rowStates];
-    // Toggle the state of the specific row
     updatedRowStates[rowIndex] = !updatedRowStates[rowIndex];
-    // Update the state with the new array
     setRowStates(updatedRowStates);
   };
   const openRowPopup = (rowData) => {
@@ -215,11 +212,13 @@ const [corisa, setCorisa] = useState("");
   
       if (response.ok) {
         const result = await response.json();
+        toast.success("Offer Successfully received!")
         console.log(result);
         // Handle success - maybe show a success message or redirect the user
       } else {
         // Handle errors - maybe show an error message to the user
         console.error("Failed to submit data");
+        toast.success("Failed to send the Offer!")
       }
     } catch (error) {
       console.error("There was an error sending the data", error);
@@ -238,6 +237,24 @@ const [corisa, setCorisa] = useState("");
       setQuantity(prevQuantity => prevQuantity - 1);
     }
   };
+  const [offers, setOffers] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/auth/getoffers")
+      .then(response => response.json())
+      .then(data => setOffers(data))
+      .catch(error => console.error("Error fetching offers:", error));
+  }, []);
+  const [isModalOpen5, setIsModalOpen5] = useState(false);
+
+  const handleThreeDotsClick = (offer) => {
+    setIsModalOpen5(true);
+  };
+
+  const closeModal5 = () => {
+    setIsModalOpen5(false);
+  };
+
 
 
 
@@ -389,6 +406,7 @@ const [corisa, setCorisa] = useState("");
                       'group rounded-md py-1 px-2 flex items-center text-sm font-medium'
                     )}
                   >
+                  
                     <item.icon
                       className={classNames(
                         item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
@@ -761,6 +779,7 @@ const [corisa, setCorisa] = useState("");
           <div className='flex justify-end my-2 mx-10'>
             <button className='bg-[rgb(47,84,235)] px-3  py-2 rounded-md text-white' onClick={handleSubmit}>Create New Offer</button>
             </div>
+            <ToastContainer />
         </div>
         
       </Modal>
@@ -794,6 +813,7 @@ const [corisa, setCorisa] = useState("");
                   <button className='border px-2 py-1 flex border-gray-700 rounded-md'>Last Purchase is more than 300 <RxCross2 className='mt-1 mx-1' /></button>
                   <button className='border px-2 py-1 flex border-gray-300 rounded-md'>Add Filters<AiFillCaretDown className='mt-1 mx-1' /></button>
                 </div>
+                <div className="table-container">
                 <table className=' items-center text-center mt-2 mr-10'>
                   <thead className='text-sm  text-gray-500   bg-[#f4f6f9]'>
                     <tr className='border-b'>
@@ -808,32 +828,68 @@ const [corisa, setCorisa] = useState("");
                     </tr>
                   </thead>
                   <tbody className='underline'>
-                  {rowStates.map((isLocked, rowIndex) => (
-            <tr onClick={() => openRowPopup(`Row ${rowIndex + 1} Data`)} className='border-b' key={rowIndex}>
-              <td> <input className='py-4' type='checkbox' /></td>
-              <td className='flex gap-2 py-4'>
-                <button onClick={() => toggleLock(rowIndex)}>
-                  {isLocked ? <FaLock className='mt-1' /> : <FaUnlock className='mt-1' />}
-                </button>
-                
-                #129HjH9ukL
-              </td>
-            <td className='px-4 py-4'><button  onClick={openModal1}>totam est tenetur </button></td>
-            <td className='px-4 py-4'><button  onClick={openModal1}>totam est tenetur </button></td>
-            <td className='px-4 py-4'><button  onClick={openModal1}>2011 - 2022       </button></td>
-            <td className='px-4 py-4'><button  onClick={openModal1}>45                </button></td>
-            <td className='px-4 py-4'><button  onClick={openModal1}>$26,610           </button></td>
-            <td className='px-4 py-4'><button  onClick={openModal1}>$26,610           </button></td>
-          <td className='px-4 py-4'>
-              <span className='flex gap-4 '>
-                <button><BsThreeDots /></button>
-                <button><AiOutlineDown/></button>
-              </span>
-            </td>
-          </tr>
-        ))}
-          
-      <Modal  isOpen={modalIsOpen1}
+                  {offers.map((offer, index) => (
+    <tr key={index}>
+      <td><input className='py-4' type='checkbox' /></td>
+      <td className='flex gap-2 py-4'>
+        <button onClick={() => toggleLock(index)}>
+          {rowStates[index] ? <FaLock className='mt-1' /> : <FaUnlock className='mt-1' />}
+        </button>
+        {offer.projectId}
+      </td>
+      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>{offer.projectName}</button></td>
+      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>{offer.projectType}</button></td>
+      <td className='px-4 py-4 text-sm'><button  onClick={openModal1}>{offer.startingYear}-{offer.endingYear}</button></td>
+      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>{offer.quantity}</button></td>
+      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>${offer.offerPrice}</button></td>
+      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>${offer.offerPrice}</button></td>
+      <td className='px-4 py-4 text-sm'>
+        <span className='flex gap-4 '>
+          <button><BsThreeDots /></button>
+          <button onClick={() => handleThreeDotsClick(offer)}><AiOutlineDown/></button>
+        </span>
+      </td>
+    </tr>
+  ))}
+     
+
+      
+                  </tbody>
+                </table>
+                {isModalOpen5 && (
+        <div className="modal">
+         <div className='bg-[#f4f6f9] px-1 py-1'>
+          <div className='flex mx-5 my-5 text-center space-x-2 justify-between'>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">Project Name</label>
+            <p className='text-[13px] line-clamp-3 '>{projectData?.Name || '|'}</p>
+            </div>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1">Project Type</label>
+              <p className='text-[12px]' >{projectData?.ProjectType || '|'}</p>
+            </div>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1 ">Proponent</label>
+              <p className='text-[12px]'>{projectData?.Proponent || '|'}</p>
+            </div>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1 ">Country</label>
+              <p className='text-[12px]'>{projectData?.Country_Area || '|'}</p>
+            </div>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 ml-1 mt-4 font-semibold">Methodology</label>
+              <p className='text-[12px]'>{projectData?.Methodology || '|'}</p>
+            </div>
+            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+              <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">SDGs</label>
+              <p className='text-[12px]'> {projectData?.SDGs || '|'}</p>
+            </div>
+          </div>
+        </div>
+        </div>
+      )}
+                </div>
+                <Modal  isOpen={modalIsOpen1}
         onAfterOpen={afterOpenModal1}
         onRequestClose={closeModal1}
         className='py-1 rounded-l-xl rounded-lg min-h-full  flex justify-end   text-black '>
@@ -1046,11 +1102,6 @@ const [corisa, setCorisa] = useState("");
     </div>
   </div>
 </Modal>
-
-      
-                  </tbody>
-                </table>
-             
               </div>
               <div>
                 <div className='flex justify-between mx-10 py-2'>

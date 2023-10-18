@@ -130,3 +130,27 @@
   margin: 5px;
   padding: 5px;
 }
+
+
+.table-container {
+  max-height: 400px; /* Adjust this value based on your preference */
+  overflow-y: auto;
+ 
+  position: relative;
+}
+
+table {
+
+  border-collapse: collapse;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: white; /* This ensures the header has a solid background */
+}
+
+th {
+  background-color: #f4f6f9; /* Adjust this to your desired background color */
+}
