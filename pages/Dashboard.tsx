@@ -271,8 +271,22 @@ const [corisa, setCorisa] = useState("");
     subtitle.style.color = '#f00';
   }
 
- 
+  const [tooltipVisibility, setTooltipVisibility] = useState({});
 
+  const toggleTooltip = (projectId) => {
+    setTooltipVisibility((prevState) => ({
+      ...prevState,
+      [projectId]: !prevState[projectId],
+    }));
+  };
+
+
+  const [dropdownVisibility, setDropdownVisibility] = useState([]);
+  useEffect(() => {
+    // Initialize the dropdownVisibility array to all false initially
+    setDropdownVisibility(new Array(offers.length).fill(false));
+  }, [offers]);
+  
 
   return (
 
@@ -662,9 +676,9 @@ const [corisa, setCorisa] = useState("");
   />
   <div className='flex justify-center flex-col'>
     <div>
-      <button onClick={decreaseQuantity} className='text-2xl px-2 mx-1 ml-4 rounded-3xl bg-gray-100'>-</button>
+      <button onClick={decreaseQuantity} className='text-2xl px-1 py-1 mx-1 ml-4 rounded-3xl bg-gray-100'>-</button>
       <span className='mt-2'>{quantity}</span>
-      <button onClick={increaseQuantity} className='text-xl px-2 mx-1 rounded-3xl bg-gray-100'>+</button>
+      <button onClick={increaseQuantity} className='text-xl px-0.5 py-1.5 mx-1 rounded-3xl bg-gray-100'>+</button>
     </div>
   </div>
 </div>
@@ -827,9 +841,48 @@ const [corisa, setCorisa] = useState("");
                       <th className='px-8 py-2 font-semibold '>BID </th>
                     </tr>
                   </thead>
-                  <tbody className='underline'>
-                  {offers.map((offer, index) => (
-    <tr key={index}>
+                  <tbody className='underline '>
+                  {offers.map((offer, index) => {
+  const projectDataForOffer = projectData[offer.projectId] || {}; // Default to an empty object
+
+  console.log("project", offer.projectId);
+  const toggleDropdown = (index) => {
+    console.log("Hello")
+    setDropdownVisibility((prevVisibility) => {
+      const updatedVisibility = [...prevVisibility];
+      updatedVisibility[index] = !updatedVisibility[index]; // Toggle the visibility
+      return updatedVisibility;
+    });
+  };
+
+  const isDropdownVisible = dropdownVisibility[index];
+  console.log("proj", projectDataForOffer);
+  const handleOptionClick = (option) => {
+    // Implement the logic for each option here
+    switch (option) {
+      case "Active":
+        // Handle Active option
+        break;
+      case "Hold":
+        // Handle Hold option
+        break;
+      case "Withdraw":
+        // Handle Withdraw option
+        break;
+      case "Bookmark":
+        // Handle Bookmark option
+        break;
+      case "Duplicate":
+        // Handle Duplicate option
+        break;
+      default:
+        // Handle the default case (if needed)
+        break;
+    }
+  };
+
+  return (
+    <tr key={index} className="relative ">
       <td><input className='py-4' type='checkbox' /></td>
       <td className='flex gap-2 py-4'>
         <button onClick={() => toggleLock(index)}>
@@ -837,57 +890,122 @@ const [corisa, setCorisa] = useState("");
         </button>
         {offer.projectId}
       </td>
-      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>{offer.projectName}</button></td>
-      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>{offer.projectType}</button></td>
-      <td className='px-4 py-4 text-sm'><button  onClick={openModal1}>{offer.startingYear}-{offer.endingYear}</button></td>
-      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>{offer.quantity}</button></td>
-      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>${offer.offerPrice}</button></td>
-      <td className='px-4 py-4 text-sm'><button onClick={openModal1}>${offer.offerPrice}</button></td>
       <td className='px-4 py-4 text-sm'>
-        <span className='flex gap-4 '>
-          <button><BsThreeDots /></button>
-          <button onClick={() => handleThreeDotsClick(offer)}><AiOutlineDown/></button>
-        </span>
+        <button onClick={() => openModal1(offer.projectId)}>{offer.projectName}</button>
+      </td>
+      <td className='px-4 py-4 text-sm'>
+        <button onClick={() => openModal1(offer.projectId)}>{offer.projectType}</button>
+      </td>
+      <td className='px-4 py-4 text-sm'>
+        <button onClick={() => openModal1(offer.projectId)}>
+          {offer.startingYear}-{offer.endingYear}
+        </button>
+      </td>
+      <td className='px-4 py-4 text-sm'>
+        <button onClick={() => openModal1(offer.projectId)}>{offer.quantity}</button>
+      </td>
+      <td className='px-4 py-4 text-sm'>
+        <button onClick={() => openModal1(offer.projectId)}>${offer.offerPrice}</button>
+      </td>
+      <td className='px-4 py-4 text-sm'>
+        <button onClick={() => openModal1(offer.projectId)}>${offer.offerPrice}</button>
+      </td>
+      <td className='px-4 py-4 text-sm'>
+        <div className='flex gap-4'>
+        <span>
+      <button onClick={() => toggleDropdown(index)}><BsThreeDots /></button>
+      {isDropdownVisible && (
+        <div className="modal-dropdown">
+          <ul>
+            <li onClick={() => handleOptionClick("Active")}>Active</li>
+            <li onClick={() => handleOptionClick("Hold")}>Hold</li>
+            <li className=' border-dashed border-b-2 border-gray-200' onClick={() => handleOptionClick("Withdraw")}>Withdraw</li>
+            
+            <li onClick={() => handleOptionClick("Bookmark")}>Bookmark</li>
+            <li onClick={() => handleOptionClick("Duplicate")}>Duplicate</li>
+          </ul>
+        </div>
+      )}
+    </span>
+          <button
+            onClick={() => {
+              toggleLock(index);
+              if (!projectData[offer.projectId]) {
+                // Fetch the project data only if it doesn't exist in projectData
+                fetch(`http://localhost:5000/auth/projectData/${offer.projectId}`)
+                  .then((response) => response.json())
+                  .then((data) => {
+                    setProjectData((prevData) => ({
+                      ...prevData,
+                      [offer.projectId]: data,
+                    }));
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching project data:", error);
+                  });
+              }
+              toggleTooltip(offer.projectId);
+            }}
+          >
+            <AiOutlineDown />
+          </button>
+          {tooltipVisibility[offer.projectId] && (
+            <div className="absolute top-full px-28 pr-40 left-1/2 transform -translate-x-1/2 bg-[#f4f6f9] rounded-lg p-1 text-center z-10">
+              <div className="tooltip-text">
+                <div>
+                  <div className='flex mx-5 my-1 text-center space-x-2 justify-between'>
+                   
+                    <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+                      <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1">Project Type</label>
+                      <p className='text-[12px]'>{projectDataForOffer.ProjectType || '|'}</p>
+                    </div>
+                    <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+                      <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1">Proponent</label>
+                      <p className='text-[12px]'>{projectDataForOffer.Proponent || '|'}</p>
+                    </div>
+                    <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+                      <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1">Country</label>
+                      <p className='text-[12px]'>{projectDataForOffer.Country_Area || '|'}</p>
+                    </div>
+                    <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
+                      <label htmlFor="" className="block mb-2 ml-1 mt-4 font-semibold">Methodology</label>
+                      <p className='text-[12px]'>{projectDataForOffer.Methodology || '|'}</p>
+                    </div>
+                    <div className='w-[500px] text-sm px-3 py-1  rounded-lg bg-white'>
+                      <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1">SDGs</label>
+                      <p className='text-[12px]'> {projectDataForOffer.SDGs || '|'}</p>
+                    </div>
+                  </div>
+                  <div className='flex mx-20 my-3 text-center space-x-3 justify-between'>
+                    <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
+                      <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-4">Additional Certificates 1</label>
+                      <p className='text-[12px]'>{projectDataForOffer.AdditionalAttributes?.Attribute1 || '|'}</p>
+                    </div>
+                    <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
+                      <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-4">Additional Certificates 2</label>
+                      <p className='text-[12px]'>{projectDataForOffer.AdditionalAttributes?.Attribute2 || '|'}</p>
+                    </div>
+                    <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
+                      <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-4">Additional Certificates 3</label>
+                      <p className='text-[12px]'>{projectDataForOffer.AdditionalAttributes?.Attribute3 || '|'}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </td>
     </tr>
-  ))}
+  );
+})}
+
      
 
       
                   </tbody>
                 </table>
-                {isModalOpen5 && (
-        <div className="modal">
-         <div className='bg-[#f4f6f9] px-1 py-1'>
-          <div className='flex mx-5 my-5 text-center space-x-2 justify-between'>
-            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">Project Name</label>
-            <p className='text-[13px] line-clamp-3 '>{projectData?.Name || '|'}</p>
-            </div>
-            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1">Project Type</label>
-              <p className='text-[12px]' >{projectData?.ProjectType || '|'}</p>
-            </div>
-            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1 ">Proponent</label>
-              <p className='text-[12px]'>{projectData?.Proponent || '|'}</p>
-            </div>
-            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1 ">Country</label>
-              <p className='text-[12px]'>{projectData?.Country_Area || '|'}</p>
-            </div>
-            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 ml-1 mt-4 font-semibold">Methodology</label>
-              <p className='text-[12px]'>{projectData?.Methodology || '|'}</p>
-            </div>
-            <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
-              <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">SDGs</label>
-              <p className='text-[12px]'> {projectData?.SDGs || '|'}</p>
-            </div>
-          </div>
-        </div>
-        </div>
-      )}
+                
                 </div>
                 <Modal  isOpen={modalIsOpen1}
         onAfterOpen={afterOpenModal1}
@@ -1024,7 +1142,7 @@ const [corisa, setCorisa] = useState("");
         <div className='flex'>
           <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'></h2>
         </div>
-        <button onClick={closeModal2} className="ml-auto text-white inline-flex items-center rounded-lg bg-transparent pr-1.5 text-xl hover:bg-gray-200 hover:text-gray-900 dark:hover-bg-gray-600 dark:hover-text-white">
+        <button onClick={closeModal2} className="ml-auto text-white inline-flex items-center rounded-lg bg-transparent  text-xl hover:bg-gray-200 hover:text-gray-900 dark:hover-bg-gray-600 dark:hover-text-white">
           <svg className="h-8 w-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414L11.414 10l2.293 2.293a1 1 0 11-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
           </svg>
@@ -1062,8 +1180,8 @@ const [corisa, setCorisa] = useState("");
     </div>
     {isTyping && <div className='text-center'><em>User is typing...</em></div>}
     
-  <div >
-    <p>Conversation Between You and Trader has Started been established</p>
+  <div className="px-4" >
+    <p >Conversation Between You and Trader has Started been established</p>
     
   </div>
 

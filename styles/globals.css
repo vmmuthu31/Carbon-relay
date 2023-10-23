@@ -133,7 +133,8 @@
 
 
 .table-container {
-  max-height: 400px; /* Adjust this value based on your preference */
+  min-height: 340px;
+  max-height: 450px; /* Adjust this value based on your preference */
   overflow-y: auto;
  
   position: relative;
@@ -153,4 +154,38 @@ thead {
 
 th {
   background-color: #f4f6f9; /* Adjust this to your desired background color */
+}
+
+
+
+.modal-dropdown {
+  display: none;
+  position: absolute;
+  top: 60%;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  z-index: 10;
+  border-radius: 4px;
+}
+
+.modal-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modal-dropdown li {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.modal-dropdown li:hover {
+  background-color: #f0f0f0;
+}
+
+span:hover .modal-dropdown,
+span:active .modal-dropdown,
+span:focus-within .modal-dropdown {
+  display: block;
 }
