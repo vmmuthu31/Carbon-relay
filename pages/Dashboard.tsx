@@ -1,7 +1,7 @@
 import React, { Fragment, useState,useCallback, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {RxCrossCircled} from "react-icons/rx"
-import {AiOutlineHome,AiFillSound,AiFillCaretDown,AiOutlineMenu,AiOutlineArrowLeft, AiOutlineDown,AiOutlineArrowRight } from "react-icons/ai"
+import {AiOutlineHome,AiFillSound,AiFillCaretDown,AiOutlineMenu,AiOutlineArrowLeft, AiOutlineDown,AiOutlineArrowRight, AiOutlineUp } from "react-icons/ai"
 import {PiUserCircleGearLight,PiNewspaperClippingDuotone } from "react-icons/pi"
 import {FiUpload} from "react-icons/fi";
 import {FaLock, FaUnlock} from "react-icons/fa"
@@ -180,6 +180,7 @@ const [startingYear, setStartingYear] = useState("");
 const [endingYear, setEndingYear] = useState("");
 const [offerPrice, setOfferPrice] = useState("");
 const [corisa, setCorisa] = useState("");
+const [isSubmitClicked, setIsSubmitClicked] = useState(false);
 
   const handleSubmit = async () => {
     const data = {
@@ -214,6 +215,8 @@ const [corisa, setCorisa] = useState("");
         const result = await response.json();
         toast.success("Offer Successfully received!")
         console.log(result);
+        setIsSubmitClicked(true);
+
         // Handle success - maybe show a success message or redirect the user
       } else {
         // Handle errors - maybe show an error message to the user
@@ -244,7 +247,16 @@ const [corisa, setCorisa] = useState("");
       .then(response => response.json())
       .then(data => setOffers(data))
       .catch(error => console.error("Error fetching offers:", error));
-  }, []);
+  }, [isSubmitClicked]);
+  useEffect(() => {
+    if (isSubmitClicked) {
+      fetch("http://localhost:5000/auth/getoffers")
+        .then(response => response.json())
+        .then(data => setOffers(data))
+        .catch(error => console.error("Error fetching offers:", error));
+    }
+  }, [isSubmitClicked]);
+  
   const [isModalOpen5, setIsModalOpen5] = useState(false);
 
   const handleThreeDotsClick = (offer) => {
@@ -287,6 +299,7 @@ const [corisa, setCorisa] = useState("");
     setDropdownVisibility(new Array(offers.length).fill(false));
   }, [offers]);
   
+  const [isButtonOpenArray, setIsButtonOpenArray] = useState(new Array(offers.length).fill(false));
 
   return (
 
@@ -795,10 +808,7 @@ const [corisa, setCorisa] = useState("");
             </div>
             <ToastContainer />
         </div>
-        
-      </Modal>
-  
-       
+      </Modal>     
         </div>
         <div className="px-4 sm:px-6 md:px-0">
           <div className="pt-3">
@@ -891,7 +901,7 @@ const [corisa, setCorisa] = useState("");
         {offer.projectId}
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>{offer.projectName}</button>
+        <button onClick={() => openModal1(offer.projectId)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
       </td>
       <td className='px-4 py-4 text-sm'>
         <button onClick={() => openModal1(offer.projectId)}>{offer.projectType}</button>
@@ -945,12 +955,18 @@ const [corisa, setCorisa] = useState("");
                   });
               }
               toggleTooltip(offer.projectId);
-            }}
+              setIsButtonOpenArray((prevState) => {
+                const newArray = [...prevState];
+                newArray[index] = !newArray[index];
+                return newArray;
+              });
+                      }}
           >
-            <AiOutlineDown />
+  {isButtonOpenArray[index] ? <AiOutlineUp /> : <AiOutlineDown />}
+
           </button>
           {tooltipVisibility[offer.projectId] && (
-            <div className="absolute top-full px-28 pr-40 left-1/2 transform -translate-x-1/2 bg-[#f4f6f9] rounded-lg p-1 text-center z-10">
+            <div className="absolute top-full px-28 pr-44 left-1/2 transform -translate-x-1/2 bg-[#f4f6f9] rounded-lg p-1 text-center z-10">
               <div className="tooltip-text">
                 <div>
                   <div className='flex mx-5 my-1 text-center space-x-2 justify-between'>

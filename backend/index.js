@@ -3,6 +3,7 @@ const http = require("http");
 const WebSocket = require("ws");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,7 @@ mongoose.connect(
 app.use(express.json());
 const projRoutes = require("./routes/data");
 app.use("/auth", projRoutes);
+app.use("/api", userRoutes);
 
 const ChatSchema = new mongoose.Schema({
   username: String,

@@ -125,7 +125,7 @@ function Navbar() {
                         <p
                           className={classNames(active ? 'bg-gray-100' : '', 'block  text-center px-4 py-2 text-sm text-gray-700')}
                         >
-                   {user?.user ? `User: ${user?.user?.email.slice(0, -10)}` : `User: ${session?.user?.email?.slice(0, -10)}`}
+                   {user?.user ? `User: ${user?.user?.email?.slice(0, -10)}` : `User: ${session?.user?.email?.slice(0, -10)}`}
 
                         </p>
                       )}

@@ -9,19 +9,22 @@ import 'react-toastify/dist/ReactToastify.css';
 const Signup: React.FC = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
+    role: "",
+    companyName: ""
   });
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
   };
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("https://carbon-relay-backend.vercel.app/auth/signup", {
+    const response = await fetch("http://localhost:5000/api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +45,7 @@ const Signup: React.FC = () => {
     <div className=" min-h-screen">
     <Navbar />
     
-    <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-full flex flex-col justify-center py-2 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <img
             className="mx-auto h-16 w-auto"
@@ -55,25 +58,24 @@ const Signup: React.FC = () => {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-gray-400 mx-8 rounded-md py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-3" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-black">
-                Email address
+              <label htmlFor="username" className="block text-sm font-medium text-black">
+                UserName
               </label>
               <div className="mt-1">
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  value={formData.email}
+                  value={formData.username}
                   onChange={handleInputChange}
                 />
               </div>
             </div>
-
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-black">
                 Password
@@ -83,10 +85,50 @@ const Signup: React.FC = () => {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete="password"
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   value={formData.password}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div>
+  <label htmlFor="role" className="block text-sm font-medium text-black">
+    Role
+  </label>
+  <div className="mt-1">
+  <select
+  id="role"
+  name="role"
+  autoComplete="role"
+  required
+  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+  value={formData.role}
+  onChange={handleInputChange}
+>
+  <option value="">Select Role</option>
+  <option value="company">Company</option>
+  <option value="trader">Trader</option>
+</select>
+
+  </div>
+</div>
+
+
+            <div>
+              <label htmlFor="companyName" className="block text-sm font-medium text-black">
+                Company Name
+              </label>
+              <div className="mt-1">
+                <input
+                  id="companyName"
+                  name="companyName"
+                  type="companyName"
+                  autoComplete="current-password"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={formData.companyName}
                   onChange={handleInputChange}
                 />
               </div>
