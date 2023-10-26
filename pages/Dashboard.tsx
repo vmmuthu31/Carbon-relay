@@ -211,6 +211,7 @@ const [isSubmitClicked, setIsSubmitClicked] = useState(false);
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token
         },
         body: JSON.stringify(data),
       });
@@ -247,19 +248,29 @@ const [isSubmitClicked, setIsSubmitClicked] = useState(false);
   const [offers, setOffers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/auth/getoffers")
+    fetch("http://localhost:5000/auth/myoffers", {
+      headers: {
+        'Authorization': token
+      }
+    })
+    .then(response => response.json())
+    .then(data => setOffers(data))
+    .catch(error => console.error("Error fetching offers:", error));
+}, [isSubmitClicked]);
+
+useEffect(() => {
+    if (isSubmitClicked) {
+      fetch("http://localhost:5000/auth/myoffers", {
+        headers: {
+          'Authorization': token
+        }
+      })
       .then(response => response.json())
       .then(data => setOffers(data))
       .catch(error => console.error("Error fetching offers:", error));
-  }, [isSubmitClicked]);
-  useEffect(() => {
-    if (isSubmitClicked) {
-      fetch("http://localhost:5000/auth/getoffers")
-        .then(response => response.json())
-        .then(data => setOffers(data))
-        .catch(error => console.error("Error fetching offers:", error));
     }
-  }, [isSubmitClicked]);
+}, [isSubmitClicked]);
+
   
   const [isModalOpen5, setIsModalOpen5] = useState(false);
 
@@ -856,7 +867,8 @@ const [isSubmitClicked, setIsSubmitClicked] = useState(false);
                     </tr>
                   </thead>
                   <tbody className='underline '>
-                  {offers.map((offer, index) => {
+                    
+                  {Array.isArray(offers) && offers?.map((offer, index) => {
   const projectDataForOffer = projectData[offer.projectId] || {}; // Default to an empty object
 
   console.log("project", offer.projectId);

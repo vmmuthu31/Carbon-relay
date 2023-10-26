@@ -109,7 +109,26 @@ router.post("/offers", verifyToken, async (req, res) => {
 router.get("/myoffers", verifyToken, async (req, res) => {
   try {
     const user = req.user;
-    const offers = await Offer.find({ createdBy: user.userId });
+
+    let offers = [];
+
+    if (user.userType === "Admin") {
+      // Fetch offers created by the admin
+      offers = await Offer.find({ createdBy: user.userId });
+
+      // Fetch offers created by traders of the same company
+      const tradersOfCompany = await Trader.find({
+        companyName: user.companyName,
+      });
+      const traderIds = tradersOfCompany.map((trader) => trader._id);
+      const traderOffers = await Offer.find({ createdBy: { $in: traderIds } });
+
+      offers = offers.concat(traderOffers);
+    } else if (user.userType === "Trader") {
+      // Fetch offers created by the trader
+      offers = await Offer.find({ createdBy: user.userId });
+    }
+
     res.status(200).send(offers);
   } catch (error) {
     res.status(500).send(error);

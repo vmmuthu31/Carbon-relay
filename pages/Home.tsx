@@ -33,7 +33,7 @@ const TraderView = ({ user }) => (
 
 const Home: React.FC = () => {
   const user = useSelector((state) => state?.user);
-  const role = useSelector((state) => state?.user?.user.role);
+  const role = useSelector((state) => state?.user?.user?.role);
   const [email, setEmail] = useState("");
 
   const handleSubmit = async(e) => {
