@@ -21,7 +21,7 @@ interface SignupProps {
 const Login: React.FC<SignupProps> = ({ providers }) => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +48,7 @@ const Login: React.FC<SignupProps> = ({ providers }) => {
       toast.success("Login Successfull!")
      
       dispatch(setUser({ token, user }));
-    router.push("/Dashboard")
+    router.push("/Home")
     } else {
       console.error("Sign-in failed");
       toast.error("Invalid Email and password!")
@@ -75,18 +75,18 @@ const Login: React.FC<SignupProps> = ({ providers }) => {
           <div className="bg-gray-400 mx-8 rounded-md py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-black">
-                UserName
+              <label htmlFor="email" className="block text-sm font-medium text-black">
+                Email Address
               </label>
               <div className="mt-1">
                 <input
-                  id="username"
-                  name="username"
+                  id="email"
+                  name="email"
                   type="text"
-                  autoComplete="username"
+                  autoComplete="email"
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  value={formData.username}
+                  value={formData.email}
                   onChange={handleInputChange}
                 />
               </div>

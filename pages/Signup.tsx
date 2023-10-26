@@ -9,10 +9,11 @@ import 'react-toastify/dist/ReactToastify.css';
 const Signup: React.FC = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    role: "",
-    companyName: ""
+    companyName: "",
+    personName: "",
+    email: "",
+    location: "",
+    password: ""
   });
   const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,7 +39,7 @@ const Signup: React.FC = () => {
     
     } else {
       console.error("Sign-in failed");
-      toast.error("Signup Failed!")
+      toast.error("Company Email is Already Registered!")
     }
   };
   return (
@@ -52,30 +53,86 @@ const Signup: React.FC = () => {
             src="https://blogger.googleusercontent.com/img/a/AVvXsEhZJPipfeyNsdZI8CywAOgRlNn9nd30AlFuOcccs4IJxj_JfRUHxXap3KaGKfT7AlBry3Kn3QvIQzjOk78WPTxbINLWbaNLsT0deumPes4VYEXCYMkWlvCYJvYjPryn05qZeN4wtyY_Ufxqg3kn_lbmlTVymQ0iuvW9MtDq7Qn8TNfuIjk4t8d8KrPLQNg"
             alt="Workflow"
           />
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign up to your account</h2>
+          <h2 className="mt-1 text-center text-3xl font-extrabold text-gray-900">Sign up to your account</h2>
          
         </div>
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-gray-400 mx-8 rounded-md py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-3" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-black">
-                UserName
+          <div>
+              <label htmlFor="companyName" className="block text-sm font-medium text-black">
+                Company Name
               </label>
               <div className="mt-1">
                 <input
-                  id="username"
-                  name="username"
+                  id="companyName"
+                  name="companyName"
                   type="text"
-                  autoComplete="username"
+                  autoComplete="current-password"
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  value={formData.username}
+                  value={formData.companyName}
                   onChange={handleInputChange}
                 />
               </div>
             </div>
+            <div>
+              <label htmlFor="personName" className="block text-sm font-medium text-black">
+                Person Name
+              </label>
+              <div className="mt-1">
+                <input
+                  id="personName"
+                  name="personName"
+                  type="text"
+                  autoComplete="personName"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={formData.personName}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            
+            <div>
+  <label htmlFor="role" className="block text-sm font-medium text-black">
+    Company Email Address
+  </label>
+  <div className="mt-1">
+  <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+
+  </div>
+</div>
+<div>
+              <label htmlFor="location" className="block text-sm font-medium text-black">
+              Location
+              </label>
+              <div className="mt-1">
+                <input
+                  id="location"
+                  name="location"
+                  type="text"
+                  autoComplete="location"
+                  required
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+
+          
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-black">
                 Password
@@ -93,47 +150,6 @@ const Signup: React.FC = () => {
                 />
               </div>
             </div>
-            <div>
-  <label htmlFor="role" className="block text-sm font-medium text-black">
-    Role
-  </label>
-  <div className="mt-1">
-  <select
-  id="role"
-  name="role"
-  autoComplete="role"
-  required
-  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-  value={formData.role}
-  onChange={handleInputChange}
->
-  <option value="">Select Role</option>
-  <option value="company">Company</option>
-  <option value="trader">Trader</option>
-</select>
-
-  </div>
-</div>
-
-
-            <div>
-              <label htmlFor="companyName" className="block text-sm font-medium text-black">
-                Company Name
-              </label>
-              <div className="mt-1">
-                <input
-                  id="companyName"
-                  name="companyName"
-                  type="companyName"
-                  autoComplete="current-password"
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  value={formData.companyName}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-
             <div>
               <button
                 type="submit"

@@ -49,13 +49,21 @@ router.post("/invite", async (req, res) => {
       from: "carbon-relay@gmail.com",
       to: req.body.traderEmail,
       subject: "Invitation to join the Carbon-Relay Dashboard",
-      text: `Hi ${traderName},
-
-You have been invited to the Carbon-Relay Dashboard by ${adminEmail}. 
-
-Link to the page: [Your Dashboard Link Here]
-
-Password: ${randomPassword}`,
+      html: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #e0e0e0; max-width: 600px; margin: 20px auto; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+          <h2 style="color: #333; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">Welcome, ${traderName}!</h2>
+          <p style="font-size: 16px; line-height: 1.5; color: #555;">
+              You have been invited to the <strong>Carbon-Relay Dashboard</strong> by <span style="color: #007BFF;">${adminEmail}</span>.
+          </p>
+          <a href="https://c-dash.vercel.app/" style="display: inline-block; background-color: #007BFF; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin: 20px 0;">Access Dashboard</a>
+          <p style="font-size: 16px; line-height: 1.5; color: #555;">
+              Your temporary password is: <strong>${randomPassword}</strong>
+          </p>
+          <p style="font-size: 14px; color: #888; border-top: 1px solid #e0e0e0; padding-top: 20px;">
+              Please change your password once you log in for the first time.
+          </p>
+      </div>
+  `,
     };
 
     await transporter.sendMail(mailOptions, async (error, info) => {
@@ -119,9 +127,11 @@ router.post("/login", async (req, res) => {
       responseData.user.personName = user.personName;
       responseData.user.location = user.location;
       responseData.user.email = user.email;
+      responseData.user.role = "admin";
     } else if (userType === "Trader") {
       responseData.user.companyName = user.companyName;
       responseData.user.email = user.email;
+      responseData.user.role = "trader";
     }
 
     res.send(responseData);
