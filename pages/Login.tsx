@@ -135,7 +135,7 @@ const Login: React.FC<SignupProps> = ({ providers }) => {
               <div className="mt-6 flex justify-center gap-3">
               {Object.values(providers).map((provider) => (
                 <div key={provider.name}>
-                 <button className="w-[100px] inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50" onClick={() => signIn(provider.id, { callbackUrl: "/Home" })}>
+                 <button className="w-[100px] inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50" onClick={() => signIn(provider.id, { callbackUrl: "" })}>
                  {provider.id === "linkedin" ? (
                   <>
         <svg

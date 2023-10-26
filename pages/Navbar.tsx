@@ -13,7 +13,7 @@ interface NavigationItem {
 }
 
 const navigation = [
-  { name: 'Home', href: "/Home", current: true },
+  { name: 'Home', href: "/Dashboard", current: true },
   { name: 'Projects', href: '#', current: false },
   { name: 'Offers', href: '#', current: false },
   { name: 'Bids', href: '#', current: false },
@@ -50,7 +50,7 @@ function Navbar() {
             </div>
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             {typeof user?.user?.email != "undefined"  || session && session.user ? (
-            <Link href="/Home">
+            <Link href="/Dashboard">
               <div className="flex flex-shrink-0 items-center">
                 <img
                   className="h-8 w-auto rounded-3xl"

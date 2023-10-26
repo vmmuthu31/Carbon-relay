@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   const router = useRouter();
   useEffect(()=>{
     if (session){
-      router.push("/Home");
+      router.push("/Dashboard");
     }
   },[session])
   console.log(session)
