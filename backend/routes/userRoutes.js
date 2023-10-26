@@ -75,6 +75,7 @@ router.post("/invite", async (req, res) => {
         companyName: admin.companyName,
         email: req.body.traderEmail,
         password: hashedPassword,
+        admin: admin.id,
       });
       await trader.save();
 
@@ -127,11 +128,11 @@ router.post("/login", async (req, res) => {
       responseData.user.personName = user.personName;
       responseData.user.location = user.location;
       responseData.user.email = user.email;
-      responseData.user.role = "admin";
+      responseData.user.role = "Admin";
     } else if (userType === "Trader") {
       responseData.user.companyName = user.companyName;
       responseData.user.email = user.email;
-      responseData.user.role = "trader";
+      responseData.user.role = "Trader";
     }
 
     res.send(responseData);

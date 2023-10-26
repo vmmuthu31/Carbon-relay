@@ -34,6 +34,8 @@ const TraderView = ({ user }) => (
 const Home: React.FC = () => {
   const user = useSelector((state) => state?.user);
   const role = useSelector((state) => state?.user?.user?.role);
+  console.log("user",user);
+  console.log("role", role)
   const [email, setEmail] = useState("");
 
   const handleSubmit = async(e) => {
@@ -65,7 +67,7 @@ const Home: React.FC = () => {
     <>
       <Navbar/>
       <div className="text-center">
-        {role === "admin" ? (
+        {role === "Admin" ? (
           <AdminView user={user} email={email} setEmail={setEmail} handleSubmit={handleSubmit} />
         ) : (
           <TraderView user={user} />

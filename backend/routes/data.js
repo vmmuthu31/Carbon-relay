@@ -3,6 +3,8 @@ const router = express.Router();
 const fileUpload = require("express-fileupload");
 const XLSX = require("xlsx");
 const verifyToken = require("../middleware/verifyToken");
+const Admin = require("../models/Admin");
+const Trader = require("../models/Trader");
 
 const ProjectData = require("../models/projectDataModel");
 const Offer = require("../models/Offer");
@@ -114,24 +116,33 @@ router.get("/myoffers", verifyToken, async (req, res) => {
 
     if (user.userType === "Admin") {
       // Fetch offers created by the admin
-      offers = await Offer.find({ createdBy: user.userId });
-
-      // Fetch offers created by traders of the same company
-      const tradersOfCompany = await Trader.find({
-        companyName: user.companyName,
+      const adminOffers = await Offer.find({
+        createdBy: user.userId,
+        onModel: "Admin",
       });
-      const traderIds = tradersOfCompany.map((trader) => trader._id);
-      const traderOffers = await Offer.find({ createdBy: { $in: traderIds } });
 
-      offers = offers.concat(traderOffers);
+      // Fetch traders associated with the admin's company
+      const tradersOfCompany = await Trader.find({ admin: user.userId });
+      const traderIds = tradersOfCompany.map((trader) => trader._id);
+
+      // Fetch offers created by traders of the same company/admin
+      const traderOffers = await Offer.find({
+        createdBy: { $in: traderIds },
+        onModel: "Trader",
+      });
+
+      offers = adminOffers.concat(traderOffers);
     } else if (user.userType === "Trader") {
       // Fetch offers created by the trader
-      offers = await Offer.find({ createdBy: user.userId });
+      offers = await Offer.find({ createdBy: user.userId, onModel: "Trader" });
     }
 
     res.status(200).send(offers);
   } catch (error) {
-    res.status(500).send(error);
+    console.error("Error fetching offers:", error);
+    res
+      .status(500)
+      .send({ message: "Internal Server Error", error: error.message });
   }
 });
 
