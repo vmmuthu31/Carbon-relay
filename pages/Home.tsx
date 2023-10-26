@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Link from "next/link";
 
 const AdminView = ({ user, email, setEmail, handleSubmit }) => (
   <>
@@ -69,6 +70,7 @@ const Home: React.FC = () => {
         ) : (
           <TraderView user={user} />
         )}
+        <p>Navigate me to <Link href ="/Dashboard"> Dashboard</Link></p>
         <ToastContainer />
       </div>
     </>

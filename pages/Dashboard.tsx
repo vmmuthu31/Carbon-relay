@@ -12,6 +12,7 @@ import Modal from 'react-modal'; // Adjust the import path as needed
 import { useSession } from 'next-auth/react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
 
 const socket = new WebSocket('ws://localhost:5000');
 
@@ -53,7 +54,10 @@ export default function Dashboard() {
   const currentUserEmail = session?.user?.email;
   const recipientID = currentUserEmail === "mvairamuthu2003@gmail.com" ? "vairamuthu@jec.ac.in" : "mvairamuthu2003@gmail.com";
   
-
+  const user = useSelector((state) => state?.user);
+  const role = useSelector((state) => state?.user?.user?.role);
+  const token = useSelector((state) => state?.user?.token);
+  console.log("token",token)
   console.log(recipientID,"receipt")
   const [isTyping, setIsTyping] = useState(false);
   const userID = session?.user?.email; 
