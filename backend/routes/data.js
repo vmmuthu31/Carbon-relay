@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const fileUpload = require("express-fileupload");
 const XLSX = require("xlsx");
+const verifyToken = require("../middleware/verifyToken");
 
 const ProjectData = require("../models/projectDataModel");
 const Offer = require("../models/Offer");
@@ -85,9 +86,18 @@ router.get("/projectData/:projectId", async (req, res) => {
   }
 });
 
-router.post("/offers", async (req, res) => {
+router.post("/offers", verifyToken, async (req, res) => {
   try {
-    const offer = new Offer(req.body);
+    // Extract user from the token
+    const user = req.user;
+
+    // Create the offer with the associated user's ID
+    const offer = new Offer({
+      ...req.body,
+      createdBy: user.userId,
+      onModel: user.userType,
+    });
+
     await offer.save();
     res.status(201).send(offer);
   } catch (error) {
@@ -96,9 +106,10 @@ router.post("/offers", async (req, res) => {
 });
 
 // GET route to retrieve all offers
-router.get("/getoffers", async (req, res) => {
+router.get("/myoffers", verifyToken, async (req, res) => {
   try {
-    const offers = await Offer.find();
+    const user = req.user;
+    const offers = await Offer.find({ createdBy: user.userId });
     res.status(200).send(offers);
   } catch (error) {
     res.status(500).send(error);
