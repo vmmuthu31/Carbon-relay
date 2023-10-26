@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const Admin = require("../models/Admin");
 const Trader = require("../models/Trader");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 
 // Signup route for admin
 router.post("/signup", async (req, res) => {
@@ -80,24 +81,50 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if the email exists in either Admin or Trader collections
     let user = await Admin.findOne({ email });
+    let userType = "Admin";
+
     if (!user) {
       user = await Trader.findOne({ email });
+      userType = "Trader";
     }
 
     if (!user) {
       return res.status(404).send({ error: "User not found" });
     }
 
-    // Compare the provided password with the hashed password in the database
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).send({ error: "Invalid password" });
     }
 
-    // If everything is okay, send a success message (or a token if you're implementing JWT authentication)
-    res.send({ message: "Logged in successfully" });
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, userType: userType },
+      "YOUR_SECRET_KEY", // This should be stored in an environment variable for security
+      { expiresIn: "1h" }
+    );
+
+    let responseData = {
+      message: "Logged in successfully",
+      token: token,
+      user: {
+        id: user._id,
+        email: user.email,
+      },
+    };
+
+    if (userType === "Admin") {
+      responseData.user.companyName = user.companyName;
+      responseData.user.personName = user.personName;
+      responseData.user.location = user.location;
+      responseData.user.email = user.email;
+    } else if (userType === "Trader") {
+      responseData.user.companyName = user.companyName;
+      responseData.user.email = user.email;
+    }
+
+    res.send(responseData);
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
