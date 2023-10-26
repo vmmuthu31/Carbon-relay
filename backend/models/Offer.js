@@ -18,6 +18,16 @@ const offerSchema = new mongoose.Schema({
   additionalCertificates1: String,
   additionalCertificates2: String,
   additionalCertificates3: String,
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    refPath: "onModel",
+    required: true,
+  },
+  onModel: {
+    type: String,
+    required: true,
+    enum: ["Admin", "Trader"],
+  },
 });
 
 module.exports = mongoose.model("Offer", offerSchema);
