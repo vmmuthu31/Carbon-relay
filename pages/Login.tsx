@@ -48,7 +48,7 @@ const Login: React.FC<SignupProps> = ({ providers }) => {
       toast.success("Login Successfull!")
      
       dispatch(setUser({ token, user }));
-    router.push("/Home")
+    router.push("/Dashboard")
     } else {
       console.error("Sign-in failed");
       toast.error("Invalid Email and password!")
