@@ -1,45 +1,78 @@
 const express = require("express");
+const nodemailer = require("nodemailer");
+const bcrypt = require("bcrypt");
+const Admin = require("../models/User");
+const Trader = require("../models/User");
 const router = express.Router();
-const User = require("../models/User");
-const bcrypt = require("bcryptjs");
 
+// Signup route for admin
 router.post("/signup", async (req, res) => {
   try {
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-    const user = new User({
-      username: req.body.username,
+    const admin = new Admin({
+      ...req.body,
       password: hashedPassword,
-      role: req.body.role,
-      companyName: req.body.companyName,
     });
-
-    await user.save();
-    res.status(201).send({ message: "User registered successfully", user });
+    await admin.save();
+    res.status(201).send({ message: "Admin registered successfully" });
   } catch (error) {
-    res.status(400).send({ error: "Error registering user" });
+    res.status(400).send({ error: error.message });
   }
 });
 
-router.post("/login", async (req, res) => {
+// Invite trader by admin
+router.post("/invite", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
-    if (!user) {
-      return res.status(400).send({ error: "User not found" });
+    const admin = await Admin.findOne({ email: req.body.adminEmail });
+    if (!admin) {
+      return res.status(404).send({ error: "Admin not found" });
     }
 
-    const isPasswordValid = await bcrypt.compare(
-      req.body.password,
-      user.password
-    );
-    if (!isPasswordValid) {
-      return res.status(400).send({ error: "Invalid password" });
-    }
+    // Generate a random password for the trader
+    const randomPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = await bcrypt.hash(randomPassword, 10);
 
-    res.status(200).send({ message: "Logged in successfully", user });
+    // Extract trader's name from the email
+    const traderName = req.body.traderEmail.split("@")[0];
+    const adminEmail = req.body.adminEmail;
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "carbon-relay@gmail.com",
+        pass: req.body.traderEmail,
+      },
+    });
+    const mailOptions = {
+      from: "carbon-relay@gmail.com",
+      to: req.body.traderEmail,
+      subject: "Invitation to join the Carbon-Relay Dashboard",
+      text: `Hi ${traderName},
+
+You have been invited to the Carbon-Relay Dashboard by ${adminEmail}. 
+
+Link to the page: [Your Dashboard Link Here]
+
+Password: ${randomPassword}`,
+    };
+
+    transporter.sendMail(mailOptions, async (error, info) => {
+      if (error) {
+        return res.status(500).send({ error: error.message });
+      }
+
+      const trader = new Trader({
+        companyName: admin.companyName,
+        email: req.body.traderEmail,
+        password: hashedPassword,
+      });
+      await trader.save();
+
+      res.send({ message: "Invitation sent successfully" });
+    });
   } catch (error) {
-    res.status(500).send({ error: "Error logging in" });
+    res.status(400).send({ error: error.message });
   }
 });
 
