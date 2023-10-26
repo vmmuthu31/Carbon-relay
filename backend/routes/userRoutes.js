@@ -1,8 +1,8 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
-const Admin = require("../models/User");
-const Trader = require("../models/User");
+const Admin = require("../models/Admin");
+const Trader = require("../models/Trader");
 const router = express.Router();
 
 // Signup route for admin
@@ -40,8 +40,8 @@ router.post("/invite", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "carbon-relay@gmail.com",
-        pass: req.body.traderEmail,
+        user: "zkconnectt@gmail.com",
+        pass: "yslzyadcmvewlmmn",
       },
     });
     const mailOptions = {
@@ -57,7 +57,7 @@ Link to the page: [Your Dashboard Link Here]
 Password: ${randomPassword}`,
     };
 
-    transporter.sendMail(mailOptions, async (error, info) => {
+    await transporter.sendMail(mailOptions, async (error, info) => {
       if (error) {
         return res.status(500).send({ error: error.message });
       }
@@ -73,6 +73,33 @@ Password: ${randomPassword}`,
     });
   } catch (error) {
     res.status(400).send({ error: error.message });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if the email exists in either Admin or Trader collections
+    let user = await Admin.findOne({ email });
+    if (!user) {
+      user = await Trader.findOne({ email });
+    }
+
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    // Compare the provided password with the hashed password in the database
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).send({ error: "Invalid password" });
+    }
+
+    // If everything is okay, send a success message (or a token if you're implementing JWT authentication)
+    res.send({ message: "Logged in successfully" });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
   }
 });
 

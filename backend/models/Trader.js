@@ -13,37 +13,6 @@ const emailDomainValidator = async function (email) {
   return adminCount + traderCount === 0;
 };
 
-// models/Admin.js
-const adminSchema = new mongoose.Schema({
-  companyName: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  personName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: [emailDomainValidator, "Email domain already registered"],
-  },
-  location: {
-    type: String,
-    required: true,
-  },
-  password: {
-    // You should hash this before saving
-    type: String,
-    required: true,
-  },
-});
-
-module.exports = mongoose.model("Admin", adminSchema);
-
-// models/Trader.js
 const traderSchema = new mongoose.Schema({
   companyName: {
     type: String,
