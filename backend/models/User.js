@@ -1,27 +1,65 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  username: {
+const getDomainFromEmail = (email) => email.split("@")[1];
+
+const emailDomainValidator = async function (email) {
+  const domain = getDomainFromEmail(email);
+  const adminCount = await mongoose
+    .model("Admin")
+    .countDocuments({ email: new RegExp("@" + domain + "$", "i") });
+  const traderCount = await mongoose
+    .model("Trader")
+    .countDocuments({ email: new RegExp("@" + domain + "$", "i") });
+  return adminCount + traderCount === 0;
+};
+
+// models/Admin.js
+const adminSchema = new mongoose.Schema({
+  companyName: {
     type: String,
     required: true,
     unique: true,
   },
+  personName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: [emailDomainValidator, "Email domain already registered"],
+  },
+  location: {
+    type: String,
+    required: true,
+  },
   password: {
+    // You should hash this before saving
     type: String,
     required: true,
-  },
-  role: {
-    type: String,
-    enum: ["trader", "company"],
-    required: true,
-  },
-  companyName: {
-    type: String,
-    required: function () {
-      return this.role === "company";
-    },
   },
 });
 
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+module.exports = mongoose.model("Admin", adminSchema);
+
+// models/Trader.js
+const traderSchema = new mongoose.Schema({
+  companyName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: [emailDomainValidator, "Email domain already registered"],
+  },
+  password: {
+    // This will be set by the admin
+    type: String,
+    required: true,
+  },
+});
+
+module.exports = mongoose.model("Trader", traderSchema);
