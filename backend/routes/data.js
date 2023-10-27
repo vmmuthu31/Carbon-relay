@@ -168,14 +168,11 @@ router.post("/create-bid/:offerId", async (req, res) => {
   try {
     const offerId = req.params.offerId;
     const { traderId, traderCompanyName, bidAmount } = req.body;
-
-    // Perform the necessary logic to create a bid, including creating a Bid document in the database.
     const bid = new Bid({
       offerId,
       traderId,
       traderCompanyName, // Include the trader's company name
       bidAmount,
-      // Set other bid-related fields here
     });
 
     await bid.save(); // Save the bid to the database
