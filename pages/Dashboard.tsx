@@ -217,26 +217,11 @@ const [offerPrice, setOfferPrice] = useState("");
 const [corisa, setCorisa] = useState("");
 const [isSubmitClicked, setIsSubmitClicked] = useState(false);
 const [shareableLink, setShareableLink] = useState('');
-const generateShareableLink = async (offer) => {
-  try {
-    // Customize the API endpoint based on your backend routes
-    const apiEndpoint = `/api/generate-share-link/${offer.projectId}`;
-    
-    const response = await axios.get(apiEndpoint);
-    if (response.status === 200) {
-      const link = response.data.link; // Make sure your backend returns the shareable link.
-      return link;
-    } else {
-      // Handle the error or return a default link
-      return 'https://example.com/default-link';
-    }
-  } catch (error) {
-    // Handle any errors that occur during the API call
-    console.error('Error generating shareable link:', error);
-    return 'https://example.com/default-link';
-  }
+const generateShareableLink = (offer) => {
+  // Customize the link generation based on your data structure
+  const link = `http://localhost:3000/Reedem?projectId=${offer.projectId}`; // Include all the necessary data
+  return link;
 };
-
 const handleShareButtonClick = (offer) => {
   const link = generateShareableLink(offer);
   setShareableLink(link);
@@ -244,6 +229,19 @@ const handleShareButtonClick = (offer) => {
   // Show the popup or modal here, e.g., by setting a state variable to display it
   // You can use a library like React Modal for this.
 };
+const copyToClipboard = () => {
+  navigator.clipboard.writeText(shareableLink)
+    .then(() => {
+      console.log("Text copied to clipboard: ", shareableLink);
+      toast.success("Copied to Clipboard")
+      // You can add any further actions or notifications here.
+    })
+    .catch((error) => {
+      console.error("Error copying text to clipboard: ", error);
+      // Handle any errors here.
+    });
+};
+
 
   const handleSubmit = async () => {
     const data = {
@@ -359,9 +357,7 @@ const handleShareButtonClick = (offer) => {
     // references re now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
-function copytoClipboard(){
-  toast.success("Copied to the Clipboard")
-}
+
   const [tooltipVisibility, setTooltipVisibility] = useState({});
 
   const toggleTooltip = (projectId) => {
@@ -1117,8 +1113,8 @@ function copytoClipboard(){
    onAfterOpen={afterOpenModal5}
    onRequestClose={closeModal5}
    style={customStyles}
-   className='py-2 rounded-lg  my-10  w-[420px] mx-[800px]  text-black '>
- <div className='flex justify-between bg-white mx-5  mt-[580px]'>
+   className='py-2 rounded-lg  my-10   mt-[300px]   mx-[800px]  text-black '>
+ <div className='flex justify-between mx-[500px] bg-white w-[420px]'>
         <h2 ref={(_subtitle) => (subtitle = _subtitle)}  className='mx-5  '><span className=' my-2 text-center flex justify-center font-semibold text-black'>Share the Link</span></h2>
        
   <button
@@ -1140,12 +1136,12 @@ function copytoClipboard(){
         </div>
         <hr className='text-xl font-bold text-black'/>      
         <div >
-        <div className='mx-10'>
+        <div className='mx-[500px]'>
   <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'></h2>
     <p className='my-2'>Share the Referal Link to your Buyers:</p>
-    <div className=" flex space-x-2  justify-between">
+    <div className=" flex    space-x-12">
     <input type="text" className='border w-72  border-gray-600 rounded-md px-2' value={shareableLink} readOnly />
-    <button onClick={copytoClipboard}><HiOutlineClipboardDocument className=' h-8 w-10 text-6xl  bg-gray-200 ' /></button>
+    <button onClick={copyToClipboard}><HiOutlineClipboardDocument className=' h-8 w-10 text-6xl  bg-gray-200 ' /></button>
     </div>
     <ToastContainer />
   </div>
