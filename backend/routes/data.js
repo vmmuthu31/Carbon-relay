@@ -147,11 +147,21 @@ router.get("/myoffers", verifyToken, async (req, res) => {
   }
 });
 
-router.post("/redeem-offer/:offerId", async (req, res) => {
+// Redeem an offer
+router.post("/redeem-offer/:offerId", verifyToken, async (req, res) => {
   try {
+    const user = req.user;
     const offerId = req.params.offerId;
+
+    // Fetch the offer to ensure it belongs to the user
+    const offer = await Offer.findOne({ _id: offerId, createdBy: user.userId });
+
+    if (!offer) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
     // Perform the necessary logic to redeem the offer here.
-    // You can update the offer in the database to mark it as redeemed.
+    // You can update the offer in the database to mark it as redeemed with a unique redemption ID.
 
     // Once the offer is redeemed, you can return a success response or any relevant data.
     return res.status(200).json({ message: "Offer redeemed successfully" });
@@ -164,15 +174,28 @@ router.post("/redeem-offer/:offerId", async (req, res) => {
 });
 
 // Create a bid for an offer
-router.post("/create-bid/:offerId", async (req, res) => {
+router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
   try {
+    const user = req.user;
     const offerId = req.params.offerId;
-    const { traderId, traderCompanyName, bidAmount } = req.body;
+    const { traderId, traderCompanyName, bidAmount, status, operation } =
+      req.body;
+
+    // Fetch the offer to ensure it exists and belongs to the user
+    const offer = await Offer.findOne({ _id: offerId, createdBy: user.userId });
+
+    if (!offer) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    // Perform the necessary logic to create a bid, including creating a Bid document in the database.
     const bid = new Bid({
       offerId,
       traderId,
       traderCompanyName, // Include the trader's company name
       bidAmount,
+      status: status || "Active", // Default to "Active" if status is not provided
+      operation: operation || "Evaluating", // Default to "Evaluating" if operation is not provided
     });
 
     await bid.save(); // Save the bid to the database
@@ -187,12 +210,19 @@ router.post("/create-bid/:offerId", async (req, res) => {
   }
 });
 
-// Fetch bids for an offer
-router.get("/get-bids/:offerId", async (req, res) => {
+router.get("/get-bids/:offerId", verifyToken, async (req, res) => {
   try {
+    const user = req.user;
     const offerId = req.params.offerId;
 
-    // Fetch all bids associated with the offer from the database.
+    // Fetch the offer to ensure it belongs to the user
+    const offer = await Offer.findOne({ _id: offerId, createdBy: user.userId });
+
+    if (!offer) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    // Fetch all bids associated with the offer from the database, including status and operation.
     const bids = await Bid.find({ offerId });
 
     // Return the list of bids in the response.
