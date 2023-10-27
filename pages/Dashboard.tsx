@@ -217,11 +217,26 @@ const [offerPrice, setOfferPrice] = useState("");
 const [corisa, setCorisa] = useState("");
 const [isSubmitClicked, setIsSubmitClicked] = useState(false);
 const [shareableLink, setShareableLink] = useState('');
-const generateShareableLink = (offer) => {
-  // Customize the link generation based on your data structure
-  const link = `https://example.com/share?projectId=${offer.projectId}&projectName=${offer.projectName}&...`; // Include all the necessary data
-  return link;
+const generateShareableLink = async (offer) => {
+  try {
+    // Customize the API endpoint based on your backend routes
+    const apiEndpoint = `/api/generate-share-link/${offer.projectId}`;
+    
+    const response = await axios.get(apiEndpoint);
+    if (response.status === 200) {
+      const link = response.data.link; // Make sure your backend returns the shareable link.
+      return link;
+    } else {
+      // Handle the error or return a default link
+      return 'https://example.com/default-link';
+    }
+  } catch (error) {
+    // Handle any errors that occur during the API call
+    console.error('Error generating shareable link:', error);
+    return 'https://example.com/default-link';
+  }
 };
+
 const handleShareButtonClick = (offer) => {
   const link = generateShareableLink(offer);
   setShareableLink(link);

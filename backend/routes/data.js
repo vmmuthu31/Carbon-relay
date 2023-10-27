@@ -147,7 +147,7 @@ router.get("/myoffers", verifyToken, async (req, res) => {
   }
 });
 
-// Create a bid for an offer
+// POST route to create a bid for an offer
 router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
   try {
     const user = req.user;
@@ -155,17 +155,25 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
     const { traderId, traderCompanyName, bidAmount, status, operation } =
       req.body;
 
-    // Fetch the offer to ensure it exists and belongs to the user
-    const offer = await Offer.findOne({ _id: offerId, createdBy: user.userId });
+    // Fetch the offer to ensure it exists
+    const offer = await Offer.findOne({ _id: offerId });
 
     if (!offer) {
-      return res.status(403).json({ error: "Unauthorized" });
+      return res.status(404).json({ error: "Offer not found" });
     }
 
-    // Perform the necessary logic to create a bid, including creating a Bid document in the database.
+    // Check if the user making the request is the one who created the offer
+    if (offer.createdBy.toString() === user.userId) {
+      // If the user created the offer, they are not allowed to bid on it
+      return res
+        .status(403)
+        .json({ error: "You cannot bid on your own offer" });
+    }
+
+    // If the check passes, proceed with creating a bid
     const bid = new Bid({
       offerId,
-      traderId,
+      traderId, // This should be the ID of the user making the request (i.e., the bidder)
       traderCompanyName, // Include the trader's company name
       bidAmount,
       status: status || "Active", // Default to "Active" if status is not provided
