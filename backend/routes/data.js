@@ -147,32 +147,6 @@ router.get("/myoffers", verifyToken, async (req, res) => {
   }
 });
 
-// Redeem an offer
-router.post("/redeem-offer/:offerId", verifyToken, async (req, res) => {
-  try {
-    const user = req.user;
-    const offerId = req.params.offerId;
-
-    // Fetch the offer to ensure it belongs to the user
-    const offer = await Offer.findOne({ _id: offerId, createdBy: user.userId });
-
-    if (!offer) {
-      return res.status(403).json({ error: "Unauthorized" });
-    }
-
-    // Perform the necessary logic to redeem the offer here.
-    // You can update the offer in the database to mark it as redeemed with a unique redemption ID.
-
-    // Once the offer is redeemed, you can return a success response or any relevant data.
-    return res.status(200).json({ message: "Offer redeemed successfully" });
-  } catch (error) {
-    console.error("Error redeeming offer:", error);
-    return res
-      .status(500)
-      .json({ error: "An error occurred while redeeming the offer" });
-  }
-});
-
 // Create a bid for an offer
 router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
   try {
