@@ -1102,8 +1102,8 @@ function copytoClipboard(){
    onAfterOpen={afterOpenModal5}
    onRequestClose={closeModal5}
    style={customStyles}
-   className='py-2 rounded-lg    w-[420px] mx-[800px]  text-black '>
- <div className='flex justify-between bg-white mx-5  mt-[600px]'>
+   className='py-2 rounded-lg  my-10  w-[420px] mx-[800px]  text-black '>
+ <div className='flex justify-between bg-white mx-5  mt-[580px]'>
         <h2 ref={(_subtitle) => (subtitle = _subtitle)}  className='mx-5  '><span className=' my-2 text-center flex justify-center font-semibold text-black'>Share the Link</span></h2>
        
   <button
@@ -1128,9 +1128,9 @@ function copytoClipboard(){
         <div className='mx-10'>
   <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'></h2>
     <p className='my-2'>Share the Referal Link to your Buyers:</p>
-    <div className=" flex  justify-between">
+    <div className=" flex space-x-2  justify-between">
     <input type="text" className='border w-72  border-gray-600 rounded-md px-2' value={shareableLink} readOnly />
-    <button onClick={copytoClipboard}><HiOutlineClipboardDocument className='h-5 bg-gray-200 w-5' /></button>
+    <button onClick={copytoClipboard}><HiOutlineClipboardDocument className=' h-8 w-10 text-6xl  bg-gray-200 ' /></button>
     </div>
     <ToastContainer />
   </div>
