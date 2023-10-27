@@ -156,7 +156,7 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
       req.body;
 
     // Fetch the offer to ensure it exists
-    const offer = await Offer.findOne({ _id: offerId });
+    const offer = await Offer.findOne({ projectId: offerId });
 
     if (!offer) {
       return res.status(404).json({ error: "Offer not found" });
@@ -191,24 +191,38 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
       .json({ error: "An error occurred while creating the bid" });
   }
 });
-
 router.get("/get-bids/:offerId", verifyToken, async (req, res) => {
   try {
     const user = req.user;
-    const offerId = req.params.offerId;
+    const offerId = req.params.offerId; // This is the projectId of the offer
 
     // Fetch the offer to ensure it belongs to the user
-    const offer = await Offer.findOne({ _id: offerId, createdBy: user.userId });
+    const offer = await Offer.findOne({
+      projectId: offerId,
+      createdBy: user.userId,
+    });
 
     if (!offer) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
     // Fetch all bids associated with the offer from the database, including status and operation.
-    const bids = await Bid.find({ offerId });
+    const bids = await Bid.find({ offerId: offer.projectId });
 
-    // Return the list of bids in the response.
-    return res.status(200).json(bids);
+    // Populate trader's companyName and offer's quantity for each bid
+    const populatedBids = await Promise.all(
+      bids.map(async (bid) => {
+        const trader = await Trader.findById(bid.traderId);
+        return {
+          ...bid._doc,
+          traderCompanyName: trader.companyName,
+          offerQuantity: offer.quantity,
+        };
+      })
+    );
+
+    // Return the list of populated bids in the response.
+    return res.status(200).json(populatedBids);
   } catch (error) {
     console.error("Error fetching bids:", error);
     return res

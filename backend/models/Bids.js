@@ -5,7 +5,7 @@ const bidStatusEnum = ["Active", "Withdraw", "Rejected"];
 const bidOperationEnum = ["Evaluating", "OnHold", "Active", "Reject"];
 
 const bidSchema = new mongoose.Schema({
-  offerId: { type: mongoose.Schema.Types.ObjectId, ref: "Offer" }, // Reference to the Offer
+  offerId: { type: String, ref: "Offer" },
   traderId: String,
   bidAmount: Number,
   traderCompany: String,

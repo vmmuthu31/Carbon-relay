@@ -58,7 +58,9 @@ export default function Dashboard() {
   const role = useSelector((state) => state?.user?.user?.role);
   const token = useSelector((state) => state?.user?.token);
   const [offers, setOffers] = useState([]);
-
+  const [bids, setBids] = useState([]);
+  console.log("bids",bids)
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
   useEffect(() => {
     const fetchOffers = async () => {
       try {
@@ -79,6 +81,31 @@ export default function Dashboard() {
   
     fetchOffers();
   }, []);
+  
+useEffect(() => {
+  const fetchOffers = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/auth/get-bids/${selectedProjectId}`, {
+        headers: {
+          'Authorization': token
+        }
+      });
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setBids(data);
+    } else {
+        console.error("Expected an array but received:", data);
+    }
+      const BidCount = data && Array.isArray(data) ? data.length : 0;
+      setOfferCount(BidCount);
+      console.log("Number of Bids:", BidCount);
+    } catch (error) {
+      console.error("Error fetching offers:", error);
+    }
+  };
+
+  fetchOffers();
+}, [selectedProjectId]);
 
   console.log("count", offercount)
   console.log("token",token)
@@ -185,12 +212,17 @@ const handleTyping = (e) => {
   const [modalIsOpen5, setModalIsOpen5] = useState(false);
 console.log("projectid",projectId)
 console.log("projectdata",projectData)
+
+
   const openModal = () => {
       setModalIsOpen(true);
   }
-  const openModal1 = () => {
+  const openModal1 = (projectId) => {
+    setSelectedProjectId(projectId);
     setModalIsOpen1(true);
-}
+    // ... any other logic to open the modal
+  };
+  
 const openModal2 = () => {
   setModalIsOpen2(true);
 }
@@ -1156,133 +1188,79 @@ const copyToClipboard = () => {
                 </table>
                 
                 </div>
-                <Modal  isOpen={modalIsOpen1}
-        onAfterOpen={afterOpenModal1}
-        onRequestClose={closeModal1}
-        className='py-1 rounded-l-xl rounded-lg min-h-full  flex justify-end   text-black '>
-          <div className='bg-white min-h-screen'>
-        <div className='flex  gap-40 mr-5 ml-2 justify-between'>
-   <div className='flex'> <BsChevronLeft className='mt-4 ' />    <h2 ref={(_subtitle) => (subtitle = _subtitle)}  className='ml-2 '><span className=' my-2 text-center flex text-xl justify-center text-black'>Incoming Bids</span></h2>
-   </div>
-  <button
-   onClick={closeModal1} className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-    <svg
-      className="h-5 w-5"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path
-        fillRule="evenodd"
-        d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414L11.414 10l2.293 2.293a1 1 0 11-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 010-1.414z"
-        clipRule="evenodd"
-      />
-    </svg>
-  </button>
-  
+                <Modal isOpen={modalIsOpen1}
+       onAfterOpen={afterOpenModal1}
+       onRequestClose={closeModal1}
+       className='py-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black'>
+    <div className='bg-white min-h-screen'>
+        <div className='flex gap-40 mr-5 ml-2 justify-between'>
+            <div className='flex'>
+                <BsChevronLeft className='mt-4'/>
+                <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'>
+                    <span className='my-2 text-center flex text-xl justify-center text-black'>Incoming Bids</span>
+                </h2>
+            </div>
+            <button onClick={closeModal1} className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414L11.414 10l2.293 2.293a1 1 0 11-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 010-1.414z" clipRule="evenodd"/>
+                </svg>
+            </button>
         </div>
-        <hr className='text-xl font-bold text-black'/>      
-        
-        <div className='mx-5  rounded-tr-xl rounded-br-xl rounded-bl-xl font-semibold mt-8 cs1 text-white py-4'>
-          <div className='flex gap-2'>
-            <div>
-          <div className='flex justify-center mx-4 items-center align-middle mb-4  gap-10'>
+        <hr className='text-xl font-bold text-black'/>
+        {Array.isArray(bids) && bids?.map((bid, index) => (
+  <div key={index}>
+    <div className='mx-5  font-semibold mt-8  text-white py-4'>
+      <div className='flex rounded-tr-xl py-4  gap-2 cs1'>
+        <div>
+          <div className='flex justify-center mx-4 items-center align-middle mb-4 gap-10'>
             <p>Offer Id</p>
             <p>Quantity</p>
             <p>Bid</p>
           </div>
-          <div className='flex justify-center items-center text-center align-middle gap-10'>
-            <p className='underline '>#129HjH9ukL</p>
-            <p>45</p>
+          <div className='flex  ml-5 gap-10'>
+            <p className='underline'>#{selectedProjectId}</p>
+            <p>{bid.offerQuantity}</p> {/* Use bid.offerQuantity here */}
             <p>$26</p>
           </div>
+        </div>
+        <div>
+          <p className='text-green-300 text-md flex'><span className='text-4xl mt-2'>•</span><span className='mt-5'> Active</span></p>
+        </div>
+      </div>
+      <div className='mt-4 border rounded-xl border-black mx-4 py-2'>
+        <div className='flex gap-2 text-black justify-between mx-3 '>
+          <div className='bg-gray-100 px-3 py-1 rounded-lg'>
+            <p className='font-semibold'>Bid</p>
+            <p className=' ml-4 font-semibold text-2xl'>{bid.bidAmount}</p> {/* Use bid.bidAmount here */}
           </div>
-          <div>
-
-          <p className='text-green-300 text-md  flex '><span className='text-4xl mt-2'>•</span><span className='mt-5'> Active</span></p>
+          <div className='bg-gray-100 px-3 pr-10 py-1 rounded-lg'>
+            <p className='font-semibold'>From</p>
+            <p className='ml-3 text-sm'>{bid.traderCompanyName}</p> {/* Use bid.traderCompanyName here */}
           </div>
+          <div className='bg-gray-100 px-3 py-1 rounded-lg'>
+            <p className='text-center font-semibold'>Chat</p>
+            <button onClick={() => { openModal2(); closeModal1(); }}>
+              <p className='text-[12px]'>Click To Chat</p>
+            </button>
           </div>
         </div>
-        <div className='mt-4 border rounded-xl border-black mx-4 py-2'>
-          <div className='flex gap-2 justify-between mx-3 '>
-            <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-              <p className='font-semibold'>Bid</p>
-              <p className=' ml-4 font-semibold text-2xl'>$27</p>
-            </div>
-            <div className='bg-gray-100 px-3 pr-10 py-1 rounded-lg'>
-              <p className='font-semibold'>From</p>
-              <p className='ml-3 text-sm'>Company A</p>
-            </div>
-            <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-              <p className='text-center font-semibold'>Chat</p>
-              <button onClick={() => { openModal2(); closeModal1(); }}><p className='text-[12px]'>Click To Chat </p></button>
-            </div>
-            </div>
-            <div className='flex justify-center  gap-20 '>
-              <select className='border flex outline-none space-x-5 mt-2  text-gray-500 py-1 rounded-md font-semibold pr-20'>
-                <option>Evaluating</option>
-                <option>Accept</option>
-                <option>Reject</option>
-                <option>On hold</option>
-              </select>
-              <p className='text-green-400 text-md  flex '><span className='text-4xl'>•</span><span className='mt-3'> Active</span></p>
-            </div>
-          </div>
-          <div className='mt-2 border rounded-xl border-black mx-4 py-2'>
-          <div className='flex  justify-between mx-3'>
-            <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-              <p className='font-semibold'>Bid</p>
-              <p className=' ml-4 font-semibold text-2xl'>$27</p>
-            </div>
-            <div className='bg-gray-100 px-3 pr-10 py-1 rounded-lg'>
-              <p className='font-semibold'>From</p>
-              <p className='ml-3 text-sm'>Company A</p>
-            </div>
-            <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-              <p className='text-center font-semibold'>Chat</p>
-              <button onClick={() => { openModal2(); closeModal1(); }}> <p className='text-[12px]'>Click To Chat </p></button>
-            </div>
-            </div>
-            <div className='flex justify-center  gap-16 '>
-              <select className='border outline-none flex space-x-5 mt-2  text-gray-500 py-1 rounded-md font-semibold pr-20'>
-              <option>Evaluating</option>
-                <option>Accept</option>
-                <option>Reject</option>
-                <option>On hold</option>
-              </select>
-              <p className='text-orange-400 text-md  flex '><span className='text-4xl'>•</span><span className='mt-3'> On Hold</span></p>
-            </div>
-          </div>
-          <div className='mt-2 border rounded-xl border-black mx-4 py-2'>
-          <div className='flex  justify-between mx-3'>
-            <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-              <p className='font-semibold'>Bid</p>
-              <p className=' ml-4 font-semibold text-2xl'>$27</p>
-            </div>
-            <div className='bg-gray-100 px-3 pr-10 py-1 rounded-lg'>
-              <p className='font-semibold'>From</p>
-              <p className='ml-3 text-sm'>Company A</p>
-            </div>
-            <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-              <p className='text-center font-semibold'>Chat</p>
-              <button onClick={() => { openModal2(); closeModal1(); }}>
-  <p className="text-[12px]">Click To Chat</p>
-</button>
-
-            </div>
-            </div>
-            <div className='flex justify-center  gap-16 '>
-              <select className='border outline-none flex space-x-5 mt-2  text-gray-500 py-1 rounded-md font-semibold pr-20'>
-              <option>Evaluating</option>
-                <option>Accept</option>
-                <option>Reject</option>
-                <option>On hold</option>
-              </select>
-              <p className='text-red-400 text-md  flex '><span className='text-4xl'>•</span><span className='mt-3'> Withdraw</span></p>
-            </div>
-          </div>
+        <div className='flex mx-4 justify-center gap-20'>
+          <select className='border flex outline-none space-x-5 mt-2 text-gray-500 py-1 rounded-md font-semibold pr-20'>
+            <option>Evaluating</option>
+            <option>Accept</option>
+            <option>Reject</option>
+            <option>On hold</option>
+          </select>
+          <p className='text-green-400 text-md flex'><span className='text-4xl'>•</span><span className='mt-3'>{bid.status}</span></p>
         </div>
-      </Modal>
+      </div>
+    </div>
+  </div>
+))}
+
+    </div>
+</Modal>
+
       
       <Modal isOpen={modalIsOpen2} onAfterOpen={afterOpenModal2} onRequestClose={closeModal2} className='pb-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black '>
   <div className='bg-[#e7e4e4] w-[400px] min-h-screen'>
