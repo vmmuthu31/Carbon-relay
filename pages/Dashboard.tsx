@@ -1231,11 +1231,11 @@ const copyToClipboard = () => {
         <div className='flex gap-2 text-black justify-between mx-3 '>
           <div className='bg-gray-100 px-3 py-1 rounded-lg'>
             <p className='font-semibold'>Bid</p>
-            <p className=' ml-4 font-semibold text-2xl'>{bid.bidAmount}</p> {/* Use bid.bidAmount here */}
+            <p className=' ml-4 font-semibold text-2xl'>${bid.bidAmount}</p> {/* Use bid.bidAmount here */}
           </div>
           <div className='bg-gray-100 px-3 pr-10 py-1 rounded-lg'>
             <p className='font-semibold'>From</p>
-            <p className='ml-3 text-sm'>{bid.traderCompanyName}</p> {/* Use bid.traderCompanyName here */}
+            <p className='ml-3 font-semibold text-sm'>{bid.traderCompanyName}</p> {/* Use bid.traderCompanyName here */}
           </div>
           <div className='bg-gray-100 px-3 py-1 rounded-lg'>
             <p className='text-center font-semibold'>Chat</p>
