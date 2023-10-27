@@ -8,6 +8,7 @@ const Trader = require("../models/Trader");
 
 const ProjectData = require("../models/projectDataModel");
 const Offer = require("../models/Offer");
+const { Bid } = require("../models/Bids");
 
 router.use(fileUpload());
 router.post("/uploadProjectData", async (req, res) => {
@@ -143,6 +144,67 @@ router.get("/myoffers", verifyToken, async (req, res) => {
     res
       .status(500)
       .send({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+router.post("/redeem-offer/:offerId", async (req, res) => {
+  try {
+    const offerId = req.params.offerId;
+    // Perform the necessary logic to redeem the offer here.
+    // You can update the offer in the database to mark it as redeemed.
+
+    // Once the offer is redeemed, you can return a success response or any relevant data.
+    return res.status(200).json({ message: "Offer redeemed successfully" });
+  } catch (error) {
+    console.error("Error redeeming offer:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while redeeming the offer" });
+  }
+});
+
+// Create a bid for an offer
+router.post("/create-bid/:offerId", async (req, res) => {
+  try {
+    const offerId = req.params.offerId;
+    const { traderId, traderCompanyName, bidAmount } = req.body;
+
+    // Perform the necessary logic to create a bid, including creating a Bid document in the database.
+    const bid = new Bid({
+      offerId,
+      traderId,
+      traderCompanyName, // Include the trader's company name
+      bidAmount,
+      // Set other bid-related fields here
+    });
+
+    await bid.save(); // Save the bid to the database
+
+    // Once the bid is created, you can return a success response or any relevant data.
+    return res.status(201).json({ message: "Bid created successfully" });
+  } catch (error) {
+    console.error("Error creating bid:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while creating the bid" });
+  }
+});
+
+// Fetch bids for an offer
+router.get("/get-bids/:offerId", async (req, res) => {
+  try {
+    const offerId = req.params.offerId;
+
+    // Fetch all bids associated with the offer from the database.
+    const bids = await Bid.find({ offerId });
+
+    // Return the list of bids in the response.
+    return res.status(200).json(bids);
+  } catch (error) {
+    console.error("Error fetching bids:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred while fetching bids" });
   }
 });
 
