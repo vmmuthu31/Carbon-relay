@@ -1213,14 +1213,14 @@ const copyToClipboard = () => {
       <div className='flex rounded-tr-xl py-4  gap-2 cs1'>
         <div>
           <div className='flex justify-center mx-4 items-center align-middle mb-4 gap-10'>
-            <p>Offer Id</p>
-            <p>Quantity</p>
-            <p>Bid</p>
+            <div>Offer Id</div>
+            <div>Quantity</div>
+            <div>Bid</div>
           </div>
-          <div className='flex  ml-5 gap-10'>
-            <p className='underline'>#{selectedProjectId}</p>
-            <p>{bid.offerQuantity}</p> {/* Use bid.offerQuantity here */}
-            <p>$26</p>
+          <div className='flex items-center text-center justify-center    gap-8'>
+            <div className='underline'>#{selectedProjectId}</div>
+            <div className='ml-3'>{bid.offerQuantity}</div> {/* Use bid.offerQuantity here */}
+            <div className='ml-6'>${bid.bidAmount}</div>
           </div>
         </div>
         <div>

@@ -6,31 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-const AdminView = ({ user, amount, setAmount, handleSubmit,projectid }) => (
-  <>
-    <p>Hi, {user?.user?.personName} of {user?.user?.companyName} from {user?.user?.location}</p>
-    <div>
-      <p>Bid for the {projectid}</p>
-      <div className="flex space-x-3 justify-center">
-        <input 
-          value={amount} 
-          onChange={(e) => setAmount(e.target.value)} 
-          className="border border-gray-700 rounded-md outline-none px-2" 
-          placeholder="Enter the bid Amount" 
-          type="number" 
-        />
-        <button onClick={handleSubmit} className="bg-blue-600 px-3 py-1 text-md rounded-md text-white">Bid</button>
-      </div>
-    </div>
-  </>
-);
 
-const TraderView = ({ user }) => (
-  <>
-    <p>Hi, {user?.user?.email?.slice(0,-11)}.. of {user?.user?.companyName}</p>
-    <p>Your Trading Dashboard</p>
-  </>
-);
 
 const Reedem: React.FC = () => {
   const user = useSelector((state) => state?.user);
@@ -69,13 +45,25 @@ const Reedem: React.FC = () => {
       toast.error("Error inviting trader.");
     }
   };
-
+console.log(user)
   return (
     <>
       <Navbar/>
       <div className="text-center">
-          <AdminView user={user} amount={amount} projectid={projectId} setAmount={setAmount} handleSubmit={handleSubmit} />
-       
+      <p>Hi, {user?.user?.email?.slice(0,10)}.. of {user?.user?.companyName} </p>
+    <div>
+      <p>Bid for the {projectId}</p>
+      <div className="flex space-x-3 justify-center">
+        <input 
+          value={amount} 
+          onChange={(e) => setAmount(e.target.value)} 
+          className="border border-gray-700 rounded-md outline-none px-2" 
+          placeholder="Enter the bid Amount" 
+          type="number" 
+        />
+        <button onClick={handleSubmit} className="bg-blue-600 px-3 py-1 text-md rounded-md text-white">Bid</button>
+      </div>
+    </div>
         <ToastContainer />
       </div>
     </>
