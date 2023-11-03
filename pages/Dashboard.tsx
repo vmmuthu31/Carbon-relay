@@ -1204,13 +1204,13 @@ const copyToClipboard = () => {
                 </table>
                 
                 </div>
-                <Modal isOpen={modalIsOpen1}
-       onAfterOpen={afterOpenModal1}
-       onRequestClose={closeModal1}
-       className='py-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black'>
-    <div className='bg-white min-h-screen'>
-        <div className='flex gap-40 mr-5 ml-2 justify-between'>
-            <div className='flex'>
+               <Modal isOpen={modalIsOpen1}
+  onAfterOpen={afterOpenModal1}
+  onRequestClose={closeModal1}
+  className='py-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black'>
+  <div className='bg-white min-h-screen'>
+    <div className='flex gap-40 mr-5 ml-2 justify-between'>
+    <div className='flex'>
                 <BsChevronLeft className='mt-4'/>
                 <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'>
                     <span className='my-2 text-center flex text-xl justify-center text-black'>Incoming Bids</span>
@@ -1222,60 +1222,59 @@ const copyToClipboard = () => {
                 </svg>
             </button>
         </div>
-        <hr className='text-xl font-bold text-black'/>
-        {Array.isArray(bids) && bids?.map((bid, index) => (
-  <div key={index}>
-    <div className='mx-5  font-semibold mt-8  text-white py-4'>
-      <div className='flex rounded-tr-xl py-4  gap-2 cs1'>
+     
+    <hr className='text-xl font-bold text-black' />
+    <div className='mx-5  font-semibold mt-5  text-white py-4'>
+      <div className='flex px-4 rounded-tr-xl py-4  gap-2 cs1'>
+      <table >
+  <thead >
+    <tr  >
+      <th className='pr-3'>Offer Id</th>
+      <th className='pr-3'>Quantity</th>
+      <th className='pr-3'>Bid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{selectedProjectId}</td>
+      {bids && bids.length > 0 ? (
+        <>
+          <td>{bids[0].offerQuantity}</td> {/* Use bid.offerQuantity here */}
+          <td>${bids[0].bidAmount}</td> {/* Use bid.bidAmount here */}
+        </>
+      ) : (
+        <>
+          <td></td>
+          <td></td>
+        </>
+      )}
+    </tr>
+  </tbody>
+</table>
+
         <div>
-          <div className='flex justify-center mx-4 items-center align-middle mb-4 gap-10'>
-            <div>Offer Id</div>
-            <div>Quantity</div>
-            <div>Bid</div>
-          </div>
-          <div className='flex items-center text-center justify-center    gap-8'>
-            <div className='underline'>#{selectedProjectId}</div>
-            <div className='ml-3'>{bid.offerQuantity}</div> {/* Use bid.offerQuantity here */}
-            <div className='ml-6'>${bid.bidAmount}</div>
-          </div>
-        </div>
-        <div>
-          <p className='text-green-300 text-md flex'><span className='text-4xl mt-2'>•</span><span className='mt-5'> Active</span></p>
+          {bids && bids.length > 0 ? ( // Check if bids exist and there are bids placed
+            <p className='text-green-300 text-md flex'>
+              <span className='text-4xl mt-2'>•</span>
+              <span className='mt-5'> Active</span>
+            </p>
+          ) : (
+            <p className='text-red-300 text-md flex'>
+              <span className='text-4xl mt-2'>•</span>
+              <span className='mt-5'> No Bids Placed</span>
+            </p>
+          )}
         </div>
       </div>
-      <div className='mt-4 border rounded-xl border-black mx-4 py-2'>
-        <div className='flex gap-2 text-black justify-between mx-3 '>
-          <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-            <p className='font-semibold'>Bid</p>
-            <p className=' ml-4 font-semibold text-2xl'>${bid.bidAmount}</p> {/* Use bid.bidAmount here */}
-          </div>
-          <div className='bg-gray-100 px-3 pr-10 py-1 rounded-lg'>
-            <p className='font-semibold'>From</p>
-            <p className='ml-3 font-semibold text-sm'>{bid.traderCompanyName}</p> {/* Use bid.traderCompanyName here */}
-          </div>
-          <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-            <p className='text-center font-semibold'>Chat</p>
-            <button onClick={() => { openModal2(); closeModal1(); }}>
-              <p className='text-[12px]'>Click To Chat</p>
-            </button>
-          </div>
+      {bids && bids.length > 0 && ( // Check if bids exist and there are bids placed
+        <div className='mt-4 border rounded-xl border-black mx-4 py-2'>
+          {/* ... Rest of the bid details ... */}
         </div>
-        <div className='flex mx-4 justify-center gap-20'>
-          <select className='border flex outline-none space-x-5 mt-2 text-gray-500 py-1 rounded-md font-semibold pr-20'>
-            <option>Evaluating</option>
-            <option>Accept</option>
-            <option>Reject</option>
-            <option>On hold</option>
-          </select>
-          <p className='text-green-400 text-md flex'><span className='text-4xl'>•</span><span className='mt-3'>{bid.status}</span></p>
-        </div>
-      </div>
+      )}
     </div>
   </div>
-))}
-
-    </div>
 </Modal>
+
 
       
       <Modal isOpen={modalIsOpen2} onAfterOpen={afterOpenModal2} onRequestClose={closeModal2} className='pb-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black '>
