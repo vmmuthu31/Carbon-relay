@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+
+import React, { useState,useEffect } from "react";
 import Navbar from "./Navbar";
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Link from "next/link";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 
 
@@ -15,10 +17,57 @@ const Reedem: React.FC = () => {
   const id = useSelector((state) => state?.user?.user?.id);
   const companyName = useSelector((state) => state?.user?.user?.companyName);
   const router = useRouter();
+  const [offers, setOffers] = useState([]);
+
+  
   const { projectId } = router.query;
+  const projectIds = Array.isArray(projectId) ? projectId.join(',') : projectId;
+
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState("");
   console.log("amount",amount)
+
+  useEffect(() => {
+    const addOffersToMyCredits = async () => {
+     
+      if (projectIds) {
+        // Call the backend endpoint to add the offers to the user's credit offers
+        const response = await fetch(`http://localhost:5000/auth/add-to-my-offers?projectIds=${projectIds}`, {
+          method: "GET",
+          headers: {
+            'Authorization': token // Make sure to send the authorization token
+          }
+        });
+        const data = await response.json();
+        if (response.ok) {
+          // Update the global state or local state with the new list of credit offers
+        } else {
+          // Handle any errors
+        }
+      }
+    };
+  
+    addOffersToMyCredits();
+  }, [projectId, token]);
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/auth/trader-offers', {
+          headers: {
+            'Authorization':  token // Replace with your token
+          }
+        });
+        setOffers(response.data.creditOffers);
+      } catch (error) {
+        console.error('Error fetching offers:', error);
+        // Handle error, maybe set some error state
+      }
+    };
+
+    fetchOffers();
+  }, []); // Empty dependency array means this effect runs once on mount
+
+
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {

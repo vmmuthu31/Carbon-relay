@@ -13,6 +13,8 @@ import { useSession } from 'next-auth/react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router'
+import axios from "axios"
 
 const socket = new WebSocket('ws://localhost:5000');
 
@@ -22,12 +24,12 @@ const navigation = [
  
 ]
 const buynavigation = [
-  { name: 'Credits Offers', href: '#', icon: PiUserCircleGearLight, current: false },
+  { name: 'Credits Offers', href: '#', icon: PiUserCircleGearLight, current: true },
   { name: 'Request Credits', href: '#', icon: PiUserCircleGearLight, current: false },
 
 ]
 const sellnavigation = [
-  { name: 'Offer Credits', href: '#', icon: AiFillSound, current: true },
+  { name: 'Offer Credits', href: '#', icon: AiFillSound, current: false },
   { name: 'Fulfill Request', href: '#', icon: PiNewspaperClippingDuotone, current: false },
 ]
 const Cbuynavigation = [
@@ -64,7 +66,7 @@ export default function CreditsOffers() {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/auth/myoffers", {
+        const response = await fetch("http://localhost:5000/auth/myoffers/", {
           headers: {
             'Authorization': token
           }
@@ -165,6 +167,69 @@ const handleSend = (e) => {
   socket.send(JSON.stringify(messageObj));
   setInput('');
 };
+const router = useRouter();
+//const [offers, setOffers] = useState([]);
+
+  
+const { PID } = router.query;
+const projectIds = Array.isArray(PID) ? PID.join(',') : PID;
+const fetchOffers = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/auth/trader-offers', {
+      headers: {
+        'Authorization': token // Replace with your token
+      }
+    });
+    setOffers(response.data.creditOffers);
+  } catch (error) {
+    console.error('Error fetching offers:', error);
+    // Handle error, maybe set some error state
+  }
+};
+
+useEffect(() => {
+  const fetchOffers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/auth/trader-offers', {
+        headers: {
+          'Authorization': token // Replace with your token
+        }
+      });
+      setOffers(response.data.creditOffers);
+    } catch (error) {
+      console.error('Error fetching offers:', error);
+      // Handle error, maybe set some error state
+    }
+  };
+
+  const addOffersToMyCredits = async () => {
+    if (projectIds) {
+      // Call the backend endpoint to add the offers to the user's credit offers
+      const response = await fetch(`http://localhost:5000/auth/add-to-my-offers?projectIds=${projectIds}`, {
+        method: "GET",
+        headers: {
+          'Authorization': token // Make sure to send the authorization token
+        }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // Update the global state or local state with the new list of credit offers
+        fetchOffers(); // Call fetchOffers to refresh the list of offers
+      } else {
+        // Handle any errors
+        console.error('Error adding offers:', data.message);
+      }
+    }
+  };
+
+  addOffersToMyCredits();
+}, [projectIds, token]); // Add projectIds and token to the dependency array if they are expected to change over time
+
+// The fetchOffers effect
+useEffect(() => {
+  fetchOffers();
+}, []); // Empty dependency array means this effect runs once on mount
+
 
 
 
@@ -748,8 +813,8 @@ const copyToClipboard = () => {
             <main className="flex-1 mx-5">
       <div className="py-3">
         <div className="sm:px-6 flex justify-between md:px-0">
-          <h1 className="text-lg font-semibold text-gray-900">You have {offercount} active offers available</h1>
-          <button   className="bg-[rgb(47,84,235)] px-3 rounded-md py-1 text-white" onClick={openModal}>Create New Offer</button>
+          <h1 className="text-lg font-semibold text-gray-900">You have {offercount} Credit offers available</h1>
+          <button   className="bg-[rgb(47,84,235)] px-3 rounded-md py-1 text-white" onClick={openModal}>Create Offer</button>
       <Modal  isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}

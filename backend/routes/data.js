@@ -231,4 +231,63 @@ router.get("/get-bids/:offerId", verifyToken, async (req, res) => {
   }
 });
 
+router.get("/add-to-my-offers", verifyToken, async (req, res) => {
+  try {
+    const projectIds = req.query.projectIds.split(","); // Assuming projectIds are separated by commas
+    const user = req.user;
+
+    // Find offers with the given project IDs
+    const offers = await Offer.find({ projectId: { $in: projectIds } });
+    if (!offers.length) {
+      return res.status(404).json({ error: "Offers not found" });
+    }
+
+    // Add offers to user's credit offers
+    const updatedUser = await Trader.findByIdAndUpdate(
+      user.userId,
+      {
+        $addToSet: {
+          creditOffers: { $each: offers.map((offer) => offer._id) },
+        }, // Prevents duplicates
+      },
+      { new: true }
+    ).populate("creditOffers");
+
+    res.status(200).json({
+      message: "Offers added to your credit offers",
+      creditOffers: updatedUser.creditOffers,
+    });
+  } catch (error) {
+    console.error("Error adding offers to credit offers:", error);
+    res.status(500).json({ error: "Error adding offers to credit offers" });
+  }
+});
+
+router.get("/trader-offers", verifyToken, async (req, res) => {
+  try {
+    console.log("User from token:", req.user);
+    const traderId = req.user.userId;
+
+    console.log("Trader ID:", traderId);
+
+    // Find the trader without the password field and populate the creditOffers
+    const traderWithOffers = await Trader.findById(traderId)
+      .select("-password") // Exclude the password field
+      .populate("creditOffers");
+
+    console.log("Trader with offers:", traderWithOffers);
+
+    if (!traderWithOffers) {
+      return res.status(404).json({ message: "Trader not found" });
+    }
+
+    res.json(traderWithOffers);
+  } catch (error) {
+    console.error("Error fetching trader offers:", error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
 module.exports = router;

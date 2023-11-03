@@ -33,6 +33,12 @@ const traderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Admin",
   },
+  creditOffers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Offer",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Trader", traderSchema);

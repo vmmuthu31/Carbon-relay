@@ -72,7 +72,9 @@ export default function Dashboard() {
         });
         const data = await response.json();
         setOffers(data);
-        const offersCount = data && Array.isArray(data) ? data.length : 0;
+        const offersCount = data ? data.length : 0;
+        console.log("data",data.length)
+        console.log("ofc",offersCount)
         setOfferCount(offersCount);
         console.log("Number of offers:", offersCount);
       } catch (error) {
@@ -254,13 +256,13 @@ const [isSubmitClicked, setIsSubmitClicked] = useState(false);
 const [shareableLink, setShareableLink] = useState('');
 const generateShareableLink = (offer) => {
   // Customize the link generation based on your data structure
-  const link = `http://localhost:3000/Reedem?projectId=${offer.projectId}`; // Include all the necessary data
+  const link = `http://localhost:3000/CreditsOffers?PID=${offer.projectId}`; // Include all the necessary data
   return link;
 };
 const handleShareButtonClick = () => {
   // Assuming checkedOffers is an array of projectIds that have been checked
-  const projectIdsParam = checkedOffers.join('&projectId=');
-  const baseLink = 'http://localhost:3000/Reedem?projectId=';
+  const projectIdsParam = checkedOffers.join('&PID=');
+  const baseLink = 'http://localhost:3000/CreditsOffers?PID=';
   const combinedLink = baseLink + projectIdsParam;
 
   setShareableLink(combinedLink);
