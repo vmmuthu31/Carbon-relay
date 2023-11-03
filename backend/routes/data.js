@@ -152,8 +152,8 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
   try {
     const user = req.user;
     const offerId = req.params.offerId;
-    const { traderId, traderCompanyName, bidAmount, status, operation } =
-      req.body;
+    const { traderId, traderCompany, bidAmount, status, operation } = req.body;
+    console.log("Received body:", req.body);
 
     // Fetch the offer to ensure it exists
     const offer = await Offer.findOne({ projectId: offerId });
@@ -174,7 +174,7 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
     const bid = new Bid({
       offerId,
       traderId, // This should be the ID of the user making the request (i.e., the bidder)
-      traderCompanyName, // Include the trader's company name
+      traderCompany, // Include the trader's company name
       bidAmount,
       status: status || "Active", // Default to "Active" if status is not provided
       operation: operation || "Evaluating", // Default to "Evaluating" if operation is not provided
@@ -201,22 +201,22 @@ router.get("/get-bids/:offerId", verifyToken, async (req, res) => {
       projectId: offerId,
       createdBy: user.userId,
     });
-
+    console.log("off", offer);
     if (!offer) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
-    // Fetch all bids associated with the offer from the database, including status and operation.
-    const bids = await Bid.find({ offerId: offer.projectId });
+    // Fetch all bids associated with the offer from the database
+    const bids = await Bid.find({ offerId: offerId });
+    console.log("bids", bids);
 
-    // Populate trader's companyName and offer's quantity for each bid
+    // Populate trader's companyName for each bid
     const populatedBids = await Promise.all(
       bids.map(async (bid) => {
         const trader = await Trader.findById(bid.traderId);
         return {
           ...bid._doc,
-          traderCompanyName: trader.companyName,
-          offerQuantity: offer.quantity,
+          offerData: offer, // This now includes the complete offer data
         };
       })
     );

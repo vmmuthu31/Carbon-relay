@@ -4,23 +4,32 @@ const mongoose = require("mongoose");
 const bidStatusEnum = ["Active", "Withdraw", "Rejected"];
 const bidOperationEnum = ["Evaluating", "OnHold", "Active", "Reject"];
 
+// Assuming your Offer model is defined in a file named 'Offer.js' in the same directory
+const Offer = require("./Offer").Offer; // Adjust the path as necessary
+
 const bidSchema = new mongoose.Schema({
-  offerId: { type: String, ref: "Offer" },
-  traderId: String,
-  bidAmount: Number,
-  traderCompany: String,
+  offerId: {
+    type: String, // Use ObjectId type for referencing another document
+    ref: "Offer", // Reference to the Offer model
+  },
+  traderId: { type: String, required: true },
+  bidAmount: { type: Number, required: true },
+  traderCompany: { type: String, required: true },
   status: {
     type: String,
     enum: bidStatusEnum,
-    default: "Active", // Default status is Active
+    default: "Active",
   },
   operation: {
     type: String,
     enum: bidOperationEnum,
-    default: "Evaluating", // Default operation is Evaluating
+    default: "Evaluating",
   },
+  // No need to store offerData here, it will be populated from the Offer model
 });
 
+// Create the Bid model from the schema
 const Bid = mongoose.model("Bid", bidSchema);
 
+// Export the Bid model
 module.exports = { Bid };
