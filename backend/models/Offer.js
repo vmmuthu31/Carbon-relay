@@ -28,6 +28,10 @@ const offerSchema = new mongoose.Schema({
     required: true,
     enum: ["Admin", "Trader"],
   },
+  creationDate: {
+    type: Date, // Add a creationDate field of type Date
+    default: Date.now, // Set a default value to the current date and time
+  },
 });
 
 module.exports = mongoose.model("Offer", offerSchema);

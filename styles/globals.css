@@ -134,7 +134,7 @@
 
 .table-container {
   min-height: 340px;
-  max-height: 400px; /* Adjust this value based on your preference */
+  max-height: 430px; /* Adjust this value based on your preference */
   overflow-y: auto;
  
   position: relative;

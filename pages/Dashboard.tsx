@@ -254,13 +254,17 @@ const generateShareableLink = (offer) => {
   const link = `http://localhost:3000/Reedem?projectId=${offer.projectId}`; // Include all the necessary data
   return link;
 };
-const handleShareButtonClick = (offer) => {
-  const link = generateShareableLink(offer);
-  setShareableLink(link);
+const handleShareButtonClick = () => {
+  // Assuming checkedOffers is an array of projectIds that have been checked
+  const projectIdsParam = checkedOffers.join('&projectId=');
+  const baseLink = 'http://localhost:3000/Reedem?projectId=';
+  const combinedLink = baseLink + projectIdsParam;
+
+  setShareableLink(combinedLink);
   openModal5();
   // Show the popup or modal here, e.g., by setting a state variable to display it
-  // You can use a library like React Modal for this.
 };
+
 const copyToClipboard = () => {
   navigator.clipboard.writeText(shareableLink)
     .then(() => {
@@ -310,7 +314,12 @@ const copyToClipboard = () => {
         toast.success("Offer Successfully received!")
         console.log(result);
         setIsSubmitClicked(true);
-
+        setProjectId('');
+        setQuantity('');
+        setStartingYear('');
+        setEndingYear('');
+        setOfferPrice('');
+        setCorisa('No');
         // Handle success - maybe show a success message or redirect the user
       } else {
         // Handle errors - maybe show an error message to the user
@@ -363,13 +372,18 @@ const copyToClipboard = () => {
 
 
   const [checkedOffers, setCheckedOffers] = useState([]);
-  const handleCheckboxChange = (offerId) => {
-    if (checkedOffers.includes(offerId)) {
-        setCheckedOffers(prev => prev.filter(id => id !== offerId));
-    } else {
-        setCheckedOffers(prev => [...prev, offerId]);
-    }
-};
+  const handleCheckboxChange = (projectId) => {
+    setCheckedOffers((prevCheckedOffers) => {
+      if (prevCheckedOffers.includes(projectId)) {
+        // If the projectId is already in the array, remove it (uncheck)
+        return prevCheckedOffers.filter((id) => id !== projectId);
+      } else {
+        // If the projectId is not in the array, add it (check)
+        return [...prevCheckedOffers, projectId];
+      }
+    });
+  };
+  
 
 
 
@@ -960,8 +974,12 @@ const copyToClipboard = () => {
                   </thead>
                   <tbody className='underline '>
                     
-                  {Array.isArray(offers) && offers?.map((offer, index) => {
-  const projectDataForOffer = projectData[offer.projectId] || {}; // Default to an empty object
+                  {Array.isArray(offers) ? 
+  offers
+    .map(offer => ({ ...offer, creationDate: new Date(offer.creationDate) })) // Convert date strings to Date objects
+    .sort((a, b) => b.creationDate - a.creationDate) // Sort offers in descending order by creation date
+    .map((offer, index) => {
+      const projectDataForOffer = projectData[offer.projectId] || {}; // Default to an empty object
 
   console.log("project", offer.projectId);
   const toggleDropdown = (index) => {
@@ -1004,12 +1022,13 @@ const copyToClipboard = () => {
     className={`relative ${checkedOffers.includes(offer.projectId) ? '  px-10 h-10' : ''}`}>
       
       <td>
-    <input 
-        className='py-4' 
-        type='checkbox' 
-        checked={checkedOffers.includes(offer.projectId)}
-        onChange={() => handleCheckboxChange(offer.projectId)}
-    />
+      <input 
+  className='py-4' 
+  type='checkbox' 
+  checked={checkedOffers.includes(offer.projectId)}
+  onChange={() => handleCheckboxChange(offer.projectId)}
+/>
+
 </td>
 
 <td className='flex gap-2 py-4'>
@@ -1139,7 +1158,7 @@ const copyToClipboard = () => {
     </td>
     </tr>
   );
-})}
+}): null}
 <Modal
    isOpen={modalIsOpen5}
    onAfterOpen={afterOpenModal5}
@@ -1348,13 +1367,7 @@ const copyToClipboard = () => {
   </div>
 </Modal>
               </div>
-              <div>
-                <div className='flex justify-between mx-10 py-2'>
-                  <p className="flex"><AiOutlineArrowLeft className='mt-1 mx-2' /><span >Previous</span></p>
-                  <p className="text-sm">1 2 3 ... 8 9 10</p>
-                  <p className="flex"><span>Next</span> <AiOutlineArrowRight className='mt-1 mx-2' /></p>
-                </div>
-              </div>
+             
             </div>
           </div>
         </div>
