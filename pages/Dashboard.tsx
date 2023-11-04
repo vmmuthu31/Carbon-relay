@@ -13,6 +13,7 @@ import { useSession } from 'next-auth/react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router'
 
 const socket = new WebSocket('ws://localhost:5000');
 
@@ -22,7 +23,7 @@ const navigation = [
  
 ]
 const buynavigation = [
-  { name: 'Credits Offers', href: '#', icon: PiUserCircleGearLight, current: false },
+  { name: 'Credits Offers', href: '/CreditsOffers', icon: PiUserCircleGearLight, current: false },
   { name: 'Request Credits', href: '#', icon: PiUserCircleGearLight, current: false },
 
 ]
@@ -59,6 +60,7 @@ export default function Dashboard() {
   const token = useSelector((state) => state?.user?.token);
   const [offers, setOffers] = useState([]);
   const [bids, setBids] = useState([]);
+  const router = useRouter()
   console.log("bids",bids)
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedProjectQuantity, setSelectedProjectQuantity] = useState(null);
@@ -97,6 +99,9 @@ useEffect(() => {
       if (Array.isArray(data)) {
         setBids(data);
     } else {
+      if(response?.statusText === "Unauthorized"){
+        router.push("/Login")
+      }
         console.error("Expected an array but received:", data);
     }
       const BidCount = data && Array.isArray(data) ? data.length : 0;

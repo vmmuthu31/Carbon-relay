@@ -29,7 +29,7 @@ const buynavigation = [
 
 ]
 const sellnavigation = [
-  { name: 'Offer Credits', href: '#', icon: AiFillSound, current: false },
+  { name: 'Offer Credits', href: '/Dashboard', icon: AiFillSound, current: false },
   { name: 'Fulfill Request', href: '#', icon: PiNewspaperClippingDuotone, current: false },
 ]
 const Cbuynavigation = [
@@ -58,31 +58,13 @@ export default function CreditsOffers() {
   const [offercount, setOfferCount] = useState(0);
   const user = useSelector((state) => state?.user);
   const role = useSelector((state) => state?.user?.user?.role);
+  
+const router = useRouter();
   const token = useSelector((state) => state?.user?.token);
   const [offers, setOffers] = useState([]);
   const [bids, setBids] = useState([]);
   console.log("bids",bids)
   const [selectedProjectId, setSelectedProjectId] = useState(null);
-  useEffect(() => {
-    const fetchOffers = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/auth/myoffers/", {
-          headers: {
-            'Authorization': token
-          }
-        });
-        const data = await response.json();
-        setOffers(data);
-        const offersCount = data && Array.isArray(data) ? data.length : 0;
-        setOfferCount(offersCount);
-        console.log("Number of offers:", offersCount);
-      } catch (error) {
-        console.error("Error fetching offers:", error);
-      }
-    };
-  
-    fetchOffers();
-  }, []);
   
 useEffect(() => {
   const fetchOffers = async () => {
@@ -96,13 +78,15 @@ useEffect(() => {
       if (Array.isArray(data)) {
         setBids(data);
     } else {
-        console.error("Expected an array but received:", data);
+        if(response?.statusText === "Unauthorized"){
+          router.push("/Login")
+        }
     }
       const BidCount = data && Array.isArray(data) ? data.length : 0;
       setOfferCount(BidCount);
       console.log("Number of Bids:", BidCount);
     } catch (error) {
-      console.error("Error fetching offers:", error);
+      console.error("Erronr fetching offers:", error?.response);
     }
   };
 
@@ -167,7 +151,6 @@ const handleSend = (e) => {
   socket.send(JSON.stringify(messageObj));
   setInput('');
 };
-const router = useRouter();
 //const [offers, setOffers] = useState([]);
 
   
@@ -188,6 +171,7 @@ const fetchOffers = async () => {
 };
 
 useEffect(() => {
+
   const fetchOffers = async () => {
     try {
       const response = await axios.get('http://localhost:5000/auth/trader-offers', {
@@ -197,39 +181,62 @@ useEffect(() => {
       });
       setOffers(response.data.creditOffers);
     } catch (error) {
-      console.error('Error fetching offers:', error);
-      // Handle error, maybe set some error state
+      if (error?.response?.status === 401) {
+        router.push('/Login');
+      } else {
+        console.error('Error fetching offers:', error);
+      }
     }
   };
 
   const addOffersToMyCredits = async () => {
     if (projectIds) {
-      // Call the backend endpoint to add the offers to the user's credit offers
-      const response = await fetch(`http://localhost:5000/auth/add-to-my-offers?projectIds=${projectIds}`, {
-        method: "GET",
-        headers: {
-          'Authorization': token // Make sure to send the authorization token
+      try {
+        const response = await axios.get(`http://localhost:5000/auth/add-to-my-offers?projectIds=${projectIds}`, {
+          headers: {
+            'Authorization': token
+          }
+        });
+
+        if (response.status === 200) {
+          fetchOffers();
+        } else {
+          console.error('Error adding offers:', response.data.message);
         }
-      });
-      const data = await response.json();
-      if (response.ok) {
-        // Update the global state or local state with the new list of credit offers
-        fetchOffers(); // Call fetchOffers to refresh the list of offers
-      } else {
-        // Handle any errors
-        console.error('Error adding offers:', data.message);
+      } catch (error) {
+        if (error?.response?.status === 401) {
+          router.push('/Login');
+        } else {
+          console.error('Error adding offers:', error);
+        }
       }
     }
   };
 
   addOffersToMyCredits();
-}, [projectIds, token]); // Add projectIds and token to the dependency array if they are expected to change over time
+  // fetchOffers will be called after addOffersToMyCredits if projectIds changes
+}, [projectIds, token, router, setOffers]);
 
 // The fetchOffers effect
 useEffect(() => {
-  fetchOffers();
-}, []); // Empty dependency array means this effect runs once on mount
 
+  (async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/auth/trader-offers', {
+        headers: {
+          'Authorization': token // Replace with your token
+        }
+      });
+      setOffers(response.data.creditOffers);
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        router.push('/Login');
+      } else {
+        console.error('Error fetching offers:', error);
+      }
+    }
+  })();
+}, [token, router, setOffers]);
 
 
 
