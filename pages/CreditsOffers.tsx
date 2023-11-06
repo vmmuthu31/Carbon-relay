@@ -153,7 +153,6 @@ const handleSend = (e) => {
 };
 //const [offers, setOffers] = useState([]);
 
-  
 const { PID } = router.query;
 const projectIds = Array.isArray(PID) ? PID.join(',') : PID;
 const fetchOffers = async () => {
@@ -163,6 +162,7 @@ const fetchOffers = async () => {
         'Authorization': token // Replace with your token
       }
     });
+
     setOffers(response.data.creditOffers);
   } catch (error) {
     console.error('Error fetching offers:', error);
@@ -282,6 +282,7 @@ const handleTyping = (e) => {
   const [modalIsOpen1, setModalIsOpen1] = useState(false);
   const [modalIsOpen2, setModalIsOpen2] = useState(false);
   const [modalIsOpen5, setModalIsOpen5] = useState(false);
+  const [selectedProjectQuantity, setSelectedProjectQuantity] = useState(null);
 console.log("projectid",projectId)
 console.log("projectdata",projectData)
 
@@ -289,8 +290,9 @@ console.log("projectdata",projectData)
   const openModal = () => {
       setModalIsOpen(true);
   }
-  const openModal1 = (projectId) => {
+  const openModal1 = (projectId, quantity) => {
     setSelectedProjectId(projectId);
+    setSelectedProjectQuantity(quantity)
     setModalIsOpen1(true);
     // ... any other logic to open the modal
   };
@@ -452,6 +454,35 @@ const copyToClipboard = () => {
       }
     });
   };
+
+  const id = useSelector((state) => state?.user?.user?.id);
+  const companyName = useSelector((state) => state?.user?.user?.companyName);
+  const handleBid = async(e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:5000/auth/create-bid/${selectedProjectId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': token
+        },
+        body: JSON.stringify({
+          traderId: id,
+          traderCompany: companyName,
+          bidAmount: amount,
+        }),
+      });
+      if (response.ok) {
+        toast.success("Invited Successfully!");
+        alert("Bid Created Successfully")
+        setAmount("");
+      } else {
+        toast.error("Trader Already Invited.");
+      }
+    } catch (error) {
+      toast.error("Error inviting trader.");
+    }
+  };
   
 
 
@@ -483,6 +514,7 @@ const copyToClipboard = () => {
   };
 
 
+  const [amount, setAmount] = useState("");
   const [dropdownVisibility, setDropdownVisibility] = useState([]);
   useEffect(() => {
     // Initialize the dropdownVisibility array to all false initially
@@ -1107,24 +1139,24 @@ const copyToClipboard = () => {
             {offer.projectId}
             </td>
             <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>{offer.projectType}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>{offer.projectType}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>
           {offer.startingYear}-{offer.endingYear}
         </button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>{offer.quantity}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>{offer.quantity}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>${offer.offerPrice}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>${offer.offerPrice}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>${offer.offerPrice}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>${offer.offerPrice}</button>
       </td>
     {!checkedOffers.includes(offer.projectId) && (
         <>
@@ -1276,13 +1308,13 @@ const copyToClipboard = () => {
                 </table>
                 
                 </div>
-                <Modal isOpen={modalIsOpen1}
-       onAfterOpen={afterOpenModal1}
-       onRequestClose={closeModal1}
-       className='py-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black'>
-    <div className='bg-white min-h-screen'>
-        <div className='flex gap-40 mr-5 ml-2 justify-between'>
-            <div className='flex'>
+              <Modal isOpen={modalIsOpen1}
+  onAfterOpen={afterOpenModal1}
+  onRequestClose={closeModal1}
+  className='py-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black'>
+  <div className='bg-white min-h-screen'>
+    <div className='flex gap-40 mr-5 ml-2 justify-between'>
+    <div className='flex'>
                 <BsChevronLeft className='mt-4'/>
                 <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'>
                     <span className='my-2 text-center flex text-xl justify-center text-black'>Incoming Bids</span>
@@ -1294,28 +1326,43 @@ const copyToClipboard = () => {
                 </svg>
             </button>
         </div>
-        <hr className='text-xl font-bold text-black'/>
-        {Array.isArray(bids) && bids?.map((bid, index) => (
-  <div key={index}>
-    <div className='mx-5  font-semibold mt-8  text-white py-4'>
-      <div className='flex rounded-tr-xl py-4  gap-2 cs1'>
-        <div>
-          <div className='flex justify-center mx-4 items-center align-middle mb-4 gap-10'>
-            <div>Offer Id</div>
-            <div>Quantity</div>
-            <div>Bid</div>
-          </div>
-          <div className='flex items-center text-center justify-center    gap-8'>
-            <div className='underline'>#{selectedProjectId}</div>
-            <div className='ml-3'>{bid.offerQuantity}</div> {/* Use bid.offerQuantity here */}
-            <div className='ml-6'>${bid.bidAmount}</div>
-          </div>
+     
+    <hr className='text-xl font-bold text-black' />
+    <div className='mx-5  font-semibold mt-5  text-white py-4'>
+      <div className='flex px-4 rounded-tr-xl py-2  justify-between  cs1'>
+     <div>
+      <p className='pr-3 mt-2'>Company Name</p>
+      <select className='text-black mt-8 px-3 rounded-lg py-1 outline-none'> 
+        <option>Yet to Bid</option>
+        <option>Active</option>
+        <option>On hold</option>
+        <option>Withdraw</option>
+        </select>
         </div>
         <div>
-          <p className='text-green-300 text-md flex'><span className='text-4xl mt-2'>•</span><span className='mt-5'> Active</span></p>
+            <div className='flex flex-col space-y-1'>
+            <p className='text-green-300 text-md flex'><span className='text-4xl '>•</span>
+            <span className='mt-3'> Active</span>
+            </p>
+            <div className='flex space-x-8'>
+              <p>Offer</p>
+              <p className="bg-white px-2 w-16 mb-2 py-1 text-black">${selectedProjectQuantity}</p>
+            </div>
+            <div className='flex space-x-12'>
+              <p>Bid</p>
+              <div>
+              <input value={amount}   onChange={(e)=>{setAmount(e.target.value)}} type="text" className="bg-white outline-none px-2 py-1 w-16 text-black" />
+              <button onClick={handleBid} className='text-gray-200 relative right-5'>✔️</button>
+              </div>
+            </div>
+            </div>
         </div>
       </div>
-      <div className='mt-4 border rounded-xl border-black mx-4 py-2'>
+      {Array.isArray(bids) && bids?.map((bid, index) => (
+  <div key={index}>
+    <div className=' font-semibold mt-4  text-white py-4'>
+      
+      <div className=' border rounded-xl border-black mx-4 py-2'>
         <div className='flex gap-2 text-black justify-between mx-3 '>
           <div className='bg-gray-100 px-3 py-1 rounded-lg'>
             <p className='font-semibold'>Bid</p>
@@ -1323,7 +1370,7 @@ const copyToClipboard = () => {
           </div>
           <div className='bg-gray-100 px-3 pr-10 py-1 rounded-lg'>
             <p className='font-semibold'>From</p>
-            <p className='ml-3 font-semibold text-sm'>{bid.traderCompanyName}</p> {/* Use bid.traderCompanyName here */}
+            <p className='ml-3 font-semibold text-sm'>{bid.traderCompany}</p> {/* Use bid.traderCompanyName here */}
           </div>
           <div className='bg-gray-100 px-3 py-1 rounded-lg'>
             <p className='text-center font-semibold'>Chat</p>
@@ -1345,8 +1392,8 @@ const copyToClipboard = () => {
     </div>
   </div>
 ))}
-
     </div>
+  </div>
 </Modal>
 
       
