@@ -15,7 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router'
 
-const socket = new WebSocket('ws://localhost:5000');
+const socket = new WebSocket('ws://carbon-relay-backend2.vercel.app');
 
 
 const navigation = [
@@ -67,7 +67,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/auth/myoffers", {
+        const response = await fetch("https://carbon-relay-backend2.vercel.app/auth/myoffers", {
           headers: {
             'Authorization': token
           }
@@ -90,7 +90,7 @@ export default function Dashboard() {
 useEffect(() => {
   const fetchOffers = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/auth/get-bids/${selectedProjectId}`, {
+      const response = await fetch(`https://carbon-relay-backend2.vercel.app/auth/get-bids/${selectedProjectId}`, {
         headers: {
           'Authorization': token
         }
@@ -193,7 +193,7 @@ const handleTyping = (e) => {
     if (projectId) {
         // Replace the following with your data fetching logic
         // Example: Fetch data from an API endpoint using the projectId
-        fetch(`http://localhost:5000/auth/projectData/${projectId}`)
+        fetch(`https://carbon-relay-backend2.vercel.app/auth/projectData/${projectId}`)
             .then(response => response.json())
             .then(data => setProjectData(data));
     }
@@ -310,7 +310,7 @@ const copyToClipboard = () => {
     console.log(data)
   
     try {
-      const response = await fetch("http://localhost:5000/auth/offers", {
+      const response = await fetch("https://carbon-relay-backend2.vercel.app/auth/offers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -354,7 +354,7 @@ const copyToClipboard = () => {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/auth/myoffers", {
+        const response = await fetch("https://carbon-relay-backend2.vercel.app/auth/myoffers", {
           headers: {
             'Authorization': token
           }
@@ -1089,7 +1089,7 @@ const copyToClipboard = () => {
               toggleLock(index);
               if (!projectData[offer.projectId]) {
                 // Fetch the project data only if it doesn't exist in projectData
-                fetch(`http://localhost:5000/auth/projectData/${offer.projectId}`)
+                fetch(`https://carbon-relay-backend2.vercel.app/auth/projectData/${offer.projectId}`)
                   .then((response) => response.json())
                   .then((data) => {
                     setProjectData((prevData) => ({

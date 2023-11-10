@@ -25,7 +25,7 @@ const Upload: React.FC = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/auth/uploadProjectData",
+          "https://carbon-relay-backend2.vercel.app/auth/uploadProjectData",
           {
             method: "POST",
             body: formData,

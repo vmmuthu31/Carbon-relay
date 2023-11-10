@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import { useSelector } from 'react-redux';
 import { useSession } from 'next-auth/react';
 
-const socket = io('http://localhost:5000')
+const socket = io('https://carbon-relay-backend2.vercel.app/')
 
 
 const Chat = () => {

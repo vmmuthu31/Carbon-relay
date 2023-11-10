@@ -32,7 +32,7 @@ const Reedem: React.FC = () => {
      
       if (projectIds) {
         // Call the backend endpoint to add the offers to the user's credit offers
-        const response = await fetch(`http://localhost:5000/auth/add-to-my-offers?projectIds=${projectIds}`, {
+        const response = await fetch(`https://carbon-relay-backend2.vercel.app/auth/add-to-my-offers?projectIds=${projectIds}`, {
           method: "GET",
           headers: {
             'Authorization': token // Make sure to send the authorization token
@@ -52,7 +52,7 @@ const Reedem: React.FC = () => {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/auth/trader-offers', {
+        const response = await axios.get('https://carbon-relay-backend2.vercel.app/auth/trader-offers', {
           headers: {
             'Authorization':  token // Replace with your token
           }
@@ -71,7 +71,7 @@ const Reedem: React.FC = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5000/auth/create-bid/${projectId}`, {
+      const response = await fetch(`https://carbon-relay-backend2.vercel.app/auth/create-bid/${projectId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
