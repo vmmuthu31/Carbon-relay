@@ -189,6 +189,10 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
     });
 
     await bid.save(); // Save the bid to the database
+    await Offer.findOneAndUpdate(
+      { projectId: offerId },
+      { $push: { bids: bid.bidAmount.toString() } }
+    );
 
     // Once the bid is created, you can return a success response or any relevant data.
     return res.status(201).json({ message: "Bid created successfully" });

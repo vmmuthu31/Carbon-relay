@@ -86,7 +86,7 @@ useEffect(() => {
         }
     }
       const BidCount = data && Array.isArray(data) ? data.length : 0;
-      setOfferCount(BidCount);
+      // setOfferCount(BidCount);
       console.log("Number of Bids:", BidCount);
     } catch (error) {
       console.error("Erronr fetching offers:", error?.response);
@@ -98,6 +98,7 @@ useEffect(() => {
 
   console.log("count", offercount)
   console.log("token",token)
+  console.log("bids",bids)
   console.log(recipientID,"receipt")
   const [isTyping, setIsTyping] = useState(false);
 
@@ -288,9 +289,11 @@ console.log("projectdata",projectData)
   const openModal = () => {
       setModalIsOpen(true);
   }
-  const openModal1 = (projectId, quantity) => {
+  const openModal1 = (projectId, quantity,offer) => {
     setSelectedProjectId(projectId);
     setSelectedProjectQuantity(quantity)
+    setAmount(offer.bids && offer.bids.length > 0 ? Math.max(...offer.bids) : 0);
+
     setModalIsOpen1(true);
     // ... any other logic to open the modal
   };
@@ -1140,25 +1143,28 @@ const copyToClipboard = () => {
             {offer.projectId}
             </td>
             <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}><span className=' line-clamp-2'>{offer.projectName}</span></button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice,offer); setRecipientID(offer.createdBy)}}><span className=' line-clamp-2'>{offer.projectName}</span></button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>{offer.projectType}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice, offer); setRecipientID(offer.createdBy)}}>{offer.projectType}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice, offer); setRecipientID(offer.createdBy)}}>
           {offer.startingYear}-{offer.endingYear}
         </button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>{offer.quantity}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice, offer); setRecipientID(offer.createdBy)}}>{offer.quantity}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>${offer.offerPrice}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice, offer); setRecipientID(offer.createdBy)}}>${offer.offerPrice}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>${offer.offerPrice}</button>
-      </td>
+  <button onClick={() => { openModal1(offer.projectId, offer.offerPrice, offer); setRecipientID(offer.createdBy);  }}>
+    {offer.bids && offer.bids.length > 0 ? `$${Math.max(...offer.bids)}` : 'No bids'}
+  </button>
+</td>
+
     {!checkedOffers.includes(offer.projectId) && (
         <>
         

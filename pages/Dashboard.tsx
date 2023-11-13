@@ -111,7 +111,7 @@ useEffect(() => {
         console.error("Expected an array but received:", data);
     }
       const BidCount = data && Array.isArray(data) ? data.length : 0;
-      setOfferCount(BidCount);
+      // setOfferCount(BidCount);
       console.log("Number of Bids:", BidCount);
     } catch (error) {
       console.error("Error fetching offers:", error);
@@ -1064,8 +1064,11 @@ const copyToClipboard = () => {
         <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>${offer.offerPrice}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>${offer.offerPrice}</button>
-      </td>
+  <button onClick={() => { openModal1(offer.projectId, offer.offerPrice); setRecipientID(offer.createdBy) }}>
+    {offer.bids && offer.bids.length > 0 ? `$${Math.max(...offer.bids)}` : '-'}
+  </button>
+</td>
+
     {!checkedOffers.includes(offer.projectId) && (
         <>
         
@@ -1236,8 +1239,8 @@ const copyToClipboard = () => {
         </div>
      
     <hr className='text-xl font-bold text-black' />
-    <div className='mx-5  font-semibold mt-5  text-white py-4'>
-      <div className='flex px-4 rounded-tr-xl py-4  gap-2 cs1'>
+    <div className='mx-2  font-semibold mt-5  text-white py-4'>
+      <div className='flex justify-between px-4 rounded-tr-xl py-4   cs1'>
       <table >
   <thead >
     <tr  >
@@ -1252,7 +1255,7 @@ const copyToClipboard = () => {
       {bids && bids.length  > 0 ? (
         <>
           <td>{bids[0].offerData.quantity}</td> {/* Use bid.offerQuantity here */}
-          <td>${bids[0].bidAmount}</td> {/* Use bid.bidAmount here */}
+          <td>{bids && bids.length > 0 ? `$${Math.max(...bids.map(bid => bid.bidAmount))}` : '-'}</td> {/* Use bid.bidAmount here */}
         </>
       ) : (
         <>
