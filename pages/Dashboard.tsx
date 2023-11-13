@@ -66,6 +66,8 @@ export default function Dashboard() {
   const router = useRouter()
   console.log("bids",bids)
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedbid, setselectedBid] = useState(null);
+  const [selectedoffer, setselectedoffer] = useState(null);
   const [selectedProjectQuantity, setSelectedProjectQuantity] = useState(null);
   useEffect(() => {
     const fetchOffers = async () => {
@@ -223,9 +225,10 @@ console.log("projectdata",projectData)
   const openModal = () => {
       setModalIsOpen(true);
   }
-  const openModal1 = (projectId, quantity,createdby) => {
+  const openModal1 = (projectId, quantity, offer) => {
     setSelectedProjectId(projectId);
     setSelectedProjectQuantity(quantity)
+    setselectedoffer(offer)
     //  setReceiptantID(createdby)
     setModalIsOpen1(true);
     // ... any other logic to open the modal
@@ -1044,24 +1047,24 @@ const copyToClipboard = () => {
             {offer.projectId}
             </td>
             <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.createdBy)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
+        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.createdBy)}>{offer.projectType}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>{offer.projectType}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.createdBy)}>
+        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>
           {offer.startingYear}-{offer.endingYear}
         </button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.createdBy)}>{offer.quantity}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>{offer.quantity}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.createdBy)}>${offer.offerPrice}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>${offer.offerPrice}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.createdBy)}>${offer.offerPrice}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>${offer.offerPrice}</button>
       </td>
     {!checkedOffers.includes(offer.projectId) && (
         <>
@@ -1291,7 +1294,7 @@ const copyToClipboard = () => {
           </div>
           <div className='bg-gray-100 px-3 py-1 rounded-lg'>
             <p className='text-center font-semibold'>Chat</p>
-            <button onClick={() => { openModal2(); closeModal1(); setReceiptantID(bid.traderemail); }}>
+            <button onClick={() => { openModal2(); closeModal1(); setselectedBid(bid.bidAmount); setReceiptantID(bid.traderemail); }}>
               <p className='text-[12px]'>Click To Chat</p>
             </button>
           </div>
@@ -1337,11 +1340,11 @@ const copyToClipboard = () => {
         <div className='flex text-white font-thin text-xl flex-col'>
           <div className='flex space-x-4'>
             <p>Offer</p>
-            <p className='bg-white text-black font-semibold pl-1 pr-10 rounded-sm'>$26</p>
+            <p className='bg-white text-black font-semibold pl-1 pr-10 rounded-sm'>${selectedoffer}</p>
           </div>
           <div className='flex space-x-8 mt-2'>
             <p>Bid</p>
-            <p className='bg-white text-black font-semibold pl-1 pr-7 rounded-sm'>$27.5</p>
+            <p className='bg-white text-black font-semibold pl-1 pr-7 rounded-sm'>${selectedbid}</p>
           </div>
         </div>
       </div>
