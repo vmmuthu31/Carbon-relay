@@ -19,8 +19,7 @@ const offerSchema = new mongoose.Schema({
   additionalCertificates2: String,
   additionalCertificates3: String,
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    refPath: "onModel",
+    type: String,
     required: true,
   },
   onModel: {

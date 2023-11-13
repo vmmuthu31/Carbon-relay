@@ -13,6 +13,7 @@ const bidSchema = new mongoose.Schema({
     ref: "Offer", // Reference to the Offer model
   },
   traderId: { type: String, required: true },
+  traderemail: { type: String, required: true },
   bidAmount: { type: Number, required: true },
   traderCompany: { type: String, required: true },
   status: {

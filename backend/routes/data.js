@@ -97,7 +97,7 @@ router.post("/offers", verifyToken, async (req, res) => {
     // Create the offer with the associated user's ID
     const offer = new Offer({
       ...req.body,
-      createdBy: user.userId,
+      createdBy: user.email,
       onModel: user.userType,
     });
 
@@ -118,7 +118,7 @@ router.get("/myoffers", verifyToken, async (req, res) => {
     if (user.userType === "Admin") {
       // Fetch offers created by the admin
       const adminOffers = await Offer.find({
-        createdBy: user.userId,
+        createdBy: user.email,
         onModel: "Admin",
       });
 
@@ -135,7 +135,7 @@ router.get("/myoffers", verifyToken, async (req, res) => {
       offers = adminOffers.concat(traderOffers);
     } else if (user.userType === "Trader") {
       // Fetch offers created by the trader
-      offers = await Offer.find({ createdBy: user.userId, onModel: "Trader" });
+      offers = await Offer.find({ createdBy: user.email, onModel: "Trader" });
     }
 
     res.status(200).send(offers);
@@ -152,7 +152,14 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
   try {
     const user = req.user;
     const offerId = req.params.offerId;
-    const { traderId, traderCompany, bidAmount, status, operation } = req.body;
+    const {
+      traderId,
+      traderemail,
+      traderCompany,
+      bidAmount,
+      status,
+      operation,
+    } = req.body;
     console.log("Received body:", req.body);
 
     // Fetch the offer to ensure it exists
@@ -173,6 +180,7 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
     // If the check passes, proceed with creating a bid
     const bid = new Bid({
       offerId,
+      traderemail,
       traderId, // This should be the ID of the user making the request (i.e., the bidder)
       traderCompany, // Include the trader's company name
       bidAmount,
@@ -199,7 +207,7 @@ router.get("/get-bids/:offerId", verifyToken, async (req, res) => {
     // Fetch the offer to ensure it belongs to the user
     const offer = await Offer.findOne({
       projectId: offerId,
-      createdBy: user.userId,
+      createdBy: user.email,
     });
     console.log("off", offer);
     if (!offer) {

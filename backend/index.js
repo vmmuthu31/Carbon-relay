@@ -37,6 +37,7 @@ wss.on("connection", (ws) => {
 
   ws.on("message", (message) => {
     const data = JSON.parse(message);
+
     if (data.type === "user joined") {
       const userID = data.userID;
       users[userID] = ws;
@@ -51,7 +52,7 @@ wss.on("connection", (ws) => {
         .save()
         .then(() => {
           const toSocket = users[data.to];
-          if (toSocket) {
+          if (toSocket && toSocket.readyState === WebSocket.OPEN) {
             toSocket.send(JSON.stringify(data));
           } else {
             console.warn(`User ${data.to} is not connected.`);
@@ -65,12 +66,11 @@ wss.on("connection", (ws) => {
 
   ws.on("close", () => {
     console.log("user disconnected");
-    for (let userID in users) {
+    Object.keys(users).forEach((userID) => {
       if (users[userID] === ws) {
         delete users[userID];
-        break;
       }
-    }
+    });
   });
 });
 

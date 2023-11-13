@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router'
 import axios from "axios"
+import Link from 'next/link'
 
 const socket = new WebSocket('ws://localhost:5000');
 
@@ -54,13 +55,15 @@ export default function CreditsOffers() {
   const { data: session } = useSession();
   const [input, setInput] = useState(''); 
   const currentUserEmail = session?.user?.email;
-  const recipientID = currentUserEmail === "mvairamuthu2003@gmail.com" ? "vairamuthu@jec.ac.in" : "mvairamuthu2003@gmail.com";
+  const [recipientID, setRecipientID] = useState();
   const [offercount, setOfferCount] = useState(0);
-  const user = useSelector((state) => state?.user);
+  const userID = useSelector((state) => state?.user?.user?.email);
   const role = useSelector((state) => state?.user?.user?.role);
-  
+  console.log("userID",userID)
+  console.log("recipientID",recipientID)
 const router = useRouter();
   const token = useSelector((state) => state?.user?.token);
+  // const userID = session?.user?.email; 
   const [offers, setOffers] = useState([]);
   const [bids, setBids] = useState([]);
   console.log("bids",bids)
@@ -69,7 +72,7 @@ const router = useRouter();
 useEffect(() => {
   const fetchOffers = async () => {
     try {
-      const response = await fetch(`https://carbon-relay-backend2.vercel.app/auth/get-bids/${selectedProjectId}`, {
+      const response = await fetch(`http://localhost:5000/auth/get-bids/${selectedProjectId}`, {
         headers: {
           'Authorization': token
         }
@@ -97,7 +100,7 @@ useEffect(() => {
   console.log("token",token)
   console.log(recipientID,"receipt")
   const [isTyping, setIsTyping] = useState(false);
-  const userID = session?.user?.email; 
+
   const toggleLock = (rowIndex) => {
     const updatedRowStates = [...rowStates];
     updatedRowStates[rowIndex] = !updatedRowStates[rowIndex];
@@ -106,63 +109,65 @@ useEffect(() => {
   const openRowPopup = (rowData) => {
     setSelectedRowData(rowData);
   };
+  const [socket, setSocket] = useState(null);
   useEffect(() => {
-    socket.onopen = () => {
-        socket.send(JSON.stringify({ type: 'user joined', userID }));
+    const newSocket = new WebSocket('ws://localhost:5000');
+
+    newSocket.onopen = () => {
+        newSocket.send(JSON.stringify({ type: 'user joined', userID }));
     };
 
-    socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.type === 'private message') {
-            setMessages(prevMessages => [...prevMessages, data]);
-        } else if (data.type === 'user typing' && data.userID === recipientID) {
-            setIsTyping(true);
-            setTimeout(() => {
-                setIsTyping(false);
-            }, 1000); // Remove typing status after 1 second
+    newSocket.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+
+        if (msg.type === 'private message') {
+            setMessages(prevMessages => [...prevMessages, msg]);
         }
     };
 
-    socket.onclose = () => {
-        console.error('You have been disconnected from the server');
+    newSocket.onclose = () => {
+        console.error('WebSocket disconnected');
     };
+
+    setSocket(newSocket);
 
     return () => {
-        socket.close();
+        newSocket.close();
     };
-}, [recipientID]);
+}, [userID]);
 
-console.log(messages)
 const handleSend = (e) => {
   e.preventDefault();
-  const messageObj = {
-      type: 'private message',
-      id: Date.now(),
-      from: userID,
-      to: recipientID,
-      message: input,
-      timestamp: new Date()
-  };
+    const messageObj = {
+        type: 'private message',
+        id: Date.now(),
+        from: userID,
+        to: recipientID,
+        message: input,
+        timestamp: new Date()
+    };
 
-  // Update the local state immediately to reflect the sent message in the UI
-  setMessages(prevMessages => [...prevMessages, messageObj]);
-
-  // Emit the message to the server
-  socket.send(JSON.stringify(messageObj));
-  setInput('');
+    socket.send(JSON.stringify(messageObj));
+    setMessages(prevMessages => [...prevMessages, messageObj]);
+    setInput('');
 };
+
+  const handleTyping = (e) => {
+      setInput(e.target.value);
+      // socket.emit('user typing', userID);
+  };
 //const [offers, setOffers] = useState([]);
 
-  
 const { PID } = router.query;
 const projectIds = Array.isArray(PID) ? PID.join(',') : PID;
 const fetchOffers = async () => {
   try {
-    const response = await axios.get('https://carbon-relay-backend2.vercel.app/auth/trader-offers', {
+    const response = await axios.get('http://localhost:5000/auth/trader-offers', {
       headers: {
         'Authorization': token // Replace with your token
       }
     });
+
     setOffers(response.data.creditOffers);
   } catch (error) {
     console.error('Error fetching offers:', error);
@@ -174,7 +179,7 @@ useEffect(() => {
 
   const fetchOffers = async () => {
     try {
-      const response = await axios.get('https://carbon-relay-backend2.vercel.app/auth/trader-offers', {
+      const response = await axios.get('http://localhost:5000/auth/trader-offers', {
         headers: {
           'Authorization': token // Replace with your token
         }
@@ -192,7 +197,7 @@ useEffect(() => {
   const addOffersToMyCredits = async () => {
     if (projectIds) {
       try {
-        const response = await axios.get(`https://carbon-relay-backend2.vercel.app/auth/add-to-my-offers?projectIds=${projectIds}`, {
+        const response = await axios.get(`http://localhost:5000/auth/add-to-my-offers?projectIds=${projectIds}`, {
           headers: {
             'Authorization': token
           }
@@ -222,7 +227,7 @@ useEffect(() => {
 
   (async () => {
     try {
-      const response = await axios.get('https://carbon-relay-backend2.vercel.app/auth/trader-offers', {
+      const response = await axios.get('http://localhost:5000/auth/trader-offers', {
         headers: {
           'Authorization': token // Replace with your token
         }
@@ -240,13 +245,6 @@ useEffect(() => {
 
 
 
-const handleTyping = (e) => {
-  setInput(e.target.value);
-  socket.send(JSON.stringify({ type: 'user typing', userID }));
-};
-
-
-
   const closeRowPopup = () => {
     setSelectedRowData(null);
   };
@@ -257,7 +255,7 @@ const handleTyping = (e) => {
     if (projectId) {
         // Replace the following with your data fetching logic
         // Example: Fetch data from an API endpoint using the projectId
-        fetch(`https://carbon-relay-backend2.vercel.app/auth/projectData/${projectId}`)
+        fetch(`http://localhost:5000/auth/projectData/${projectId}`)
             .then(response => response.json())
             .then(data => setProjectData(data));
     }
@@ -282,6 +280,7 @@ const handleTyping = (e) => {
   const [modalIsOpen1, setModalIsOpen1] = useState(false);
   const [modalIsOpen2, setModalIsOpen2] = useState(false);
   const [modalIsOpen5, setModalIsOpen5] = useState(false);
+  const [selectedProjectQuantity, setSelectedProjectQuantity] = useState(null);
 console.log("projectid",projectId)
 console.log("projectdata",projectData)
 
@@ -289,8 +288,9 @@ console.log("projectdata",projectData)
   const openModal = () => {
       setModalIsOpen(true);
   }
-  const openModal1 = (projectId) => {
+  const openModal1 = (projectId, quantity) => {
     setSelectedProjectId(projectId);
+    setSelectedProjectQuantity(quantity)
     setModalIsOpen1(true);
     // ... any other logic to open the modal
   };
@@ -372,7 +372,7 @@ const copyToClipboard = () => {
     console.log(data)
   
     try {
-      const response = await fetch("https://carbon-relay-backend2.vercel.app/auth/offers", {
+      const response = await fetch("http://localhost:5000/auth/offers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -416,7 +416,7 @@ const copyToClipboard = () => {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await fetch("https://carbon-relay-backend2.vercel.app/auth/myoffers", {
+        const response = await fetch("http://localhost:5000/auth/myoffers", {
           headers: {
             'Authorization': token
           }
@@ -425,6 +425,7 @@ const copyToClipboard = () => {
         setOffers(data);
   
         const offersCount = data.length;
+
         setOfferCount(offersCount);  // Corrected this line
         console.log("Number of offers:", offersCount);
         
@@ -454,6 +455,7 @@ const copyToClipboard = () => {
   };
 
   const id = useSelector((state) => state?.user?.user?.id);
+  const email = useSelector((state) => state?.user?.user?.email);
   const companyName = useSelector((state) => state?.user?.user?.companyName);
   const handleBid = async(e) => {
     e.preventDefault();
@@ -467,6 +469,7 @@ const copyToClipboard = () => {
         body: JSON.stringify({
           traderId: id,
           traderCompany: companyName,
+          traderemail: email,
           bidAmount: amount,
         }),
       });
@@ -512,6 +515,7 @@ const copyToClipboard = () => {
   };
 
 
+  const [amount, setAmount] = useState("");
   const [dropdownVisibility, setDropdownVisibility] = useState([]);
   useEffect(() => {
     // Initialize the dropdownVisibility array to all false initially
@@ -578,7 +582,7 @@ const copyToClipboard = () => {
                 <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="flex-1  px-2 pb-4 space-y-1">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -594,12 +598,12 @@ const copyToClipboard = () => {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
                 <div>
                   <p className='text-sm my-2 px-2 text-[#8C8C8C]'>BUY</p>
                   {buynavigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -615,11 +619,11 @@ const copyToClipboard = () => {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
              <p className='text-sm px-2 my-2 text-[#8C8C8C]'>Sell</p>
                  {sellnavigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -635,7 +639,7 @@ const copyToClipboard = () => {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
                 </div>
               </nav>
@@ -644,7 +648,7 @@ const copyToClipboard = () => {
                 <div>
                   <p className='text-sm px-2 my-2 text-[#8C8C8C]'>BUY</p>
                   {Cbuynavigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -661,11 +665,11 @@ const copyToClipboard = () => {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
              <p className='text-sm px-2 my-2 text-[#8C8C8C]'>Sell</p>
                  {Csellnavigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -681,7 +685,7 @@ const copyToClipboard = () => {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
                 </div>
               </nav>
@@ -711,7 +715,7 @@ const copyToClipboard = () => {
          
             <nav className="flex-1  px-2 pb-4 space-y-1">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -727,12 +731,12 @@ const copyToClipboard = () => {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
                 <div>
                   <p className='text-sm my-2 px-2 text-[#8C8C8C]'>BUY</p>
                   {buynavigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -748,11 +752,11 @@ const copyToClipboard = () => {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
              <p className='text-sm px-2 my-2 text-[#8C8C8C]'>Sell</p>
                  {sellnavigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -768,7 +772,7 @@ const copyToClipboard = () => {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
                 </div>
               </nav>
@@ -777,7 +781,7 @@ const copyToClipboard = () => {
                 <div>
                   <p className='text-sm px-2 my-2 text-[#8C8C8C]'>BUY</p>
                   {Cbuynavigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -793,7 +797,7 @@ const copyToClipboard = () => {
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
              <p className='text-sm px-2 my-2 text-[#8C8C8C]'>Sell</p>
                  {Csellnavigation.map((item) => (
@@ -1136,24 +1140,24 @@ const copyToClipboard = () => {
             {offer.projectId}
             </td>
             <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>{offer.projectType}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>{offer.projectType}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>
           {offer.startingYear}-{offer.endingYear}
         </button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>{offer.quantity}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>{offer.quantity}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>${offer.offerPrice}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>${offer.offerPrice}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId)}>${offer.offerPrice}</button>
+        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>${offer.createdBy}</button>
       </td>
     {!checkedOffers.includes(offer.projectId) && (
         <>
@@ -1180,7 +1184,7 @@ const copyToClipboard = () => {
               toggleLock(index);
               if (!projectData[offer.projectId]) {
                 // Fetch the project data only if it doesn't exist in projectData
-                fetch(`https://carbon-relay-backend2.vercel.app/auth/projectData/${offer.projectId}`)
+                fetch(`http://localhost:5000/auth/projectData/${offer.projectId}`)
                   .then((response) => response.json())
                   .then((data) => {
                     setProjectData((prevData) => ({
@@ -1305,13 +1309,13 @@ const copyToClipboard = () => {
                 </table>
                 
                 </div>
-                <Modal isOpen={modalIsOpen1}
-       onAfterOpen={afterOpenModal1}
-       onRequestClose={closeModal1}
-       className='py-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black'>
-    <div className='bg-white min-h-screen'>
-        <div className='flex gap-40 mr-5 ml-2 justify-between'>
-            <div className='flex'>
+              <Modal isOpen={modalIsOpen1}
+  onAfterOpen={afterOpenModal1}
+  onRequestClose={closeModal1}
+  className='py-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black'>
+  <div className='bg-white md:w-[400px] min-h-screen'>
+    <div className='flex gap-40 mr-5 ml-2 justify-between'>
+    <div className='flex'>
                 <BsChevronLeft className='mt-4'/>
                 <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'>
                     <span className='my-2 text-center flex text-xl justify-center text-black'>Incoming Bids</span>
@@ -1323,59 +1327,78 @@ const copyToClipboard = () => {
                 </svg>
             </button>
         </div>
-        <hr className='text-xl font-bold text-black'/>
-        {Array.isArray(bids) && bids?.map((bid, index) => (
-  <div key={index}>
-    <div className='mx-5  font-semibold mt-8  text-white py-4'>
-      <div className='flex rounded-tr-xl py-4  gap-2 cs1'>
-        <div>
-          <div className='flex justify-center mx-4 items-center align-middle mb-4 gap-10'>
-            <div>Offer Id</div>
-            <div>Quantity</div>
-            <div>Bid</div>
-          </div>
-          <div className='flex items-center text-center justify-center    gap-8'>
-            <div className='underline'>#{selectedProjectId}</div>
-            <div className='ml-3'>{bid.offerQuantity}</div> {/* Use bid.offerQuantity here */}
-            <div className='ml-6'>${bid.bidAmount}</div>
-          </div>
+     
+    <hr className='text-xl font-bold text-black' />
+    <div className='mx-5  font-semibold   text-white py-4'>
+      <div className='flex px-4 rounded-tr-xl py-2  justify-between  cs1'>
+     <div>
+      <p className='pr-3 mt-2'>Company Name</p>
+      <select className='text-black mt-8 px-3 rounded-lg py-1 outline-none'> 
+        <option>Yet to Bid</option>
+        <option>Active</option>
+        <option>On hold</option>
+        <option>Withdraw</option>
+        </select>
         </div>
         <div>
-          <p className='text-green-300 text-md flex'><span className='text-4xl mt-2'>•</span><span className='mt-5'> Active</span></p>
+            <div className='flex flex-col space-y-1'>
+            <p className='text-green-300 text-md flex'><span className='text-4xl '>•</span>
+            <span className='mt-3'> Active</span>
+            </p>
+            <div className='flex space-x-8'>
+              <p>Offer</p>
+              <p className="bg-white px-2 w-16 mb-2 py-1 text-black">${selectedProjectQuantity}</p>
+            </div>
+            <div className='flex space-x-12'>
+              <p>Bid</p>
+              <div>
+              <input value={amount}   onChange={(e)=>{setAmount(e.target.value)}} type="text" className="bg-white outline-none px-2 py-1 w-16 text-black" />
+              <button onClick={handleBid} className='text-gray-200 relative right-5'>✔️</button>
+              </div>
+            </div>
+            </div>
         </div>
       </div>
-      <div className='mt-4 border rounded-xl border-black mx-4 py-2'>
-        <div className='flex gap-2 text-black justify-between mx-3 '>
-          <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-            <p className='font-semibold'>Bid</p>
-            <p className=' ml-4 font-semibold text-2xl'>${bid.bidAmount}</p> {/* Use bid.bidAmount here */}
-          </div>
-          <div className='bg-gray-100 px-3 pr-10 py-1 rounded-lg'>
-            <p className='font-semibold'>From</p>
-            <p className='ml-3 font-semibold text-sm'>{bid.traderCompanyName}</p> {/* Use bid.traderCompanyName here */}
-          </div>
-          <div className='bg-gray-100 px-3 py-1 rounded-lg'>
-            <p className='text-center font-semibold'>Chat</p>
-            <button onClick={() => { openModal2(); closeModal1(); }}>
-              <p className='text-[12px]'>Click To Chat</p>
-            </button>
-          </div>
+      <div className="px-4" >
+    <p >Conversation Between You and Trader has Started been established</p>
+    
+  </div>
+
+
+  <div className="container text-black bg-gray-300" style={{ maxHeight: "400px", overflowY: "scroll", overflowX: "hidden" }}>
+  {messages
+    .filter((msg) => msg.from !== 'server') // Replace 'server' with the actual server identifier
+    .map((msg) => (
+      <div key={msg.id} className={msg.from === userID ? "my-message" : "other-message"}>
+        <div className="text-[10px] font-bold sender-name">
+          {msg.from === userID ? <p>You</p> : msg.from.slice(0, -10)}
         </div>
-        <div className='flex mx-4 justify-center gap-20'>
-          <select className='border flex outline-none space-x-5 mt-2 text-gray-500 py-1 rounded-md font-semibold pr-20'>
-            <option>Evaluating</option>
-            <option>Accept</option>
-            <option>Reject</option>
-            <option>On hold</option>
-          </select>
-          <p className='text-green-400 text-md flex'><span className='text-4xl'>•</span><span className='mt-3'>{bid.status}</span></p>
-        </div>
+        <div style={{ wordBreak: "break-word" }}>{msg.message}</div>
       </div>
+    ))}
+</div>
+
+
+    <div className='mt-4 sticky-bottom py-2'>
+      <div className="flex">
+        <form className="relative">
+          <input
+            className="px-3 w-[340px] py-4 text-black outline-none border rounded-sm mx-3"
+            value={input}
+            onChange={handleTyping}
+            placeholder="Type your message here..."
+          />
+          <button
+            onClick={handleSend}
+            className="absolute top-2 right-5 px-3 py-2 rounded-md bg-[#203682] text-white"
+          >
+            Send
+          </button>
+        </form>
+      </div>
+    </div>
     </div>
   </div>
-))}
-
-    </div>
 </Modal>
 
       

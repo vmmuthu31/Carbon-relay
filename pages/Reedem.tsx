@@ -80,6 +80,7 @@ const Reedem: React.FC = () => {
         body: JSON.stringify({
           traderId: id,
           traderCompany: companyName,
+          traderemail: email,
           bidAmount: amount,
         }),
       });
