@@ -15,7 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router'
 
-const socket = new WebSocket('ws://carbon-relay-backend2.vercel.app');
+const socket = new WebSocket('ws://localhost:5000');
 
 
 const navigation = [
