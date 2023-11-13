@@ -1157,7 +1157,7 @@ const copyToClipboard = () => {
         <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>${offer.offerPrice}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>${offer.createdBy}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>${offer.offerPrice}</button>
       </td>
     {!checkedOffers.includes(offer.projectId) && (
         <>
