@@ -1140,24 +1140,24 @@ const copyToClipboard = () => {
             {offer.projectId}
             </td>
             <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}><span className=' line-clamp-2'>{offer.projectName}</span></button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>{offer.projectType}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>{offer.projectType}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>
           {offer.startingYear}-{offer.endingYear}
         </button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>{offer.quantity}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>{offer.quantity}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>${offer.offerPrice}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>${offer.offerPrice}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.offerPrice)}>${offer.createdBy}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice); setRecipientID(offer.createdBy)}}>${offer.createdBy}</button>
       </td>
     {!checkedOffers.includes(offer.projectId) && (
         <>
