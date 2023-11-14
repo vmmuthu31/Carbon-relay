@@ -17,9 +17,6 @@ import { useRouter } from 'next/router'
 import axios from "axios"
 import Link from 'next/link'
 
-const socket = new WebSocket('ws://localhost:5000');
-
-
 const navigation = [
   { name: 'Home', href: '#', icon: AiOutlineHome, current: false },
  
@@ -112,7 +109,7 @@ useEffect(() => {
   };
   const [socket, setSocket] = useState(null);
   useEffect(() => {
-    const newSocket = new WebSocket('ws://localhost:5000');
+    const newSocket = new WebSocket('wss://carbon-relay-backend2.vercel.app/ws');
 
     newSocket.onopen = () => {
         newSocket.send(JSON.stringify({ type: 'user joined', userID }));

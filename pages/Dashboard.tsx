@@ -16,8 +16,6 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-const socket = new WebSocket('ws://localhost:5000');
-
 
 const navigation = [
   { name: 'Home', href: '#', icon: AiOutlineHome, current: false },
@@ -135,7 +133,7 @@ useEffect(() => {
     setSelectedRowData(rowData);
   };
   useEffect(() => {
-    const newSocket = new WebSocket('ws://localhost:5000');
+    const newSocket = new WebSocket('wss://carbon-relay-backend2.vercel.app/ws');
 
     newSocket.onopen = () => {
         newSocket.send(JSON.stringify({ type: 'user joined', userID }));
@@ -191,8 +189,6 @@ const handleSend = (e) => {
 
   useEffect(() => {
     if (projectId) {
-        // Replace the following with your data fetching logic
-        // Example: Fetch data from an API endpoint using the projectId
         fetch(`http://localhost:5000/auth/projectData/${projectId}`)
             .then(response => response.json())
             .then(data => setProjectData(data));

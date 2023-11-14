@@ -4,8 +4,6 @@ import Navbar from './Navbar';
 import { useSelector } from 'react-redux';
 import { useSession } from 'next-auth/react';
 
-const socket = io('http://localhost:5000')
-
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -17,7 +15,8 @@ const Chat = () => {
   const userID = session?.user?.email;
 
   useEffect(() => {
-      const newSocket = new WebSocket('ws://localhost:5000');
+    const newSocket = new WebSocket('wss://carbon-relay-backend2.vercel.app/ws');
+
 
       newSocket.onopen = () => {
           newSocket.send(JSON.stringify({ type: 'user joined', userID }));
