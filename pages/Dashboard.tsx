@@ -133,7 +133,7 @@ useEffect(() => {
     setSelectedRowData(rowData);
   };
   useEffect(() => {
-    const newSocket = new WebSocket('wss://carbon-relay-backend2.vercel.app/ws');
+    const newSocket = new WebSocket('wss://carbon-relay-backend2.vercel.app');
 
     newSocket.onopen = () => {
         newSocket.send(JSON.stringify({ type: 'user joined', userID }));

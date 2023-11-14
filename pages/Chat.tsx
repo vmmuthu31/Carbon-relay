@@ -15,7 +15,7 @@ const Chat = () => {
   const userID = session?.user?.email;
 
   useEffect(() => {
-    const newSocket = new WebSocket('wss://carbon-relay-backend2.vercel.app/ws');
+    const newSocket = new WebSocket('wss://carbon-relay-backend2.vercel.app');
 
 
       newSocket.onopen = () => {
