@@ -176,6 +176,8 @@ const fetchOffers = async () => {
   }
 };
 
+fetchOffers();
+
 useEffect(() => {
 
   const fetchOffers = async () => {
@@ -242,7 +244,7 @@ useEffect(() => {
       }
     }
   })();
-}, [token, router, setOffers]);
+}, [token|| router|| setOffers]);
 
 
 
@@ -415,29 +417,7 @@ const copyToClipboard = () => {
       setQuantity(prevQuantity => prevQuantity - 1);
     }
   };
-  useEffect(() => {
-    const fetchOffers = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/auth/myoffers", {
-          headers: {
-            'Authorization': token
-          }
-        });
-        const data = await response.json();
-        setOffers(data);
   
-        const offersCount = data.length;
-
-        setOfferCount(offersCount);  // Corrected this line
-        console.log("Number of offers:", offersCount);
-        
-      } catch (error) {
-        console.error("Error fetching offers:", error);
-      }
-    };
-      fetchOffers();
-
-  }, []);
   useEffect(() => {
     const fetchOffers = async () => {
       try {
