@@ -287,13 +287,25 @@ useEffect(() => {
   const openModal = () => {
       setModalIsOpen(true);
   }
-  const openModal1 = (projectId, quantity,offer) => {
+  const [bidstatus,setBidstatus] = useState("Active");
+  const openModal1 = (projectId, quantity, offer) => {
     setSelectedProjectId(projectId);
-    setSelectedProjectQuantity(quantity)
-    setAmount(offer.bids && offer.bids.length > 0 ? Math.max(...offer.bids.map(bid => bid.bidAmount)) : 0);
+    setSelectedProjectQuantity(quantity);
+  
+    if (offer.bids && offer.bids.length > 0) {
+      // Find the highest bid
+      const highestBid = offer.bids.reduce((max, bid) => (bid.bidAmount > max.bidAmount ? bid : max), offer.bids[0]);
+      setAmount(highestBid.bidAmount);
+      setBidstatus(highestBid.bidStatus);
+    } else {
+      setAmount(0);
+      setBidstatus("Active"); // Set to default status if no bids
+    }
+  
     setModalIsOpen1(true);
     // ... any other logic to open the modal
   };
+  
   
 const openModal2 = () => {
   setModalIsOpen2(true);
@@ -1340,7 +1352,7 @@ const copyToClipboard = () => {
         <div className='flex px-4 rounded-tr-xl py-2  justify-between  cs1'>
      <div>
       <p className='pr-3 mt-2'>Company Name</p>
-      <select className='text-black mt-8 px-3 rounded-lg py-1 outline-none'> 
+      <select value={bidstatus} className='text-black mt-8 px-3 rounded-lg py-1 outline-none'> 
         <option>Yet to Bid</option>
         <option>Active</option>
         <option>On hold</option>
