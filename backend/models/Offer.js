@@ -2,6 +2,21 @@
 
 const mongoose = require("mongoose");
 
+const BidSchema = new mongoose.Schema({
+  bidStatus: {
+    type: String,
+    required: true,
+  },
+  bidAmount: {
+    type: Number,
+    required: true,
+  },
+  bidCreatorEmail: {
+    type: String,
+    required: true,
+  },
+});
+
 const offerSchema = new mongoose.Schema({
   projectId: String,
   quantity: Number,
@@ -27,12 +42,7 @@ const offerSchema = new mongoose.Schema({
     required: true,
     enum: ["Admin", "Trader"],
   },
-  bids: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
+  bids: [BidSchema],
   creationDate: {
     type: Date, // Add a creationDate field of type Date
     default: Date.now, // Set a default value to the current date and time

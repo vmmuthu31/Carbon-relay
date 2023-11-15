@@ -1061,7 +1061,11 @@ const copyToClipboard = () => {
       </td>
       <td className='px-4 py-4 text-sm'>
   <button onClick={() => { openModal1(offer.projectId, offer.quantity,offer.offerPrice); setReceiptantID(offer.createdBy) }}>
-    {offer.bids && offer.bids.length > 0 ? `$${Math.max(...offer.bids)}` : '-'}
+  {offer.bids && offer.bids.length > 0 ? 
+    `$${Math.max(...offer.bids.map(bid => bid.bidAmount))}` : 
+    '-'
+}
+
   </button>
 </td>
 

@@ -173,7 +173,6 @@ const fetchOffers = async () => {
   }
 };
 
-fetchOffers();
 
 useEffect(() => {
 
@@ -291,8 +290,7 @@ useEffect(() => {
   const openModal1 = (projectId, quantity,offer) => {
     setSelectedProjectId(projectId);
     setSelectedProjectQuantity(quantity)
-    setAmount(offer.bids && offer.bids.length > 0 ? Math.max(...offer.bids) : 0);
-
+    setAmount(offer.bids && offer.bids.length > 0 ? Math.max(...offer.bids.map(bid => bid.bidAmount)) : 0);
     setModalIsOpen1(true);
     // ... any other logic to open the modal
   };
@@ -1160,7 +1158,11 @@ const copyToClipboard = () => {
       </td>
       <td className='px-4 py-4 text-sm'>
   <button onClick={() => { openModal1(offer.projectId, offer.offerPrice, offer); setRecipientID(offer.createdBy);  }}>
-    {offer.bids && offer.bids.length > 0 ? `$${Math.max(...offer.bids)}` : 'No bids'}
+  {offer.bids && offer.bids.length > 0 ? 
+    `$${Math.max(...offer.bids.map(bid => bid.bidAmount))}` : 
+    '-'
+}
+
   </button>
 </td>
 
@@ -1352,12 +1354,12 @@ const copyToClipboard = () => {
             </p>
             <div className='flex space-x-8'>
               <p>Offer</p>
-              <p className="bg-white px-2 w-16 mb-2 py-1 text-black">${selectedProjectQuantity}</p>
+              <p className="bg-white px-2 w-20 mb-2 py-1 text-black">${selectedProjectQuantity}</p>
             </div>
             <div className='flex space-x-12'>
               <p>Bid</p>
               <div>
-              <input value={amount}   onChange={(e)=>{setAmount(e.target.value)}} type="text" className="bg-white outline-none px-2 py-1 w-16 text-black" />
+              <input value={`$${amount}`}   onChange={(e)=>{setAmount(e.target.value)}} type="text" className="bg-white outline-none px-2 py-1 w-20 text-black" />
               <button onClick={handleBid} className='text-gray-200 relative right-5'>✔️</button>
               </div>
             </div>

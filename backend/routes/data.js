@@ -191,7 +191,16 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
     await bid.save(); // Save the bid to the database
     await Offer.findOneAndUpdate(
       { projectId: offerId },
-      { $push: { bids: bid.bidAmount.toString() } }
+      {
+        $push: {
+          bids: {
+            bidStatus: status || "Active",
+            bidAmount: bidAmount,
+            bidCreatorEmail: traderemail,
+            // You can add other bid properties here as necessary
+          },
+        },
+      }
     );
 
     // Once the bid is created, you can return a success response or any relevant data.
