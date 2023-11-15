@@ -1321,7 +1321,8 @@ const copyToClipboard = () => {
   onRequestClose={closeModal1}
   className='py-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black'>
   <div className='bg-[#e7e4e4]  md:w-[400px] min-h-screen'>
-    <div className='flex bg-white gap-40 mr-5 ml-2 justify-between'>
+    <div className=' bg-white '>
+      <div className='flex gap-40 mr-5 ml-2 justify-between'>
     <div className='flex'>
                 <BsChevronLeft className='mt-4'/>
                 <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'>
@@ -1334,11 +1335,9 @@ const copyToClipboard = () => {
                 </svg>
             </button>
         </div>
-     
-    <hr className='text-xl font-bold text-black' />
-    
-    <div className='mx-5  font-semibold   text-white py-4'>
-      <div className='flex px-4 rounded-tr-xl py-2  justify-between  cs1'>
+        <hr className='text-xl font-bold text-black' />
+        <div className='mx-5 py-4 font-semibold text-white'>
+        <div className='flex px-4 rounded-tr-xl py-2  justify-between  cs1'>
      <div>
       <p className='pr-3 mt-2'>Company Name</p>
       <select className='text-black mt-8 px-3 rounded-lg py-1 outline-none'> 
@@ -1367,6 +1366,13 @@ const copyToClipboard = () => {
             </div>
         </div>
       </div>
+      </div>
+        </div>
+     
+    
+    
+    <div className='mx-5  font-semibold   text-white py-4'>
+     
       <div className="px-4  text-black text-md font-semibold"  >
     <p >Conversation Between You and Trader has Started been established</p>
     
