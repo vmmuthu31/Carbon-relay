@@ -1382,7 +1382,7 @@ const copyToClipboard = () => {
             <div className='flex space-x-12'>
               <p>Bid</p>
               <div>
-              <input value={`$${amount}`}   onChange={(e)=>{setAmount(e.target.value)}} type="text" className="bg-white outline-none px-2 py-1 w-20 text-black" />
+              <input value={amount}   onChange={(e)=>{setAmount(e.target.value)}} type="text" className="bg-white outline-none px-2 py-1 w-20 text-black" />
               <button onClick={handleBid} className='text-gray-200 relative right-5'>✔️</button>
               </div>
             </div>
