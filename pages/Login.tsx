@@ -34,7 +34,7 @@ const Login: React.FC<SignupProps> = ({ providers }) => {
   const dispatch = useDispatch();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("https://carbon-relay-backend2.vercel.app/api/login", {
+    const response = await fetch("http://localhost:5000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -9,7 +9,17 @@ const app = express();
 app.use(cors());
 
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ noServer: true });
+
+server.on("upgrade", function (request, socket, head) {
+  if (request.url === "/ws") {
+    wss.handleUpgrade(request, socket, head, function done(ws) {
+      wss.emit("connection", ws, request);
+    });
+  } else {
+    socket.destroy();
+  }
+});
 
 mongoose.connect(
   "mongodb+srv://vairamuthu:vairamuthu@cluster0.2qcddvx.mongodb.net/C-Dash",

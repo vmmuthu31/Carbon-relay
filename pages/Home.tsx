@@ -41,7 +41,7 @@ const Home: React.FC = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-      const response = await fetch("https://carbon-relay-backend2.vercel.app/api/invite", {
+      const response = await fetch("http://localhost:5000/api/invite", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

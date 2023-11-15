@@ -56,8 +56,8 @@ export default function CreditsOffers() {
   const [offercount, setOfferCount] = useState(0);
   const userID = useSelector((state) => state?.user?.user?.email);
   const role = useSelector((state) => state?.user?.user?.role);
-  console.log("userID",userID)
-  console.log("recipientID",recipientID)
+  // console.log("userID",userID)
+  // console.log("recipientID",recipientID)
 const router = useRouter();
   const token = useSelector((state) => state?.user?.token);
   // const userID = session?.user?.email; 
@@ -69,7 +69,7 @@ const router = useRouter();
 useEffect(() => {
   const fetchOffers = async () => {
     try {
-      const response = await fetch(`https://carbon-relay-backend2.vercel.app/auth/get-bids/${selectedProjectId}`, {
+      const response = await fetch(`http://localhost:5000/auth/get-bids/${selectedProjectId}`, {
         headers: {
           'Authorization': token
         }
@@ -84,7 +84,7 @@ useEffect(() => {
     }
       const BidCount = data && Array.isArray(data) ? data.length : 0;
       // setOfferCount(BidCount);
-      console.log("Number of Bids:", BidCount);
+      // console.log("Number of Bids:", BidCount);
     } catch (error) {
       console.error("Erronr fetching offers:", error?.response);
     }
@@ -93,10 +93,10 @@ useEffect(() => {
   fetchOffers();
 }, [selectedProjectId]);
 
-  console.log("count", offercount)
-  console.log("token",token)
-  console.log("bids",bids)
-  console.log(recipientID,"receipt")
+  // console.log("count", offercount)
+  // console.log("token",token)
+  // console.log("bids",bids)
+  // console.log(recipientID,"receipt")
   const [isTyping, setIsTyping] = useState(false);
 
   const toggleLock = (rowIndex) => {
@@ -109,7 +109,7 @@ useEffect(() => {
   };
   const [socket, setSocket] = useState(null);
   useEffect(() => {
-    const newSocket = new WebSocket('wss://carbon-relay-backend2.vercel.app');
+    const newSocket = new WebSocket('ws://localhost:5000/ws');
 
     newSocket.onopen = () => {
         newSocket.send(JSON.stringify({ type: 'user joined', userID }));
@@ -160,7 +160,7 @@ const { PID } = router.query;
 const projectIds = Array.isArray(PID) ? PID.join(',') : PID;
 const fetchOffers = async () => {
   try {
-    const response = await axios.get('https://carbon-relay-backend2.vercel.app/auth/trader-offers', {
+    const response = await axios.get('http://localhost:5000/auth/trader-offers', {
       headers: {
         'Authorization': token // Replace with your token
       }
@@ -179,7 +179,7 @@ useEffect(() => {
 
   const fetchOffers = async () => {
     try {
-      const response = await axios.get('https://carbon-relay-backend2.vercel.app/auth/trader-offers', {
+      const response = await axios.get('http://localhost:5000/auth/trader-offers', {
         headers: {
           'Authorization': token // Replace with your token
         }
@@ -197,7 +197,7 @@ useEffect(() => {
   const addOffersToMyCredits = async () => {
     if (projectIds) {
       try {
-        const response = await axios.get(`https://carbon-relay-backend2.vercel.app/auth/add-to-my-offers?projectIds=${projectIds}`, {
+        const response = await axios.get(`http://localhost:5000/auth/add-to-my-offers?projectIds=${projectIds}`, {
           headers: {
             'Authorization': token
           }
@@ -227,7 +227,7 @@ useEffect(() => {
 
   (async () => {
     try {
-      const response = await axios.get('https://carbon-relay-backend2.vercel.app/auth/trader-offers', {
+      const response = await axios.get('http://localhost:5000/auth/trader-offers', {
         headers: {
           'Authorization': token // Replace with your token
         }
@@ -241,7 +241,7 @@ useEffect(() => {
       }
     }
   })();
-}, [token|| router|| setOffers]);
+}, [token, router, setOffers]);
 
 
 
@@ -255,7 +255,7 @@ useEffect(() => {
     if (projectId) {
         // Replace the following with your data fetching logic
         // Example: Fetch data from an API endpoint using the projectId
-        fetch(`https://carbon-relay-backend2.vercel.app/auth/projectData/${projectId}`)
+        fetch(`http://localhost:5000/auth/projectData/${projectId}`)
             .then(response => response.json())
             .then(data => setProjectData(data));
     }
@@ -281,8 +281,8 @@ useEffect(() => {
   const [modalIsOpen2, setModalIsOpen2] = useState(false);
   const [modalIsOpen5, setModalIsOpen5] = useState(false);
   const [selectedProjectQuantity, setSelectedProjectQuantity] = useState(null);
-console.log("projectid",projectId)
-console.log("projectdata",projectData)
+// console.log("projectid",projectId)
+// console.log("projectdata",projectData)
 
 
   const openModal = () => {
@@ -374,7 +374,7 @@ const copyToClipboard = () => {
     console.log(data)
   
     try {
-      const response = await fetch("https://carbon-relay-backend2.vercel.app/auth/offers", {
+      const response = await fetch("http://localhost:5000/auth/offers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -418,7 +418,7 @@ const copyToClipboard = () => {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await fetch("https://carbon-relay-backend2.vercel.app/auth/myoffers", {
+        const response = await fetch("http://localhost:5000/auth/myoffers", {
           headers: {
             'Authorization': token
           }
@@ -462,7 +462,7 @@ const copyToClipboard = () => {
   const handleBid = async(e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`https://carbon-relay-backend2.vercel.app/auth/create-bid/${selectedProjectId}`, {
+      const response = await fetch(`http://localhost:5000/auth/create-bid/${selectedProjectId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1085,7 +1085,7 @@ const copyToClipboard = () => {
     .map((offer, index) => {
       const projectDataForOffer = projectData[offer.projectId] || {}; // Default to an empty object
 
-  console.log("project", offer.projectId);
+  // console.log("project", offer.projectId);
   const toggleDropdown = (index) => {
     console.log("Hello")
     setDropdownVisibility((prevVisibility) => {
@@ -1189,7 +1189,7 @@ const copyToClipboard = () => {
               toggleLock(index);
               if (!projectData[offer.projectId]) {
                 // Fetch the project data only if it doesn't exist in projectData
-                fetch(`https://carbon-relay-backend2.vercel.app/auth/projectData/${offer.projectId}`)
+                fetch(`http://localhost:5000/auth/projectData/${offer.projectId}`)
                   .then((response) => response.json())
                   .then((data) => {
                     setProjectData((prevData) => ({

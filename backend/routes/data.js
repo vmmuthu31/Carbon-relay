@@ -160,7 +160,7 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
       status,
       operation,
     } = req.body;
-    console.log("Received body:", req.body);
+    // console.log("Received body:", req.body);
 
     // Fetch the offer to ensure it exists
     const offer = await Offer.findOne({ projectId: offerId });
@@ -213,14 +213,14 @@ router.get("/get-bids/:offerId", verifyToken, async (req, res) => {
       projectId: offerId,
       createdBy: user.email,
     });
-    console.log("off", offer);
+    // console.log("off", offer);
     if (!offer) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
     // Fetch all bids associated with the offer from the database
     const bids = await Bid.find({ offerId: offerId });
-    console.log("bids", bids);
+    // console.log("bids", bids);
 
     // Populate trader's companyName for each bid
     const populatedBids = await Promise.all(
@@ -277,17 +277,17 @@ router.get("/add-to-my-offers", verifyToken, async (req, res) => {
 
 router.get("/trader-offers", verifyToken, async (req, res) => {
   try {
-    console.log("User from token:", req.user);
+    // console.log("User from token:", req.user);
     const traderId = req.user.userId;
 
-    console.log("Trader ID:", traderId);
+    // console.log("Trader ID:", traderId);
 
     // Find the trader without the password field and populate the creditOffers
     const traderWithOffers = await Trader.findById(traderId)
       .select("-password") // Exclude the password field
       .populate("creditOffers");
 
-    console.log("Trader with offers:", traderWithOffers);
+    // console.log("Trader with offers:", traderWithOffers);
 
     if (!traderWithOffers) {
       return res.status(404).json({ message: "Trader not found" });
