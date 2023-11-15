@@ -1386,11 +1386,11 @@ const copyToClipboard = () => {
 </div>
 
 
-    <div className='mt-4 sticky-bottom py-2'>
-      <div className="flex">
+    <div className='mt-4  sticky-bottom py-2'>
+      <div className="flex ">
         <form className="relative">
           <input
-            className="px-3 w-[340px] py-4 outline-none border rounded-sm mx-3"
+            className="px-3 mx-5 w-[340px] py-4 outline-none border rounded-sm "
             value={input}
             onChange={handleTyping}
             placeholder="Type your message here..."

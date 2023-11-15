@@ -1320,8 +1320,8 @@ const copyToClipboard = () => {
   onAfterOpen={afterOpenModal1}
   onRequestClose={closeModal1}
   className='py-1 rounded-l-xl rounded-lg min-h-full flex justify-end text-black'>
-  <div className='bg-white md:w-[400px] min-h-screen'>
-    <div className='flex gap-40 mr-5 ml-2 justify-between'>
+  <div className='bg-[#e7e4e4]  md:w-[400px] min-h-screen'>
+    <div className='flex bg-white gap-40 mr-5 ml-2 justify-between'>
     <div className='flex'>
                 <BsChevronLeft className='mt-4'/>
                 <h2 ref={(_subtitle) => (subtitle = _subtitle)} className='ml-2'>
@@ -1336,6 +1336,7 @@ const copyToClipboard = () => {
         </div>
      
     <hr className='text-xl font-bold text-black' />
+    
     <div className='mx-5  font-semibold   text-white py-4'>
       <div className='flex px-4 rounded-tr-xl py-2  justify-between  cs1'>
      <div>
@@ -1366,13 +1367,13 @@ const copyToClipboard = () => {
             </div>
         </div>
       </div>
-      <div className="px-4" >
+      <div className="px-4  text-black text-md font-semibold"  >
     <p >Conversation Between You and Trader has Started been established</p>
     
   </div>
 
 
-  <div className="container text-black bg-gray-300" style={{ maxHeight: "400px", overflowY: "scroll", overflowX: "hidden" }}>
+  <div className="container text-black " style={{ maxHeight: "400px", overflowY: "scroll", overflowX: "hidden" }}>
   {messages
     .filter((msg) => msg.from !== 'server') // Replace 'server' with the actual server identifier
     .map((msg) => (
@@ -1390,7 +1391,7 @@ const copyToClipboard = () => {
       <div className="flex">
         <form className="relative">
           <input
-            className="px-3 w-[340px] py-4 text-black outline-none border rounded-sm mx-3"
+            className="px-3 w-[340px] py-4 text-black outline-none border rounded-sm "
             value={input}
             onChange={handleTyping}
             placeholder="Type your message here..."
