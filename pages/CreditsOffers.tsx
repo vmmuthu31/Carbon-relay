@@ -305,6 +305,16 @@ useEffect(() => {
     setModalIsOpen1(true);
     // ... any other logic to open the modal
   };
+  const statusColors = {
+    "Active": "text-green-300",
+    "Yet to Bid": "text-gray-300",
+    "On hold": "text-yellow-300",
+    "Withdraw": "text-red-300",
+    // Add other statuses and their corresponding colors as needed
+  };
+  const statusColor = statusColors[bidstatus] || "text-gray-300"; // Default color if status is not found
+
+  
   
   
 const openModal2 = () => {
@@ -1361,9 +1371,10 @@ const copyToClipboard = () => {
         </div>
         <div>
             <div className='flex flex-col space-y-1'>
-            <p className='text-green-300 text-md flex'><span className='text-4xl '>•</span>
-            <span className='mt-3'> Active</span>
-            </p>
+            <p className={`${statusColor} text-md flex`}>
+      <span className='text-4xl'>•</span>
+      <span className='mt-3'> {bidstatus}</span>
+    </p>
             <div className='flex space-x-8'>
               <p>Offer</p>
               <p className="bg-white px-2 w-20 mb-2 py-1 text-black">${selectedProjectQuantity}</p>
