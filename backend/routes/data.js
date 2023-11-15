@@ -283,6 +283,52 @@ router.get("/add-to-my-offers", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Error adding offers to credit offers" });
   }
 });
+router.patch(
+  "/update-bid-status/:offerId/:bidId",
+  verifyToken,
+  async (req, res) => {
+    try {
+      const { offerId, bidId } = req.params;
+      const { newStatus } = req.body; // The new status is expected in the request body
+      const user = req.user;
+
+      // Fetch the offer to ensure it exists and is created by the user
+      const offer = await Offer.findOne({
+        projectId: offerId,
+        createdBy: user.email,
+      });
+      if (!offer) {
+        return res
+          .status(404)
+          .json({
+            error:
+              "Offer not found or you're not authorized to update this offer",
+          });
+      }
+
+      // Find and update the bid status
+      const updatedBid = await Bid.findByIdAndUpdate(
+        bidId,
+        { status: newStatus },
+        { new: true }
+      );
+
+      if (!updatedBid) {
+        return res.status(404).json({ error: "Bid not found" });
+      }
+
+      // Return the updated bid in the response
+      return res
+        .status(200)
+        .json({ message: "Bid status updated successfully", updatedBid });
+    } catch (error) {
+      console.error("Error updating bid status:", error);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while updating bid status" });
+    }
+  }
+);
 
 router.get("/trader-offers", verifyToken, async (req, res) => {
   try {
