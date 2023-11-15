@@ -188,16 +188,17 @@ router.post("/create-bid/:offerId", verifyToken, async (req, res) => {
       operation: operation || "Evaluating", // Default to "Evaluating" if operation is not provided
     });
 
-    await bid.save(); // Save the bid to the database
+    const savedBid = await bid.save();
     await Offer.findOneAndUpdate(
       { projectId: offerId },
       {
         $push: {
           bids: {
+            bidId: savedBid._id, // Use the _id of the saved bid
             bidStatus: status || "Active",
             bidAmount: bidAmount,
             bidCreatorEmail: traderemail,
-            // You can add other bid properties here as necessary
+            // Add other necessary bid properties
           },
         },
       }
@@ -289,7 +290,7 @@ router.patch(
   async (req, res) => {
     try {
       const { offerId, bidId } = req.params;
-      const { newStatus } = req.body; // The new status is expected in the request body
+      const { newStatus } = req.body;
       const user = req.user;
 
       // Fetch the offer to ensure it exists and is created by the user
@@ -297,13 +298,12 @@ router.patch(
         projectId: offerId,
         createdBy: user.email,
       });
+
       if (!offer) {
-        return res
-          .status(404)
-          .json({
-            error:
-              "Offer not found or you're not authorized to update this offer",
-          });
+        return res.status(404).json({
+          error:
+            "Offer not found or you're not authorized to update this offer",
+        });
       }
 
       // Find and update the bid status
@@ -317,6 +317,11 @@ router.patch(
         return res.status(404).json({ error: "Bid not found" });
       }
 
+      // Update the corresponding entry in the Offer document
+      await Offer.findOneAndUpdate(
+        { projectId: offerId, "bids.bidId": bidId },
+        { $set: { "bids.$.bidStatus": newStatus } }
+      );
       // Return the updated bid in the response
       return res
         .status(200)

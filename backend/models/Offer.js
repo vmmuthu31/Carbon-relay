@@ -3,6 +3,10 @@
 const mongoose = require("mongoose");
 
 const BidSchema = new mongoose.Schema({
+  bidId: {
+    type: String,
+    required: true,
+  },
   bidStatus: {
     type: String,
     required: true,

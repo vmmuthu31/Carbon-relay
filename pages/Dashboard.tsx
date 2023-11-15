@@ -417,6 +417,37 @@ const copyToClipboard = () => {
       [projectId]: !prevState[projectId],
     }));
   };
+  const [selectedStatuses, setSelectedStatuses] = useState({});
+
+  // Change handler for the select element
+  const handleStatusChange = (bidId, newStatus) => {
+    setSelectedStatuses(prev => ({ ...prev, [bidId]: newStatus }));
+    updateBidStatus(bidId, newStatus); // Function to make API request
+  };
+  
+  const updateBidStatus = async (bidId, newStatus) => {
+    try {
+      const response = await fetch(`http://localhost:5000/auth/update-bid-status/${selectedProjectId}/${bidId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+        },
+        body: JSON.stringify({ newStatus }),
+      });
+      
+  
+      if (!response.ok) {
+        throw new Error('Failed to update bid status');
+      }
+  
+      // Additional logic if you need to do something after successful update
+    } catch (error) {
+      console.error('Error updating bid status:', error);
+      // Handle error
+    }
+  };
+  
 
 
   const [dropdownVisibility, setDropdownVisibility] = useState([]);
@@ -1303,12 +1334,15 @@ const copyToClipboard = () => {
           </div>
         </div>
         <div className='flex mx-4 justify-center gap-20'>
-          <select className='border flex outline-none space-x-5 mt-2 text-gray-500 py-1 rounded-md font-semibold pr-20'>
-            <option>Evaluating</option>
-            <option>Accept</option>
-            <option>Reject</option>
-            <option>On hold</option>
-          </select>
+        <select 
+        value={selectedStatuses[bid._id] || bid.status} 
+        onChange={(e) => handleStatusChange(bid._id, e.target.value)}
+        className='border flex outline-none space-x-5 mt-2 text-gray-500 py-1 rounded-md font-semibold pr-20'>
+        <option>Evaluating</option>
+        <option>Accept</option>
+        <option>Reject</option>
+        <option>On hold</option>
+      </select>
           <p className='text-green-400 text-md flex'><span className='text-4xl'>•</span><span className='mt-3'>{bid.status}</span></p>
         </div>
       </div>
