@@ -345,13 +345,13 @@ const [isSubmitClicked, setIsSubmitClicked] = useState(false);
 const [shareableLink, setShareableLink] = useState('');
 const generateShareableLink = (offer) => {
   // Customize the link generation based on your data structure
-  const link = `http://localhost:3000/Reedem?projectId=${offer.projectId}`; // Include all the necessary data
+  const link = `https://carbon-relay.vercel.app/Reedem?projectId=${offer.projectId}`; // Include all the necessary data
   return link;
 };
 const handleShareButtonClick = () => {
   // Assuming checkedOffers is an array of projectIds that have been checked
   const projectIdsParam = checkedOffers.join('&projectId=');
-  const baseLink = 'http://localhost:3000/Reedem?projectId=';
+  const baseLink = 'https://carbon-relay.vercel.app/Reedem?projectId=';
   const combinedLink = baseLink + projectIdsParam;
 
   setShareableLink(combinedLink);
