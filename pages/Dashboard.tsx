@@ -448,6 +448,8 @@ const copyToClipboard = () => {
     }
   };
   
+  const multipleOffersSelected = checkedOffers.length > 1;
+
 
 
   const [dropdownVisibility, setDropdownVisibility] = useState([]);
@@ -1006,6 +1008,13 @@ const copyToClipboard = () => {
                       <th className='px-8 py-2 font-semibold '><span className='flex'><p>QUANTITY     </p> <AiOutlineDown className='mt-1 mx-1'/> </span>  </th>
                       <th className='px-8 py-2 font-semibold '><span className='flex'><p>OFFER       </p> <AiOutlineDown className='mt-1 mx-1'/>  </span> </th>
                       <th className='px-8 py-2 font-semibold '>BID </th>
+                      <th className='px-8 py-2 font-semibold '>
+                      {multipleOffersSelected && (
+  <button className='flex bg-[rgb(47,84,235)] text-white px-2 py-2 rounded-lg' onClick={() => handleShareButtonClick(checkedOffers)}>
+    Share <FaShare className='text-xl text-white w-8' />
+  </button>
+)}
+</th>
                     </tr>
                   </thead>
                   <tbody className='underline '>
@@ -1197,11 +1206,21 @@ const copyToClipboard = () => {
         </>
     )}
     <td>
-    {checkedOffers.includes(offer.projectId) && <button onClick={()=> handleShareButtonClick(offer)}><FaShare className='text-xl text-gray-700 w-8' /> </button>}
+    {!multipleOffersSelected && checkedOffers.includes(offer.projectId) && (
+            <td>
+              <button onClick={() => handleShareButtonClick(offer)}>
+                <FaShare className='text-xl text-gray-700 w-8' />
+              </button>
+            </td>
+          )}
     </td>
+   
     </tr>
+    
   );
 }): null}
+  
+
 <Modal
    isOpen={modalIsOpen5}
    onAfterOpen={afterOpenModal5}
