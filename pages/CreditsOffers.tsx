@@ -69,7 +69,7 @@ const router = useRouter();
 useEffect(() => {
   const fetchOffers = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/auth/get-bids/${selectedProjectId}`, {
+      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/get-bids/${selectedProjectId}`, {
         headers: {
           'Authorization': token
         }
@@ -109,7 +109,7 @@ useEffect(() => {
   };
   const [socket, setSocket] = useState(null);
   useEffect(() => {
-    const newSocket = new WebSocket('ws://localhost:5000/ws');
+    const newSocket = new WebSocket('wss://carbon-relay-23a0f49f1c2f.herokuapp.com/ws');
 
     newSocket.onopen = () => {
         newSocket.send(JSON.stringify({ type: 'user joined', userID }));
@@ -160,7 +160,7 @@ const { PID } = router.query;
 const projectIds = Array.isArray(PID) ? PID.join(',') : PID;
 const fetchOffers = async () => {
   try {
-    const response = await axios.get('http://localhost:5000/auth/trader-offers', {
+    const response = await axios.get('https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/trader-offers', {
       headers: {
         'Authorization': token // Replace with your token
       }
@@ -178,7 +178,7 @@ useEffect(() => {
 
   const fetchOffers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/auth/trader-offers', {
+      const response = await axios.get('https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/trader-offers', {
         headers: {
           'Authorization': token // Replace with your token
         }
@@ -196,7 +196,7 @@ useEffect(() => {
   const addOffersToMyCredits = async () => {
     if (projectIds) {
       try {
-        const response = await axios.get(`http://localhost:5000/auth/add-to-my-offers?projectIds=${projectIds}`, {
+        const response = await axios.get(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/add-to-my-offers?projectIds=${projectIds}`, {
           headers: {
             'Authorization': token
           }
@@ -226,7 +226,7 @@ useEffect(() => {
 
   (async () => {
     try {
-      const response = await axios.get('http://localhost:5000/auth/trader-offers', {
+      const response = await axios.get('https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/trader-offers', {
         headers: {
           'Authorization': token // Replace with your token
         }
@@ -254,7 +254,7 @@ useEffect(() => {
     if (projectId) {
         // Replace the following with your data fetching logic
         // Example: Fetch data from an API endpoint using the projectId
-        fetch(`http://localhost:5000/auth/projectData/${projectId}`)
+        fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/projectData/${projectId}`)
             .then(response => response.json())
             .then(data => setProjectData(data));
     }
@@ -394,7 +394,7 @@ const copyToClipboard = () => {
     console.log(data)
   
     try {
-      const response = await fetch("http://localhost:5000/auth/offers", {
+      const response = await fetch("https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/offers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -438,7 +438,7 @@ const copyToClipboard = () => {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/auth/myoffers", {
+        const response = await fetch("https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/myoffers", {
           headers: {
             'Authorization': token
           }
@@ -482,7 +482,7 @@ const copyToClipboard = () => {
   const handleBid = async(e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5000/auth/create-bid/${selectedProjectId}`, {
+      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/create-bid/${selectedProjectId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1213,7 +1213,7 @@ const copyToClipboard = () => {
               toggleLock(index);
               if (!projectData[offer.projectId]) {
                 // Fetch the project data only if it doesn't exist in projectData
-                fetch(`http://localhost:5000/auth/projectData/${offer.projectId}`)
+                fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/projectData/${offer.projectId}`)
                   .then((response) => response.json())
                   .then((data) => {
                     setProjectData((prevData) => ({

@@ -34,7 +34,7 @@ const Login: React.FC<SignupProps> = ({ providers }) => {
   const dispatch = useDispatch();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/api/login", {
+    const response = await fetch("https://carbon-relay-23a0f49f1c2f.herokuapp.com/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -70,7 +70,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/auth/myoffers", {
+        const response = await fetch("https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/myoffers", {
           headers: {
             'Authorization': token
           }
@@ -94,7 +94,7 @@ export default function Dashboard() {
 useEffect(() => {
   const fetchOffers = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/auth/get-bids/${selectedProjectId}`, {
+      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/get-bids/${selectedProjectId}`, {
         headers: {
           'Authorization': token
         }
@@ -133,7 +133,7 @@ useEffect(() => {
     setSelectedRowData(rowData);
   };
   useEffect(() => {
-    const newSocket = new WebSocket('ws://localhost:5000/ws');
+    const newSocket = new WebSocket('wss://carbon-relay-23a0f49f1c2f.herokuapp.com/ws');
 
     newSocket.onopen = () => {
         newSocket.send(JSON.stringify({ type: 'user joined', userID }));
@@ -189,7 +189,7 @@ const handleSend = (e) => {
 
   useEffect(() => {
     if (projectId) {
-        fetch(`http://localhost:5000/auth/projectData/${projectId}`)
+        fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/projectData/${projectId}`)
             .then(response => response.json())
             .then(data => setProjectData(data));
     }
@@ -308,7 +308,7 @@ const copyToClipboard = () => {
     console.log(data)
   
     try {
-      const response = await fetch("http://localhost:5000/auth/offers", {
+      const response = await fetch("https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/offers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -352,7 +352,7 @@ const copyToClipboard = () => {
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/auth/myoffers", {
+        const response = await fetch("https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/myoffers", {
           headers: {
             'Authorization': token
           }
@@ -427,7 +427,7 @@ const copyToClipboard = () => {
   
   const updateBidStatus = async (bidId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/auth/update-bid-status/${selectedProjectId}/${bidId}`, {
+      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/update-bid-status/${selectedProjectId}/${bidId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -1125,7 +1125,7 @@ const copyToClipboard = () => {
               toggleLock(index);
               if (!projectData[offer.projectId]) {
                 // Fetch the project data only if it doesn't exist in projectData
-                fetch(`http://localhost:5000/auth/projectData/${offer.projectId}`)
+                fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/projectData/${offer.projectId}`)
                   .then((response) => response.json())
                   .then((data) => {
                     setProjectData((prevData) => ({

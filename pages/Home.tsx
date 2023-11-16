@@ -41,7 +41,7 @@ const Home: React.FC = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/invite", {
+      const response = await fetch("https://carbon-relay-23a0f49f1c2f.herokuapp.com/api/invite", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -25,7 +25,7 @@ const Upload: React.FC = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/auth/uploadProjectData",
+          "https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/uploadProjectData",
           {
             method: "POST",
             body: formData,
