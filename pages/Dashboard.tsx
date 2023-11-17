@@ -380,10 +380,8 @@ const copyToClipboard = () => {
   const handleCheckboxChange = (projectId) => {
     setCheckedOffers((prevCheckedOffers) => {
       if (prevCheckedOffers.includes(projectId)) {
-        // If the projectId is already in the array, remove it (uncheck)
         return prevCheckedOffers.filter((id) => id !== projectId);
       } else {
-        // If the projectId is not in the array, add it (check)
         return [...prevCheckedOffers, projectId];
       }
     });
@@ -393,19 +391,15 @@ const copyToClipboard = () => {
 
 
   function afterOpenModal() {
-    // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
   function afterOpenModal1() {
-    // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
   function afterOpenModal2() {
-    // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
   function afterOpenModal5() {
-    // references re now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
 
@@ -1031,7 +1025,7 @@ const copyToClipboard = () => {
     console.log("Hello")
     setDropdownVisibility((prevVisibility) => {
       const updatedVisibility = [...prevVisibility];
-      updatedVisibility[index] = !updatedVisibility[index]; // Toggle the visibility
+      updatedVisibility[index] = !updatedVisibility[index]; 
       return updatedVisibility;
     });
   };
@@ -1039,25 +1033,18 @@ const copyToClipboard = () => {
   const isDropdownVisible = dropdownVisibility[index];
   console.log("proj", projectDataForOffer);
   const handleOptionClick = (option) => {
-    // Implement the logic for each option here
     switch (option) {
       case "Active":
-        // Handle Active option
         break;
       case "Hold":
-        // Handle Hold option
         break;
       case "Withdraw":
-        // Handle Withdraw option
         break;
       case "Bookmark":
-        // Handle Bookmark option
         break;
       case "Duplicate":
-        // Handle Duplicate option
         break;
       default:
-        // Handle the default case (if needed)
         break;
     }
   };
@@ -1065,16 +1052,14 @@ const copyToClipboard = () => {
   return (
     <tr key={index} 
     className={`relative ${checkedOffers.includes(offer.projectId) ? '  px-10 h-10' : ''}`}>
-      
       <td>
-      <input 
-  className='py-4' 
-  type='checkbox' 
-  checked={checkedOffers.includes(offer.projectId)}
-  onChange={() => handleCheckboxChange(offer.projectId)}
-/>
-
-</td>
+          <input 
+      className='py-4' 
+      type='checkbox' 
+      checked={checkedOffers.includes(offer.projectId)}
+      onChange={() => handleCheckboxChange(offer.projectId)}
+        />
+    </td>
 
 <td className='flex gap-2 py-4'>
             <button onClick={() => toggleLock(index)}>
@@ -1133,7 +1118,6 @@ const copyToClipboard = () => {
             onClick={() => {
               toggleLock(index);
               if (!projectData[offer.projectId]) {
-                // Fetch the project data only if it doesn't exist in projectData
                 fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/projectData/${offer.projectId}`)
                   .then((response) => response.json())
                   .then((data) => {
@@ -1318,7 +1302,7 @@ const copyToClipboard = () => {
 </table>
 
         <div>
-          {bids && bids.length > 0 ? ( // Check if bids exist and there are bids placed
+          {bids && bids.length > 0 ? ( 
             <p className='text-green-300 text-md flex'>
               <span className='text-4xl mt-2'>•</span>
               <span className='mt-5'> Active</span>
@@ -1427,7 +1411,7 @@ const copyToClipboard = () => {
 
   <div className="container" style={{ maxHeight: "400px", maxWidth: "400px", overflowY: "scroll", overflowX: "hidden" }}>
   {messages
-    .filter((msg) => msg.from !== 'server') // Replace 'server' with the actual server identifier
+    .filter((msg) => msg.from !== 'server') 
     .map((msg) => (
       <div key={msg.id} className={msg.from === userID ? "my-message" : "other-message"}>
         <div className="text-[10px] font-bold sender-name">
