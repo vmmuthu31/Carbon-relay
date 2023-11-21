@@ -864,7 +864,7 @@ const copyToClipboard = () => {
                   <form className="w-full flex md:ml-0" action="#" method="GET">
                     
                     <div className="relative w-full  text-gray-800 text-xl pt-4 focus-within:text-gray-600">
-                      <p className="">Offer Credits</p>
+                      <p className="">Request Credits</p>
                     </div>
                   </form>
                 </div>
