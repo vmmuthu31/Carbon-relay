@@ -44,7 +44,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function RequestCreedits() {
+export default function RequestCredits() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rowStates, setRowStates] = useState(Array(3).fill(true)); // Initialize with 3 rows
   const [selectedRowData, setSelectedRowData] = useState(null);
