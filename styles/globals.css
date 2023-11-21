@@ -147,7 +147,10 @@ table {
 
 
 
-
+.bg-btn-landing{
+  border-radius: 13.775px;
+background: var(--gradient-3, linear-gradient(99deg, #2E385D -20.62%, #2A4191 109.09%));
+}
 
 .modal-dropdown {
   display: none;

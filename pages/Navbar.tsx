@@ -121,7 +121,7 @@ function Navbar() {
                 </>
               ):(
                 <Link href="/Login">
-                <button  className='text-white bg-blue-500 px-3 py-1 rounded-xl'>Login</button>
+                <button  className='text-white bg-btn-landing px-5 py-1 text-lg rounded-xl'>Login</button>
                 </Link>
               )}
               </Menu>
