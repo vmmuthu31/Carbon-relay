@@ -23,7 +23,7 @@ const navigation = [
 ]
 const buynavigation = [
   { name: 'Credits Offers', href: '#', icon: PiUserCircleGearLight, current: true },
-  { name: 'Request Credits', href: '#', icon: PiUserCircleGearLight, current: false },
+  { name: 'Request Credits', href: '/RequestCredits', icon: PiUserCircleGearLight, current: false },
 
 ]
 const sellnavigation = [
