@@ -5,7 +5,8 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { getProviders, signIn, signOut, useSession} from "next-auth/react";
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
-
+import Image from 'next/image';
+import logo from "../assets/logo.png"
 
 
 function classNames(...classes: (string | undefined | null | false)[]): string {
@@ -18,7 +19,7 @@ function Navbar() {
   const token = useSelector((state) => state?.token);
  
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="border border-b-2 border-black">
         
     {({ open }) => (
       <>
@@ -40,23 +41,23 @@ function Navbar() {
             {typeof user?.user?.email != "undefined"  || session && session.user ? (
             <Link href="/Dashboard">
               <div className="flex flex-shrink-0 items-center">
-                <img
+                <Image
                   className="h-8 w-auto rounded-3xl"
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEiT8Afh7Hou6PPsXsNSRU9AQG1Cg6jg_yqfyIM3-VHhagOqwbuxJhgekjWO6WT64Yxh7dBzaTDvjtydaORLDO7QMzYS4-infXNy34WuNta0HbTPVqYc45MYbhTFTNlngOaC-XKHORZjmkrZVq1KE9Ql9Y043n5yAiMLc-vzlvhlPFZQM0ihZr8S9Rg4nRQ"
+                  src={logo}
                   alt="Your Company"
                 />
-                   <p className="text-white text-lg px-2">C-Dash</p>    
+                   <p className=" text-lg px-2">C-Dash</p>    
               </div>
               </Link>
             ):(
               <Link href="/">
               <div className="flex flex-shrink-0 items-center">
-                <img
+                <Image
                   className="h-8 w-auto rounded-3xl"
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEiT8Afh7Hou6PPsXsNSRU9AQG1Cg6jg_yqfyIM3-VHhagOqwbuxJhgekjWO6WT64Yxh7dBzaTDvjtydaORLDO7QMzYS4-infXNy34WuNta0HbTPVqYc45MYbhTFTNlngOaC-XKHORZjmkrZVq1KE9Ql9Y043n5yAiMLc-vzlvhlPFZQM0ihZr8S9Rg4nRQ"
+                  src={logo}
                   alt="Your Company"
                 />
-                   <p className="text-white text-lg px-2">C-Dash</p>    
+                   <p className=" text-lg px-2">C-Dash</p>    
               </div>
               </Link>  
             )}
