@@ -145,6 +145,13 @@ table {
   border-collapse: collapse;
 }
 
+.bgdm{
+  background-size: 1600px;
+}
+
+.bgdm2{
+  background-size:1600px;
+}
 
 
 .bg-btn-landing{
