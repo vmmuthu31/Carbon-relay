@@ -28,7 +28,7 @@ const Home: React.FC = () => {
         <div className=" bg-[url('../assets/hero2.png')] bg-contain bg-no-repeat bgdm2 pb-5   ">
         
           <div className="text-center   pb-52">
-            <h1 className="text-4xl    pt-40 text-center font-bold tracking-tight text-gray-900 sm:text-6xl">
+            <h1 className="text-4xl    pt-44 text-center font-bold tracking-tight text-gray-900 sm:text-6xl">
             Unlock a New Era of <br/> Business Partnerships
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
@@ -80,7 +80,7 @@ const Home: React.FC = () => {
           className="w-12"
            />
            </div>
-              <h1 className="text-center my-2">Transparent Trust</h1>
+              <h1 className="text-center text-xl font-bold my-2">Transparent Trust</h1>
               <p className="text-center w-96">At Carbon Relay, transparency is key in every credit transaction. Our commitment to clarity ensures open visibility at every collaboration stage, fostering a trustworthy environment. Businesses can engage confidently, knowing interactions are honest, accountable, and reliable. Whether creating, sharing, or bidding on credits, Carbon Relay ensures a transparent foundation for authentic and meaningful partnerships.</p>
           </div>
           <div className="py-5 px-5 rounded-lg  border shadow-2xl">
@@ -91,8 +91,8 @@ const Home: React.FC = () => {
           className="w-12"
            />
            </div>
-          <h1 className="text-center my-2">Competitive Bidding</h1>
-          <p className="text-center w-96">In Carbon Relay's dynamic credit world, our unique bidding system creates a marketplace where organizations actively compete. This ensures fair, market-driven pricing, reflecting the true value of credits. Engage in a vibrant bidding environment that maximizes returns, setting the stage for a responsive credit exchange ecosystem.</p>
+          <h1 className="text-center  text-xl font-bold my-2">Competitive Bidding</h1>
+          <p className="text-center w-96">In Carbon Relay&apos;s dynamic credit world, our unique bidding system creates a marketplace where organizations actively compete. This ensures fair, market-driven pricing, reflecting the true value of credits. Engage in a vibrant bidding environment that maximizes returns, setting the stage for a responsive credit exchange ecosystem.</p>
           </div> 
           <div className="py-5 px-5 rounded-lg  border shadow-2xl">
             <div className="flex justify-center">
@@ -102,10 +102,13 @@ const Home: React.FC = () => {
           className="w-12"
            />
            </div>
-          <h1 className="text-center my-2">Strategic Collaboration</h1>
+          <h1 className="text-center  text-xl font-bold my-2">Strategic Collaboration</h1>
           <p className="text-center w-96">Forge strategic alliances with Carbon Relay. Our platform provides a dynamic space for businesses to collaborate strategically, fostering innovation and adaptability. Navigate the ever-changing marketplace with confidence, making empowered financial decisions tailored to the unique needs of your organization. Experience a synergy that goes beyond transactions, unlocking opportunities for growth and sustained success through strategic collaboration.
 </p>
           </div>
+        </div>
+        <div className="my-10 mt-24">
+          <p className="text-center text-4xl font-bold">Revolutionize Collaboration with Carbon <br/> Relay: Unleashing Transparent Credit <br/> Exchange and Dynamic Bidding</p>
         </div>
       </div>
 
