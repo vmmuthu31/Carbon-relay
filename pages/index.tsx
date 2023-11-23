@@ -11,6 +11,10 @@ import offer2 from "../assets/offer2.png"
 import offer3 from "../assets/offer3.png"
 import offer4 from "../assets/offer4.png"
 import logo from "../assets/logo.png"
+import teamzone from "../assets/teamzone.png"
+import team1 from "../assets/team1.png"
+import team2 from "../assets/team2.png"
+import team3 from "../assets/team3.png"
 
 const Home: React.FC = () => {
   const { data: session } = useSession();
@@ -111,6 +115,33 @@ const Home: React.FC = () => {
           <p className="text-center text-4xl font-bold">Revolutionize Collaboration with Carbon <br/> Relay: Unleashing Transparent Credit <br/> Exchange and Dynamic Bidding</p>
           <p className="mx-72 my-5 text-center">Transform the way you collaborate with Carbon Relay&apos;s cutting-edge features. Experience unprecedented transparency in credit exchange and engage in a dynamic bidding system that reshapes the landscape of business interactions. Elevate your partnerships with a platform designed for innovation and strategic collaboration.</p>
         </div>
+      </div>
+      <div  className="flex justify-center mx-10" >
+        <Image 
+        src={teamzone}
+        alt=""
+        />
+        <div>
+        <p className="text-4xl font-bold my-7 text-center">Meet our team</p>
+        <p className="text-center mx-10"> The dedicated minds behind Carbon Relay bring a wealth of expertise to redefine how businesses connect and thrive. Together, our team envisions, innovates, and paves the way for a future where transparent collaboration transforms the business ecosystem</p>
+        </div>
+        <div className="mx-28">
+          <p>.</p>
+        </div>
+      </div>
+      <div>
+      <div className="flex justify-center">
+        <Image
+        src={team1}
+        alt=""
+        className="w-60 h-60"
+        />
+        
+      </div>
+      <p className="text-center text-2xl font-bold my-2">Durga Prasad Meena</p>
+      <p className="text-center my-2">Founder</p>
+      <p className="text-center my-2 mx-96 pb-10"> Founding Innovator: Durga Prasad Meena, steering Carbon Relay with a <br/> visionary approach, expertly blending strategic thinking with a passion for <br/> transparent collaborations</p>
+     
       </div>
 
     </div>
