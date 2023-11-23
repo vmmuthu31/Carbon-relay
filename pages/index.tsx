@@ -109,6 +109,7 @@ const Home: React.FC = () => {
         </div>
         <div className="my-10 mt-24">
           <p className="text-center text-4xl font-bold">Revolutionize Collaboration with Carbon <br/> Relay: Unleashing Transparent Credit <br/> Exchange and Dynamic Bidding</p>
+          <p className="mx-72 my-5 text-center">Transform the way you collaborate with Carbon Relay&apos;s cutting-edge features. Experience unprecedented transparency in credit exchange and engage in a dynamic bidding system that reshapes the landscape of business interactions. Elevate your partnerships with a platform designed for innovation and strategic collaboration.</p>
         </div>
       </div>
 
