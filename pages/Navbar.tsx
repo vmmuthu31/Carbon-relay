@@ -19,7 +19,7 @@ function Navbar() {
   const token = useSelector((state) => state?.token);
  
   return (
-    <Disclosure as="nav" className="border border-b-2 border-black">
+    <Disclosure as="nav" className=" border-b-2 border-black">
         
     {({ open }) => (
       <>
