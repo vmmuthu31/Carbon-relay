@@ -16,15 +16,13 @@ const Home: React.FC = () => {
   },[session])
   console.log(session)
   return (
-    <div className=" bg-[url('../assets/hero.png')]  bgdm  bg-no-repeat  ">
+    <div className=" bg-[url('../assets/hero.png')] pb-14 bgdm bg-no-repeat  ">
       <Navbar />
-      <main className="">
-      <div className="relative  isolate ">
+      <main className="">   
+        <div className="  bg-contain bg-no-repeat bgdm2 pb-10   ">
         
-        <div className=" bg-[url('../assets/hero2.png')] bg-contain bg-no-repeat bgdm2 py-40   lg:pt-28">
-        
-          <div className="text-center  pb-52">
-            <h1 className="text-4xl  tex-center font-bold tracking-tight text-gray-900 sm:text-6xl">
+          <div className="text-center   pb-52">
+            <h1 className="text-4xl    pt-44 text-center font-bold tracking-tight text-gray-900 sm:text-6xl">
             Unlock a New Era of <br/> Business Partnerships
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
@@ -41,10 +39,8 @@ const Home: React.FC = () => {
             </div>
           </div>
         </div>
-      
-      </div>
       </main>
-      <div className="bg-[url('../assets/hero1.png')] py-20 bg-no-repeat bg-contain bgdm">
+      <div className=" py-20 bg-no-repeat bg-contain bgdm">
 
       </div>
     </div>
