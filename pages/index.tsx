@@ -15,6 +15,7 @@ import teamzone from "../assets/teamzone.png"
 import team1 from "../assets/team1.png"
 import team2 from "../assets/team2.png"
 import team3 from "../assets/team3.png"
+import contact from "../assets/contact.png"
 import { FaLinkedin } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
 import { AiFillCaretDown } from "react-icons/ai";
@@ -353,8 +354,33 @@ const Home: React.FC = () => {
 Contact Us
 </button>
 </div>
+<div className="flex justify-center my-5 space-x-8">
+<Image
+src={contact}
+alt=""
+className=" h-[500px]"
+/>
 <div>
-  
+  <p className="text-4xl font-bold">Contact us</p>
+  <p className="mt-8 mb-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+  <p>Name</p>
+  <input className="border border-[#2B3F84] rounded-xl  w-96 px-3 py-2 outline-none my-1" />
+  <p>Email</p>
+  <input className="border border-[#2B3F84] rounded-xl  w-96 px-3 py-2 my-1 outline-none" />
+  <p>Message</p>
+  <textarea placeholder="Type your message..." className="border h-32 border-[#2B3F84] rounded-2xl  w-96 px-3 py-1 my-1" />
+  <br/>
+  <div className="flex space-x-3">
+  <input type="checkbox" />
+  <p>I I accept the <span className="underline"> Terms</span></p>
+  </div>
+  <button
+                className="rounded-md mt-3 w-20 flex bg-btn-landing px-3.5 py-2.5  font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+               Submit
+
+              </button>
+</div>
 </div>
 <div className=" flex pt-2 justify-between border-t-2 mx-10 mt-10 border-black">
 <p >© 2023 Carbon Relay. All rights reserved.</p>
