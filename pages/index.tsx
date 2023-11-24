@@ -348,6 +348,11 @@ const Home: React.FC = () => {
 <div>
 <p className="text-center mt-5 text-4xl font-bold">Still have questions?</p>
 <p className="text-center mt-3 ">Support details to capture customers that might be on the fence.</p>
+<div className="flex justify-center">
+<button className="text-center text-lg mt-5 border-2 border-[#2B3F84] px-4 py-1 rounded-xl">
+Contact Us
+</button>
+</div>
 </div>
     </div>
   );
