@@ -98,11 +98,10 @@ const Home: React.FC = () => {
         <div className=" bg-[url('../assets/hero2.png')] bg-contain bg-no-repeat bgdm2 pb-5   ">
         
           <div className="text-center   pb-52">
-            <h1 className="text-4xl    pt-44 text-center font-bold tracking-tight text-gray-900 sm:text-6xl">
-            Unlock a New Era of <br/> Business Partnerships
+            <h1 className="text-4xl    pt-44 text-center font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Empower Your Carbon Trades with 
+ <br/>Next-Gen OTC Management
             </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-            Welcome to Carbon Relay, Where Transparency Defines Transactions            </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
                 href="/Login"
@@ -182,7 +181,7 @@ const Home: React.FC = () => {
           <p className="mx-72 my-5 text-center">Transform the way you collaborate with Carbon Relay&apos;s cutting-edge features. Experience unprecedented transparency in credit exchange and engage in a dynamic bidding system that reshapes the landscape of business interactions. Elevate your partnerships with a platform designed for innovation and strategic collaboration.</p>
         </div>
       </div>
-      <div  className="flex justify-center mx-10" >
+      {/* <div  className="flex justify-center mx-10" >
         <Image 
         src={teamzone}
         alt=""
@@ -247,7 +246,7 @@ const Home: React.FC = () => {
           </div>
           </div>
           
-      </div>
+      </div> */}
       <div id="default-carousel" className="relative w-full" data-carousel="slide">
             <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
                 {slides.map((slide, index) => (
@@ -347,13 +346,7 @@ const Home: React.FC = () => {
 </div>
 </div>
 <div>
-<p className="text-center mt-5 text-4xl font-bold">Still have questions?</p>
-<p className="text-center mt-3 ">Support details to capture customers that might be on the fence.</p>
-<div className="flex justify-center">
-<button className="text-center text-lg mt-5 border-2 border-[#2B3F84] px-4 py-1 rounded-xl">
-Contact Us
-</button>
-</div>
+
 <div className="flex justify-center my-5 space-x-8">
 <Image
 src={contact}
