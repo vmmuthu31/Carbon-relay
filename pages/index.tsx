@@ -91,7 +91,7 @@ const Home: React.FC = () => {
   },[session])
   console.log(session)
   return (
-    <div className=" bg-[url('../assets/hero.png')] bgdm bg-no-repeat  ">
+    <div className=" bg-[url('../assets/hero.png')] pb-10 bgdm bg-no-repeat  ">
       <Navbar />
       <main className="">   
         <div className=" bg-[url('../assets/hero2.png')] bg-contain bg-no-repeat bgdm2 pb-5   ">
@@ -346,7 +346,8 @@ const Home: React.FC = () => {
 </div>
 </div>
 <div>
-  
+<p className="text-center mt-5 text-4xl font-bold">Still have questions?</p>
+<p className="text-center mt-3 ">Support details to capture customers that might be on the fence.</p>
 </div>
     </div>
   );
