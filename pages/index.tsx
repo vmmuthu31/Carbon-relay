@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Navbar from "./Navbar";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import {useSession} from "next-auth/react";
 import { CiPlay1 } from "react-icons/ci";
 import Image from 'next/image';
@@ -22,6 +22,41 @@ import { FaTwitter } from "react-icons/fa";
 const Home: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
+  const [activeIndex, setActiveIndex] = useState(0);
+    const totalSlides = 2; // Update this based on the number of slides you have
+
+    const goToSlide = (index) => {
+      setActiveIndex(index);
+  };
+    const slides = [
+      {
+          quote: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo expedita voluptas culpa sapiente alias molestiae. Numquam corrupti in laborum sed rerum et corporis.",
+          imageUrl: "https://pbs.twimg.com/profile_images/1674815862879178752/nTGMV1Eo_400x400.jpg",
+          author: "Judith Black",
+          title: "CEO of Workcation"
+      },
+      {
+          quote: "Another inspiring quote here. Vivamus suscipit tortor eget felis porttitor volutpat.",
+          imageUrl: "data:image/jpeg;base64,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",
+          author: "John Doe",
+          title: "CTO of Adventure Inc."
+      },
+      // ... more slides
+  ];
+
+    const goToPrevSlide = () => {
+        setActiveIndex((prevIndex) =>
+            prevIndex === 0 ? totalSlides - 1 : prevIndex - 1
+        );
+    };
+
+    const goToNextSlide = () => {
+        setActiveIndex((prevIndex) =>
+            prevIndex === totalSlides - 1 ? 0 : prevIndex + 1
+        );
+    };
+
+
   useEffect(()=>{
     if (session){
       router.push("/Dashboard");
@@ -183,8 +218,86 @@ const Home: React.FC = () => {
             </div>
           </div>
           </div>
+          
       </div>
+      <div id="default-carousel" className="relative w-full" data-carousel="slide">
+            <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+                {slides.map((slide, index) => (
+                    <div
+                        key={index}
+                        className={`duration-700 ease-in-out ${index === activeIndex ? 'block' : 'hidden'}`}
+                        data-carousel-item
+                    >
+                        <section className="relative isolate overflow-hidden bg-white px-6 py-10 sm:py-20 lg:px-8">
+                            
+                            <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.indigo.100),white)] opacity-20" />
+                            <div className="absolute inset-y-0 right-1/2 -z-10 mr-16 w-[200%] origin-bottom-left skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:mr-28 lg:mr-0 xl:mr-16 xl:origin-center" />
+                            <div className="mx-auto max-w-2xl lg:max-w-4xl">
+                                <figure >
+                                    <blockquote className="text-center text-xl font-semibold leading-8 text-gray-900 sm:text-2xl sm:leading-9">
+                                        <p>{slide.quote}</p>
+                                    </blockquote>
+                                    <figcaption className="mt-10 justify-center items-center flex">
+                                        <img
+                                            className=" h-10 w-10 rounded-full"
+                                            src={slide.imageUrl}
+                                            alt={slide.author}
+                                        />
+                                        <div className=" flex flex-col items-center justify-center space-x-3 text-base">
+                                            <div className="font-semibold text-gray-900">{slide.author}</div>
+                                            
+                                            <div className="text-gray-600">{slide.title}</div>
+                                        </div>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                        </section>
+                    </div>
+                ))}
+            </div>
 
+            <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+                {[...Array(totalSlides).keys()].map((index) => (
+                    <button
+                        key={index}
+                        type="button"
+                        className={`w-3 h-3 rounded-full ${index === activeIndex ? 'bg-black' : 'bg-white'}`}
+                        aria-current={index === activeIndex ? 'true' : 'false'}
+                        aria-label={`Slide ${index + 1}`}
+                        onClick={() => goToSlide(index)}
+                    ></button>
+                ))}
+            </div>
+            <button
+                type="button"
+                className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                onClick={goToPrevSlide}
+                data-carousel-prev
+            >
+                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+                    <svg className="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4"/>
+                    </svg>
+                    <span className="sr-only">Previous</span>
+                </span>
+            </button>
+            <button
+                type="button"
+                className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                onClick={goToNextSlide}
+                data-carousel-next
+            >
+                <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+                    <svg className="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                    <span className="sr-only">Next</span>
+                </span>
+            </button>
+        </div>
+<div>
+  <p className="text-center text-4xl font-bold">Frequently asked questions</p>
+</div>
     </div>
   );
 };
