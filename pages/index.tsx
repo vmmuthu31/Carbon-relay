@@ -91,7 +91,7 @@ const Home: React.FC = () => {
   },[session])
   console.log(session)
   return (
-    <div className=" bg-[url('../assets/hero.png')] pb-10 bgdm bg-no-repeat  ">
+    <div className=" bg-[url('../assets/hero.png')] pb-2 bgdm bg-no-repeat  ">
       <Navbar />
       <main className="">   
         <div className=" bg-[url('../assets/hero2.png')] bg-contain bg-no-repeat bgdm2 pb-5   ">
@@ -352,6 +352,14 @@ const Home: React.FC = () => {
 <button className="text-center text-lg mt-5 border-2 border-[#2B3F84] px-4 py-1 rounded-xl">
 Contact Us
 </button>
+</div>
+<div className=" flex pt-2 justify-between border-t-2 mx-10 mt-10 border-black">
+<p >© 2023 Carbon Relay. All rights reserved.</p>
+<div className="flex space-x-5">
+<p>Privacy Policy</p>
+<p>Terms of Service</p>
+<p> Cookies Settings</p>
+</div>
 </div>
 </div>
     </div>
