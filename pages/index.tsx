@@ -17,13 +17,15 @@ import team2 from "../assets/team2.png"
 import team3 from "../assets/team3.png"
 import { FaLinkedin } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
+import { AiFillCaretDown } from "react-icons/ai";
 
 
 const Home: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
-    const totalSlides = 2; // Update this based on the number of slides you have
+    const totalSlides = 2; 
+    const [visible, setVisible] = useState({});
 
     const goToSlide = (index) => {
       setActiveIndex(index);
@@ -41,7 +43,32 @@ const Home: React.FC = () => {
           author: "John Doe",
           title: "CTO of Adventure Inc."
       },
-      // ... more slides
+  ];
+
+  const toggleVisibility = (index) => {
+    setVisible(prevState => ({
+      ...prevState,
+      [index]: !prevState[index]
+    }));
+  };
+
+  const faqs = [
+    {
+      question: "How do I create an account on this platform?",
+      answer: "GIGS is a modern platform for job hunting and hiring, offering a vast array of exciting opportunities."
+    },
+    {
+      question: "How can I post a job listing on the platform?",
+      answer: "You can sign up on the GIGS platform by creating an account and then start exploring job opportunities."
+    },
+    {
+      question: "What is the benefit of using tokens on this platform?",
+      answer: "You can sign up on the GIGS platform by creating an account and then start exploring job opportunities."
+    },
+    {
+      question: "How can I apply for a job using tokens?",
+      answer: "You can sign up on the GIGS platform by creating an account and then start exploring job opportunities."
+    },
   ];
 
     const goToPrevSlide = () => {
@@ -296,7 +323,30 @@ const Home: React.FC = () => {
             </button>
         </div>
 <div>
-  <p className="text-center text-4xl font-bold">Frequently asked questions</p>
+  <p className="text-center mt-5 text-4xl font-bold">Frequently asked questions</p>
+  <p className="text-center my-5 mx-96">Frequently asked questions ordered by popularity. Remember that if the visitor has not committed to the call to action, they may still have questions (doubts) that can be answered.</p>
+  <div className="flex flex-col px-5 my-10 items-center justify-center w-full">
+  {faqs.map((faq, index) => (
+    <div key={index} className="w-full  flex flex-col items-center mb-4">
+      <button
+        className={`bg-white border border-[#7752FE] ${
+          visible[index] ? 'rounded-t-md' : 'rounded-md'
+        } w-full md:w-[580px] font-semibold md:text-xl py-4 px-5 flex justify-between items-center mx-auto`}
+        onClick={() => toggleVisibility(index)}
+      >
+        {faq.question} <AiFillCaretDown className={`${visible[index] ? 'rotate-180' : ''}`} />
+      </button>
+      {visible[index] && (
+        <div className="md:w-[580px] rounded-b-md border border-t-0 border-[#7752FE] bg-white py-2 px-4 text-center mx-auto mt-0">
+          {faq.answer}
+        </div>
+      )}
+    </div>
+  ))}
+</div>
+</div>
+<div>
+  
 </div>
     </div>
   );
