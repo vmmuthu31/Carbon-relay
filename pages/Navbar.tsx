@@ -46,18 +46,18 @@ function Navbar() {
                   src={logo}
                   alt="Your Company"
                 />
-                   <p className=" text-lg px-2">C-Dash</p>    
+                   <p className=" text-lg px-2">Carbon Relay</p>    
               </div>
               </Link>
             ):(
               <Link href="/">
               <div className="flex flex-shrink-0 items-center">
                 <Image
-                  className="h-8 w-auto rounded-3xl"
+                  className="h-12 w-auto rounded-3xl"
                   src={logo}
                   alt="Your Company"
                 />
-                   <p className=" text-lg px-2">C-Dash</p>    
+                   <p className=" text-xl px-2">Carbon Relay</p>    
               </div>
               </Link>  
             )}
