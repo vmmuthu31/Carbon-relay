@@ -15,6 +15,9 @@ import teamzone from "../assets/teamzone.png"
 import team1 from "../assets/team1.png"
 import team2 from "../assets/team2.png"
 import team3 from "../assets/team3.png"
+import { FaLinkedin } from "react-icons/fa";
+import { FaTwitter } from "react-icons/fa";
+
 
 const Home: React.FC = () => {
   const { data: session } = useSession();
@@ -40,7 +43,7 @@ const Home: React.FC = () => {
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
                 href="/Login"
-                className="rounded-md flex bg-btn-landing px-3.5 py-2.5 text-md font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="rounded-md flex bg-btn-landing px-3.5 py-2.5  font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Launch Carbon Relay <CiPlay1 className=" mx-2 text-lg mt-1 " />
 
@@ -130,18 +133,56 @@ const Home: React.FC = () => {
         </div>
       </div>
       <div>
-      <div className="flex justify-center">
-        <Image
-        src={team1}
-        alt=""
-        className="w-60 h-60"
-        />
-        
-      </div>
-      <p className="text-center text-2xl font-bold my-2">Durga Prasad Meena</p>
-      <p className="text-center my-2">Founder</p>
-      <p className="text-center my-2 mx-96 pb-10"> Founding Innovator: Durga Prasad Meena, steering Carbon Relay with a <br/> visionary approach, expertly blending strategic thinking with a passion for <br/> transparent collaborations</p>
-     
+          <div className="flex flex-col mb-5 justify-center">
+            <div className="flex justify-center ">
+            <Image
+            src=""
+            alt=""
+            className="w-60 h-60"
+            />
+            </div>
+            <p className="text-center text-2xl font-bold my-2">ABC</p>
+            <p className="text-center ">Founder</p>
+            <p className="text-center my-2 mx-96"> Founding Innovator: ABC, steering Carbon Relay with a <br/> visionary approach, expertly blending strategic thinking with a passion for <br/> transparent collaborations</p>
+            <div className="flex text-lg space-x-5 justify-center">
+              <FaLinkedin />
+              <FaTwitter />
+            </div>
+          </div>
+          <div className="flex ml-20 justify-center">
+          <div className="flex flex-col mb-5 justify-center">
+            <div className="flex justify-center ">
+            <Image
+            src=""
+            alt=""
+            className="w-60 h-60"
+            />
+            </div>
+            <p className="text-center text-2xl font-bold my-2">ABC</p>
+            <p className="text-center ">Founder</p>
+            <p className="text-center my-2 mx-20 "> Founding Innovator: ABC, steering Carbon Relay with a <br/> visionary approach, expertly blending strategic thinking with a passion for <br/> transparent collaborations</p>
+            <div className="flex text-lg space-x-5 justify-center">
+              <FaLinkedin />
+              <FaTwitter />
+            </div>
+          </div>
+          <div className="flex flex-col mb-5 justify-center">
+            <div className="flex  justify-center ">
+            <Image
+            src=""
+            alt=""
+            className="w-60 h-60"
+            />
+            </div>
+            <p className="text-center text-2xl font-bold my-2">ABC</p>
+            <p className="text-center ">Founder</p>
+            <p className="text-center my-2 mx-20 "> Founding Innovator: ABC, steering Carbon Relay with a <br/> visionary approach, expertly blending strategic thinking with a passion for <br/> transparent collaborations</p>
+            <div className="flex text-lg space-x-5 justify-center">
+              <FaLinkedin />
+              <FaTwitter />
+            </div>
+          </div>
+          </div>
       </div>
 
     </div>
