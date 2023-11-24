@@ -353,6 +353,9 @@ const Home: React.FC = () => {
 Contact Us
 </button>
 </div>
+<div>
+  
+</div>
 <div className=" flex pt-2 justify-between border-t-2 mx-10 mt-10 border-black">
 <p >© 2023 Carbon Relay. All rights reserved.</p>
 <div className="flex space-x-5">
