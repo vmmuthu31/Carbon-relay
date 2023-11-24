@@ -140,7 +140,7 @@ const Home: React.FC = () => {
       </div>
       <div >
         <h1 className="text-center text-3xl  font-bold">Why Carbon Relay?</h1>
-        <div className="flex justify-center  my-10 space-x-20">
+        <div className="flex justify-center mx-40  my-10 space-x-20">
           <div className="py-5 px-5 rounded-lg  border shadow-2xl ">
           <div className="flex  justify-center">
           <Image
@@ -149,8 +149,9 @@ const Home: React.FC = () => {
           className="w-12"
            />
            </div>
-              <h1 className="text-center text-xl font-bold my-2">Transparent Trust</h1>
-              <p className="text-center w-96">At Carbon Relay, transparency is key in every credit transaction. Our commitment to clarity ensures open visibility at every collaboration stage, fostering a trustworthy environment. Businesses can engage confidently, knowing interactions are honest, accountable, and reliable. Whether creating, sharing, or bidding on credits, Carbon Relay ensures a transparent foundation for authentic and meaningful partnerships.</p>
+              <h1 className="text-center text-xl font-bold my-2">Seamless Bid/Offer Creation</h1>
+              <p className="text-center w-96">Effortlessly craft and disseminate bids and offers to selected parties, streamlining your trading process in the carbon market.
+</p>
           </div>
           <div className="py-5 px-5 rounded-lg  border shadow-2xl">
           <div className="flex justify-center">
@@ -160,8 +161,9 @@ const Home: React.FC = () => {
           className="w-12"
            />
            </div>
-          <h1 className="text-center  text-xl font-bold my-2">Competitive Bidding</h1>
-          <p className="text-center w-96">In Carbon Relay&apos;s dynamic credit world, our unique bidding system creates a marketplace where organizations actively compete. This ensures fair, market-driven pricing, reflecting the true value of credits. Engage in a vibrant bidding environment that maximizes returns, setting the stage for a responsive credit exchange ecosystem.</p>
+          <h1 className="text-center  text-xl font-bold my-2">Trade Activity Dashboard</h1>
+          <p className="text-center w-96">Monitor and manage all your carbon credit trade activities through a single, intuitive interface.
+</p>
           </div> 
           <div className="py-5 px-5 rounded-lg  border shadow-2xl">
             <div className="flex justify-center">
@@ -171,14 +173,69 @@ const Home: React.FC = () => {
           className="w-12"
            />
            </div>
-          <h1 className="text-center  text-xl font-bold my-2">Strategic Collaboration</h1>
-          <p className="text-center w-96">Forge strategic alliances with Carbon Relay. Our platform provides a dynamic space for businesses to collaborate strategically, fostering innovation and adaptability. Navigate the ever-changing marketplace with confidence, making empowered financial decisions tailored to the unique needs of your organization. Experience a synergy that goes beyond transactions, unlocking opportunities for growth and sustained success through strategic collaboration.
+          <h1 className="text-center  text-xl font-bold my-2">Enhanced Communication and Document Sharing</h1>
+          <p className="text-center w-96">Engage in secure chats and share documents with complete control, ensuring confidential and efficient interactions.
 </p>
           </div>
         </div>
+        <div className="flex justify-center  my-10 space-x-20">
+          <div className="py-5 px-5 rounded-lg  border shadow-2xl ">
+          <div className="flex  justify-center">
+          <Image
+          src={logo}
+          alt=""
+          className="w-12"
+           />
+           </div>
+              <h1 className="text-center text-xl font-bold my-2">Integrated Project Due Diligence Dashboard</h1>
+              <p className="text-center w-96">Comprehensive project data at your fingertips.
+</p>
+          </div>
+          <div className="py-5 px-5 rounded-lg  border shadow-2xl">
+          <div className="flex justify-center">
+          <Image
+          src={logo}
+          alt=""
+          className="w-12"
+           />
+           </div>
+          <h1 className="text-center  text-xl font-bold my-2">Streamlined Contract and Settlement Process</h1>
+          <p className="text-center w-96">Utilize our platform to swiftly sign standard contracts and settle transactions, simplifying the closure of deals.
+
+</p>
+          </div> 
+         
+        </div>
         <div className="my-10 mt-24">
-          <p className="text-center text-4xl font-bold">Revolutionize Collaboration with Carbon <br/> Relay: Unleashing Transparent Credit <br/> Exchange and Dynamic Bidding</p>
-          <p className="mx-72 my-5 text-center">Transform the way you collaborate with Carbon Relay&apos;s cutting-edge features. Experience unprecedented transparency in credit exchange and engage in a dynamic bidding system that reshapes the landscape of business interactions. Elevate your partnerships with a platform designed for innovation and strategic collaboration.</p>
+          <p className="text-center text-4xl font-bold">Advanced Analytics for Strategic Trading</p>
+         
+          <div className="flex justify-center  my-10 space-x-20">
+          <div className="py-5 px-5 rounded-lg  border shadow-2xl ">
+          <div className="flex  justify-center">
+          <Image
+          src={logo}
+          alt=""
+          className="w-12"
+           />
+           </div>
+              <p className="text-center mt-2 w-96">Market-Informed Pricing: Leverage cutting-edge analytics to price your offers and bids, informed by real-time market trends and conditions.
+
+</p>
+          </div>
+          <div className="py-5 px-5 rounded-lg  border shadow-2xl">
+          <div className="flex justify-center">
+          <Image
+          src={logo}
+          alt=""
+          className="w-12"
+           />
+           </div>
+          <p className="text-center mt-2 w-96">Curated Buyer Matching: Benefit from a tailored list of potential buyers for each offer, crafted to maximize the relevance and success rate of your trades.
+
+</p>
+          </div> 
+         
+        </div>
         </div>
       </div>
       {/* <div  className="flex justify-center mx-10" >
