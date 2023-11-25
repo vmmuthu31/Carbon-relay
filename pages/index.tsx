@@ -120,7 +120,7 @@ const Home: React.FC = () => {
           <Image
           src={offer1}
           alt=""
-          className="md:w-80 w-14 md:mt-20"
+          className="md:w-80 w-[62px] md:mt-20"
            />
              <Image
           src={offer2}
@@ -130,7 +130,7 @@ const Home: React.FC = () => {
            <Image
           src={offer3}
           alt=""
-          className="md:w-80 w-40  md:py-10"
+          className="md:w-80 w-28  md:py-10"
            />
            <Image
           src={offer4}
