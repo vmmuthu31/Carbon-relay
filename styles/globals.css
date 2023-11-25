@@ -145,7 +145,7 @@ table {
   border-collapse: collapse;
 }
 
-@media screen and (min-width: 1600px) {
+@media screen and (min-width: 1200px) {
   .bgdm {
     background-size: 1525px;
   }
@@ -154,11 +154,15 @@ table {
   background-size: 1525px;
 }
 }
-
-
-.bgdm {
-  background-size: 995px;
+@media screen and (max-width: 700px) {
+  .bgdm {
+    background-size: 995px;
+  }
+  
 }
+
+
+
 
 
 
