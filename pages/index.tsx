@@ -120,27 +120,28 @@ const Home: React.FC = () => {
           <Image
           src={offer1}
           alt=""
-          className="w-80 mt-20"
+          className="md:w-80 w-14 md:mt-20"
            />
              <Image
           src={offer2}
           alt=""
-          className="w-96"
+          className="md:w-96 w-40"
            />
            <Image
           src={offer3}
           alt=""
-          className="w-80 py-10"
+          className="md:w-80 w-40  md:py-10"
            />
            <Image
           src={offer4}
           alt=""
+          className="hidden md:block"
            />
       </div>
       </div>
       <div >
         <h1 className="text-center text-3xl  font-bold">Why Carbon Relay?</h1>
-        <div className="flex justify-center mx-40  my-10 space-x-20">
+        <div className="flex md:flex-row flex-col justify-center mx-5 mt-5 md:mx-40  md:my-10 md:space-x-20">
           <div className="py-5 px-5 rounded-lg  border shadow-2xl ">
           <div className="flex  justify-center">
           <Image
@@ -150,7 +151,7 @@ const Home: React.FC = () => {
            />
            </div>
               <h1 className="text-center text-xl font-bold my-2">Seamless Bid/Offer Creation</h1>
-              <p className="text-center w-96">Effortlessly craft and disseminate bids and offers to selected parties, streamlining your trading process in the carbon market.
+              <p className="text-center md:w-96">Effortlessly craft and disseminate bids and offers to selected parties, streamlining your trading process in the carbon market.
 </p>
           </div>
           <div className="py-5 px-5 rounded-lg  border shadow-2xl">
@@ -162,7 +163,7 @@ const Home: React.FC = () => {
            />
            </div>
           <h1 className="text-center  text-xl font-bold my-2">Trade Activity Dashboard</h1>
-          <p className="text-center w-96">Monitor and manage all your carbon credit trade activities through a single, intuitive interface.
+          <p className="text-center md:w-96">Monitor and manage all your carbon credit trade activities through a single, intuitive interface.
 </p>
           </div> 
           <div className="py-5 px-5 rounded-lg  border shadow-2xl">
@@ -174,11 +175,11 @@ const Home: React.FC = () => {
            />
            </div>
           <h1 className="text-center  text-xl font-bold my-2">Enhanced Communication and Document Sharing</h1>
-          <p className="text-center w-96">Engage in secure chats and share documents with complete control, ensuring confidential and efficient interactions.
+          <p className="text-center md:w-96">Engage in secure chats and share documents with complete control, ensuring confidential and efficient interactions.
 </p>
           </div>
         </div>
-        <div className="flex justify-center  my-10 space-x-20">
+        <div className="flex flex-col md:flex-row justify-center mx-5 mt-5 md:my-10 md:space-x-20">
           <div className="py-5 px-5 rounded-lg  border shadow-2xl ">
           <div className="flex  justify-center">
           <Image
@@ -188,7 +189,7 @@ const Home: React.FC = () => {
            />
            </div>
               <h1 className="text-center text-xl font-bold my-2">Integrated Project Due Diligence Dashboard</h1>
-              <p className="text-center w-96">Comprehensive project data at your fingertips.
+              <p className="text-center md:w-96">Comprehensive project data at your fingertips.
 </p>
           </div>
           <div className="py-5 px-5 rounded-lg  border shadow-2xl">
@@ -200,7 +201,7 @@ const Home: React.FC = () => {
            />
            </div>
           <h1 className="text-center  text-xl font-bold my-2">Streamlined Contract and Settlement Process</h1>
-          <p className="text-center w-96">Utilize our platform to swiftly sign standard contracts and settle transactions, simplifying the closure of deals.
+          <p className="text-center md:w-96">Utilize our platform to swiftly sign standard contracts and settle transactions, simplifying the closure of deals.
 
 </p>
           </div> 
@@ -209,7 +210,7 @@ const Home: React.FC = () => {
         <div className="my-10 mt-24">
           <p className="text-center text-4xl font-bold">Advanced Analytics for Strategic Trading</p>
          
-          <div className="flex justify-center  my-10 space-x-20">
+          <div className="flex flex-col md:flex-row justify-center mx-5 mt-5 md:my-10 md:space-x-20">
           <div className="py-5 px-5 rounded-lg  border shadow-2xl ">
           <div className="flex  justify-center">
           <Image
@@ -219,7 +220,7 @@ const Home: React.FC = () => {
            />
            </div>
            <h1 className="text-center text-xl font-bold my-2">Market-Informed Pricing:</h1>
-              <p className="text-center mt-2 w-96"> Leverage cutting-edge analytics to price your offers and bids, informed by real-time market trends and conditions.
+              <p className="text-center mt-2 md:w-96"> Leverage cutting-edge analytics to price your offers and bids, informed by real-time market trends and conditions.
 
 </p>
           </div>
@@ -232,7 +233,7 @@ const Home: React.FC = () => {
            />
            </div>
            <h1 className="text-center text-xl font-bold my-2">Curated Buyer Matching:</h1>
-          <p className="text-center mt-2 w-96"> Benefit from a tailored list of potential buyers for each offer, crafted to maximize the relevance and success rate of your trades.
+          <p className="text-center mt-2 md:w-96"> Benefit from a tailored list of potential buyers for each offer, crafted to maximize the relevance and success rate of your trades.
 
 </p>
           </div> 
@@ -406,7 +407,7 @@ const Home: React.FC = () => {
 </div> */}
 <div>
 
-<div className="flex justify-center my-5 space-x-8">
+<div className="flex md:flex-row flex-col justify-center my-5 space-x-8">
 <Image
 src={contact}
 alt=""
@@ -416,11 +417,11 @@ className=" h-[500px]"
   <p className="text-4xl font-bold">Contact us</p>
   <p className="mt-8 mb-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
   <p>Name</p>
-  <input className="border border-[#2B3F84] rounded-xl  w-96 px-3 py-2 outline-none my-1" />
+  <input className="border border-[#2B3F84] rounded-xl  md:w-96 px-3 py-2 outline-none my-1" />
   <p>Email</p>
-  <input className="border border-[#2B3F84] rounded-xl  w-96 px-3 py-2 my-1 outline-none" />
+  <input className="border border-[#2B3F84] rounded-xl  md:w-96 px-3 py-2 my-1 outline-none" />
   <p>Message</p>
-  <textarea placeholder="Type your message..." className="border h-32 border-[#2B3F84] rounded-2xl  w-96 px-3 py-1 my-1" />
+  <textarea placeholder="Type your message..." className="border h-32 border-[#2B3F84] rounded-2xl  md:w-96 px-3 py-1 my-1" />
   <br/>
   <div className="flex space-x-3">
   <input type="checkbox" />
@@ -434,7 +435,7 @@ className=" h-[500px]"
               </button>
 </div>
 </div>
-<div className=" flex pt-2 justify-between border-t-2 mx-10 mt-10 border-black">
+<div className=" flex pt-2 justify-between border-t-2 mx-5 text-sm md:mx-10 mt-10 border-black">
 <p >© 2023 Carbon Relay. All rights reserved.</p>
 <div className="flex space-x-5">
 <p>Privacy Policy</p>
