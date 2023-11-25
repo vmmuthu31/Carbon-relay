@@ -218,7 +218,8 @@ const Home: React.FC = () => {
           className="w-12"
            />
            </div>
-              <p className="text-center mt-2 w-96">Market-Informed Pricing: Leverage cutting-edge analytics to price your offers and bids, informed by real-time market trends and conditions.
+           <h1 className="text-center text-xl font-bold my-2">Market-Informed Pricing:</h1>
+              <p className="text-center mt-2 w-96"> Leverage cutting-edge analytics to price your offers and bids, informed by real-time market trends and conditions.
 
 </p>
           </div>
@@ -230,7 +231,8 @@ const Home: React.FC = () => {
           className="w-12"
            />
            </div>
-          <p className="text-center mt-2 w-96">Curated Buyer Matching: Benefit from a tailored list of potential buyers for each offer, crafted to maximize the relevance and success rate of your trades.
+           <h1 className="text-center text-xl font-bold my-2">Curated Buyer Matching:</h1>
+          <p className="text-center mt-2 w-96"> Benefit from a tailored list of potential buyers for each offer, crafted to maximize the relevance and success rate of your trades.
 
 </p>
           </div> 
