@@ -407,21 +407,21 @@ const Home: React.FC = () => {
 </div> */}
 <div>
 
-<div className="flex md:flex-row flex-col justify-center my-5 space-x-8">
+<div className="flex  md:flex-row flex-col justify-center my-5 md:space-x-8">
 <Image
 src={contact}
 alt=""
-className=" h-[500px]"
+className=" md:h-[500px]"
 />
-<div>
-  <p className="text-4xl font-bold">Contact us</p>
+<div className="mx-8">
+  <p className="text-4xl mt-8 md:mt-0 font-bold">Contact us</p>
   <p className="mt-8 mb-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
   <p>Name</p>
-  <input className="border border-[#2B3F84] rounded-xl  md:w-96 px-3 py-2 outline-none my-1" />
+  <input className="border border-[#2B3F84] rounded-xl w-full  md:w-96 px-3 py-2 outline-none my-1" />
   <p>Email</p>
-  <input className="border border-[#2B3F84] rounded-xl  md:w-96 px-3 py-2 my-1 outline-none" />
+  <input className="border border-[#2B3F84] rounded-xl w-full md:w-96 px-3 py-2 my-1 outline-none" />
   <p>Message</p>
-  <textarea placeholder="Type your message..." className="border h-32 border-[#2B3F84] rounded-2xl  md:w-96 px-3 py-1 my-1" />
+  <textarea placeholder="Type your message..." className="border h-32 border-[#2B3F84] rounded-2xl w-full   md:w-96 px-3 py-1 my-1" />
   <br/>
   <div className="flex space-x-3">
   <input type="checkbox" />
@@ -435,9 +435,9 @@ className=" h-[500px]"
               </button>
 </div>
 </div>
-<div className=" flex pt-2 justify-between border-t-2 mx-5 text-sm md:mx-10 mt-10 border-black">
+<div className=" flex pt-2 justify-between border-t-2 mx-6 text-sm md:mx-10 mt-10 border-black">
 <p >© 2023 Carbon Relay. All rights reserved.</p>
-<div className="flex space-x-5">
+<div className="flex md:space-x-5">
 <p>Privacy Policy</p>
 <p>Terms of Service</p>
 <p> Cookies Settings</p>
