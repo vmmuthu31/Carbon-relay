@@ -95,10 +95,10 @@ const Home: React.FC = () => {
     <div className=" bg-[url('../assets/hero.png')] pb-2 bgdm bg-no-repeat  ">
       <Navbar />
       <main className="">   
-        <div className=" bg-[url('../assets/hero2.png')] bg-contain bg-no-repeat bgdm2 pb-5   ">
+        <div className="md:bg-[url('../assets/hero2.png')] bg-contain bg-no-repeat bgdm2 pb-5   ">
         
-          <div className="text-center   pb-52">
-            <h1 className="text-4xl    pt-44 text-center font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <div className="text-center   md:pb-52">
+            <h1 className="text-3xl  pt-20  md:pt-44 text-center font-bold tracking-tight text-gray-900  sm:text-4xl">
             Empower Your Carbon Trades with 
  <br/>Next-Gen OTC Management
             </h1>
@@ -115,12 +115,12 @@ const Home: React.FC = () => {
           </div>
         </div>
       </main>
-      <div className="bg-[url('../assets/hero1.png')] py-20 bg-no-repeat bg-contain bgdm">
+      <div className="bg-[url('../assets/hero1.png')] mt-10 md:mt-0 md:py-20 bg-no-repeat bg-contain bgdm">
       <div className="flex  ">
           <Image
           src={offer1}
           alt=""
-          className="md:w-80 w-[62px] md:mt-20"
+          className="md:w-80 w-[102px] md:mt-20"
            />
              <Image
           src={offer2}
@@ -140,7 +140,7 @@ const Home: React.FC = () => {
       </div>
       </div>
       <div >
-        <h1 className="text-center text-3xl  font-bold">Why Carbon Relay?</h1>
+        <h1 className="text-center text-3xl mt-10 md:mt-0  font-bold">Why Carbon Relay?</h1>
         <div className="flex md:flex-row flex-col justify-center mx-5 mt-5 md:mx-40  md:my-10 md:space-x-20">
           <div className="py-5 px-5 rounded-lg  border shadow-2xl ">
           <div className="flex  justify-center">
@@ -154,8 +154,8 @@ const Home: React.FC = () => {
               <p className="text-center md:w-96">Effortlessly craft and disseminate bids and offers to selected parties, streamlining your trading process in the carbon market.
 </p>
           </div>
-          <div className="py-5 px-5 rounded-lg  border shadow-2xl">
-          <div className="flex justify-center">
+          <div className="py-5  px-5 rounded-lg  border shadow-2xl">
+          <div className="flex  justify-center">
           <Image
           src={logo}
           alt=""

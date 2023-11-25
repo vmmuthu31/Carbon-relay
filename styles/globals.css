@@ -145,12 +145,19 @@ table {
   border-collapse: collapse;
 }
 
-.bgdm{
-  background-size: 1525px;
-}
-
+@media screen and (min-width: 1600px) {
+  .bgdm {
+    background-size: 1525px;
+  }
+  
 .bgdm2{
   background-size: 1525px;
+}
+}
+
+
+.bgdm {
+  background-size: 995px;
 }
 
 
