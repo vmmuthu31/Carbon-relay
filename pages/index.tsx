@@ -308,7 +308,7 @@ const Home: React.FC = () => {
           
       </div> */}
       <div id="default-carousel" className="relative w-full" data-carousel="slide">
-            <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+            <div className="relative mx-5 overflow-hidden rounded-lg md:h-96">
                 {slides.map((slide, index) => (
                     <div
                         key={index}
