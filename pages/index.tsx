@@ -379,7 +379,7 @@ const Home: React.FC = () => {
                 </span>
             </button>
         </div>
-<div>
+{/* <div>
   <p className="text-center mt-5 text-4xl font-bold">Frequently asked questions</p>
   <p className="text-center my-5 mx-96">Frequently asked questions ordered by popularity. Remember that if the visitor has not committed to the call to action, they may still have questions (doubts) that can be answered.</p>
   <div className="flex flex-col px-5 my-10 items-center justify-center w-full">
@@ -401,7 +401,7 @@ const Home: React.FC = () => {
     </div>
   ))}
 </div>
-</div>
+</div> */}
 <div>
 
 <div className="flex justify-center my-5 space-x-8">
