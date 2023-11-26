@@ -24,9 +24,9 @@ function Navbar() {
     {({ open }) => (
       <>
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-0">
-          <div className="relative flex h-16 items-center justify-between">
+          <div className="relative flex h-16 mx-3 md:mx-0 items-center justify-between">
             
-            <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+            <div className="flex items-center justify-center sm:items-stretch sm:justify-start">
             {typeof user?.user?.email != "undefined"  || session && session.user ? (
             <Link href="/Dashboard">
               <div className="flex flex-shrink-0 items-center">
@@ -40,7 +40,7 @@ function Navbar() {
               </Link>
             ):(
               <Link href="/">
-              <div className="flex flex-shrink-0 items-center">
+              <div className="flex  items-center">
                 <Image
                   className="h-12 w-auto rounded-3xl"
                   src={logo}
