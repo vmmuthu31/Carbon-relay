@@ -1,10 +1,10 @@
 import React, { Fragment, useState,useCallback, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {RxCrossCircled} from "react-icons/rx"
-import {AiOutlineHome,AiFillSound,AiFillCaretDown,AiOutlineMenu,AiOutlineArrowLeft, AiOutlineDown,AiOutlineArrowRight, AiOutlineUp } from "react-icons/ai"
+import {AiOutlineHome,AiFillSound,AiFillCaretDown,AiOutlineMenu,AiOutlineArrowLeft, AiOutlineDown,AiOutlineArrowRight, AiOutlineUp, AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai"
 import {PiUserCircleGearLight,PiNewspaperClippingDuotone } from "react-icons/pi"
 import {FiUpload} from "react-icons/fi";
-import {FaLock, FaShare, FaUnlock} from "react-icons/fa"
+import {FaChevronDown, FaChevronUp, FaLock, FaShare, FaUnlock} from "react-icons/fa"
 import {RxCross2} from "react-icons/rx"
 import {BsChevronLeft, BsThreeDots} from "react-icons/bs"
 import {HiArrowLongRight, HiOutlineClipboardDocument} from "react-icons/hi2"
@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router'
 import axios from "axios"
 import Link from 'next/link'
+import { ArrowDownIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
   { name: 'Home', href: '#', icon: AiOutlineHome, current: false },
@@ -254,9 +255,10 @@ useEffect(() => {
     if (projectId) {
         // Replace the following with your data fetching logic
         // Example: Fetch data from an API endpoint using the projectId
-        fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/projectData/${projectId}`)
+        fetch(`http://localhost:5000/auth/offer/${projectId}`)
             .then(response => response.json())
             .then(data => setProjectData(data));
+
     }
 }, [projectId]);
 
@@ -280,8 +282,8 @@ useEffect(() => {
   const [modalIsOpen2, setModalIsOpen2] = useState(false);
   const [modalIsOpen5, setModalIsOpen5] = useState(false);
   const [selectedProjectQuantity, setSelectedProjectQuantity] = useState(null);
-// console.log("projectid",projectId)
-// console.log("projectdata",projectData)
+console.log("projectid",projectId)
+console.log("projectdata",projectData)
 
 
   const openModal = () => {
@@ -508,6 +510,16 @@ const copyToClipboard = () => {
   };
   
 
+  const [showInput, setShowInput] = useState(false);
+  const [showInput1, setShowInput1] = useState(false);
+
+  const toggleInputVisibility = () => {
+    setShowInput(!showInput);
+  };
+
+  const toggleInputVisibility1 = () => {
+    setShowInput1(!showInput1);
+  };
 
 
   function afterOpenModal() {
@@ -883,8 +895,13 @@ const copyToClipboard = () => {
         style={customStyles}
         className='py-2 rounded-lg  my-[380px] bg-white w-[950px] mx-[800px] text-black '>
         <div className='flex justify-between'>
-        <h2 ref={(_subtitle) => (subtitle = _subtitle)}  className='mx-5 '><span className=' my-2 text-center flex justify-center text-black'>Create New Offer</span></h2>
-       
+          <div>
+            
+          </div>
+          <div>
+        <h2 ref={(_subtitle) => (subtitle = _subtitle)}  className='mx-5 '><span className=' my-2 text-center flex justify-center text-black'>Request Credits</span></h2>
+        </div>
+        <div>
   <button
    onClick={closeModal} className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
     <svg
@@ -899,12 +916,17 @@ const copyToClipboard = () => {
         clipRule="evenodd"
       />
     </svg>
-  </button>
+  </button></div>
   
         </div>
-        <hr className='text-xl font-bold text-black'/>      
-        
+        <h1 className='text-center mt-5'>Select a method to Request Credits</h1>
         <div>
+          <button onClick={toggleInputVisibility} className='bg-gray-200 flex justify-between py-3 px-10 mx-10 my-10 rounded-lg w-full'>
+        <p >Request by ID</p>
+        <p> {showInput ? <FaChevronDown className='mt-2' /> : <FaChevronUp className='mt-1' />}</p>
+        </button>
+        {showInput && (
+          <>
           <div className='flex mx-20 justify-between'>
             <div>
               <label htmlFor="" className="block font-semi text-blue-600 mb-2 ml-1 text-sm mt-2 ">Project ID</label>
@@ -1006,48 +1028,59 @@ const copyToClipboard = () => {
               </select>
             </div>
           </div>
-          <div className='bg-[#f4f6f9] px-1 py-1'>
+          </>
+        )}
+         <button onClick={toggleInputVisibility1} className='bg-gray-200 flex justify-between py-3 px-10 mx-10 my-10 rounded-lg w-full'>
+        <p >Request by Attributes</p>
+        <p> {showInput ? <FaChevronDown className='mt-2' /> : <FaChevronUp className='mt-1' />}</p>
+        </button>
+          {showInput1 && (
+            <>
+              <div className='bg-[#f4f6f9] px-1 py-1'>
           <div className='flex mx-5 my-5 text-center space-x-2 justify-between'>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">Project Name</label>
-            <p className='text-[13px] line-clamp-3 '>{projectData?.Name || '|'}</p>
+            <p className='text-[13px] line-clamp-3 '>{projectData?.projectName || '|'}</p>
             </div>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1">Project Type</label>
-              <p className='text-[12px]' >{projectData?.ProjectType || '|'}</p>
+              <p className='text-[12px]' >{projectData?.projectType || '|'}</p>
             </div>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1 ">Proponent</label>
-              <p className='text-[12px]'>{projectData?.Proponent || '|'}</p>
+              <p className='text-[12px]'>{projectData?.proponent || '|'}</p>
             </div>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-1 ">Country</label>
-              <p className='text-[12px]'>{projectData?.Country_Area || '|'}</p>
+              <p className='text-[12px]'>{projectData?.country || '|'}</p>
             </div>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 ml-1 mt-4 font-semibold">Methodology</label>
-              <p className='text-[12px]'>{projectData?.Methodology || '|'}</p>
+              <p className='text-[12px]'>{projectData?.methodology || '|'}</p>
             </div>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">SDGs</label>
-              <p className='text-[12px]'> {projectData?.SDGs || '|'}</p>
+              <p className='text-[12px]'> {projectData?.sdgs || '|'}</p>
             </div>
           </div>
           <div className='flex mx-20 my-3 text-center space-x-3 justify-between'>
             <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 font-semibold  ml-1 mt-4 ">Additional Certificates 1</label>
-            <p className='text-[12px]'>{projectData?.AdditionalAttributes?.Attribute1 || '|'}</p>
+            <p className='text-[12px]'>{projectData?.additionalCertificates1 || '|'}</p>
             </div>
             <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-4 ">Additional Certificates 2</label>
-              <p className='text-[12px]'>{projectData?.AdditionalAttributes?.Attribute2 || '|'}</p>
+              <p className='text-[12px]'>{projectData?.additionalCertificates2 || '|'}</p>
             </div>
             <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-4 ">Additional Certificates 3</label>
-              <p className='text-[12px]'>{projectData?.AdditionalAttributes?.Attribute3 || '|'}</p>
+              <p className='text-[12px]'>{projectData?.additionalCertificates3 || '|'}</p>
             </div>
           </div>
           </div>
+            </>
+          )}
+        
           <div className='flex justify-end my-2 mx-10'>
             <button className='bg-[rgb(47,84,235)] px-3  py-2 rounded-md text-white' onClick={handleSubmit}>Request Credits</button>
             </div>
