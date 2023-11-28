@@ -515,10 +515,12 @@ const copyToClipboard = () => {
 
   const toggleInputVisibility = () => {
     setShowInput(!showInput);
+    setShowInput1(false)
   };
 
   const toggleInputVisibility1 = () => {
     setShowInput1(!showInput1);
+    setShowInput(false)
   };
 
 
@@ -893,7 +895,7 @@ const copyToClipboard = () => {
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
-        className='py-2 rounded-lg  my-[380px] bg-white w-[950px] mx-[800px] text-black '>
+        className='py-2 rounded-lg  my-[380px] bg-gray-100 w-[950px] mx-[800px] text-black '>
         <div className='flex justify-between'>
           <div>
             
@@ -920,8 +922,8 @@ const copyToClipboard = () => {
   
         </div>
         <h1 className='text-center mt-5'>Select a method to Request Credits</h1>
-        <div>
-          <button onClick={toggleInputVisibility} className='bg-gray-200 flex justify-between py-3 px-10 mx-10 my-10 rounded-lg w-full'>
+        <div className='mx-10'>
+          <button onClick={toggleInputVisibility} className='bg-white flex justify-between py-3 px-10  my-10 rounded-lg w-full'>
         <p >Request by ID</p>
         <p> {showInput ? <FaChevronDown className='mt-2' /> : <FaChevronUp className='mt-1' />}</p>
         </button>
@@ -1030,7 +1032,7 @@ const copyToClipboard = () => {
           </div>
           </>
         )}
-         <button onClick={toggleInputVisibility1} className='bg-gray-200 flex justify-between py-3 px-10 mx-10 my-10 rounded-lg w-full'>
+         <button onClick={toggleInputVisibility1} className='bg-white flex justify-between py-3 px-10  my-10 rounded-lg w-full'>
         <p >Request by Attributes</p>
         <p> {showInput ? <FaChevronDown className='mt-2' /> : <FaChevronUp className='mt-1' />}</p>
         </button>
