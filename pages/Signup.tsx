@@ -42,6 +42,8 @@ const Signup: React.FC = () => {
       toast.error("Company Email is Already Registered!")
     }
   };
+
+  
   return (
     <div className=" min-h-screen">
     <Navbar />

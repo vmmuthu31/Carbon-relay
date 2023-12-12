@@ -525,15 +525,12 @@ const copyToClipboard = () => {
 
 
   function afterOpenModal() {
-    // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
   function afterOpenModal1() {
-    // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
   function afterOpenModal2() {
-    // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
   function afterOpenModal5() {
@@ -928,8 +925,8 @@ const copyToClipboard = () => {
         <p> {showInput ? <FaChevronDown className='mt-2' /> : <FaChevronUp className='mt-1' />}</p>
         </button>
         {showInput && (
-          <>
-          <div className='flex mx-20 justify-between'>
+          <div className='bg-white'>
+          <div className='flex mx-20  justify-between'>
             <div>
               <label htmlFor="" className="block font-semi text-blue-600 mb-2 ml-1 text-sm mt-2 ">Project ID</label>
               <input 
@@ -946,7 +943,7 @@ const copyToClipboard = () => {
   <input 
     className='border-black border px-4 py-2 rounded-md' 
     type='text' 
-    value={quantity} 
+    value={quantity|| projectData?.quantity} 
     onChange={e => {
       const val = parseInt(e.target.value, 10);
       if (!isNaN(val) && val >= 0) { // Ensure the value is a non-negative number
@@ -973,7 +970,7 @@ const copyToClipboard = () => {
       <div className='flex '>
   <div className="relative ">
   <select 
-    value={startingYear}
+    value={startingYear|| projectData?.startingYear}
     onChange={(e) => setStartingYear(e.target.value)}
     className="appearance-none text-lg my-2 pl-2 pr-9 outline-none bg-gray-100 rounded-sm border py-1 cursor-pointer"
   >
@@ -993,7 +990,7 @@ const copyToClipboard = () => {
   
   <div className="relative">
   <select 
-    value={endingYear}
+    value={endingYear || projectData?.endingYear}
     onChange={(e) => setEndingYear(e.target.value)}
     className="appearance-none text-lg my-2 pl-2 pr-9 outline-none bg-gray-100 rounded-sm border py-1 cursor-pointer"
   >
@@ -1014,7 +1011,7 @@ const copyToClipboard = () => {
             <div>
               <label htmlFor="" className="block ml-1 text-blue-600 text-sm mt-2 ">Offer Price</label>
               <input className='border-black border px-4 w-[305px] py-2 rounded-md'
-                 value={offerPrice} 
+                 value={offerPrice || projectData?.offerPrice} 
                  onChange={(e) => setOfferPrice(e.target.value)}
               type='text' />
               <p className='text-sm'>Enter Offer Price</p>
@@ -1023,14 +1020,14 @@ const copyToClipboard = () => {
           <div className='flex mx-20  mb-6 justify-between'>
           <div>
               <label htmlFor="" className="block mb-2 ml-1 text-sm text-blue-600 ">CORISA</label>
-              <select defaultValue="Select One" className='border-black border pl-5 pr-40 text-left  py-2 rounded-md'    value={corisa} 
+              <select defaultValue="Select One" className='border-black border pl-5 pr-40 text-left  py-2 rounded-md'    value={corisa || projectData?.corisa} 
                 onChange={(e) => setCorisa(e.target.value)}>
               <option value="No">Select One</option>
               <option value="Yes">Yes</option>
               </select>
             </div>
           </div>
-          </>
+          </div>
         )}
          <button onClick={toggleInputVisibility1} className='bg-white flex justify-between py-3 px-10  my-10 rounded-lg w-full'>
         <p >Request by Attributes</p>
@@ -1038,7 +1035,7 @@ const copyToClipboard = () => {
         </button>
           {showInput1 && (
             <>
-              <div className='bg-[#f4f6f9] px-1 py-1'>
+              <div className='bg-white px-1 py-1'>
           <div className='flex mx-5 my-5 text-center space-x-2 justify-between'>
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">Project Name</label>
