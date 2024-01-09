@@ -259,7 +259,7 @@ const [isSubmitClicked, setIsSubmitClicked] = useState(false);
 const [shareableLink, setShareableLink] = useState('');
 const generateShareableLink = (offer) => {
   // Customize the link generation based on your data structure
-  const link = `https://carbon-relay.vercel.app/CreditsOffers?PID=${offer.projectId}`; // Include all the necessary data
+  const link = `https://carbon-relay.vercel.app/CreditsOffers?OID=${offer.projectId}`; // Include all the necessary data
   return link;
 };
 const handleShareButtonClick = () => {
