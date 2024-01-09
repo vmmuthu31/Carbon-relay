@@ -321,6 +321,7 @@ const copyToClipboard = () => {
         const result = await response.json();
         toast.success("Offer Successfully received!")
         console.log(result);
+        
         setIsSubmitClicked(true);
         setProjectId('');
         setQuantity('');
@@ -329,14 +330,17 @@ const copyToClipboard = () => {
         setOfferPrice('');
         setProjectData('')
         setCorisa('No');
-        closeModal()
+        setTimeout(() => closeModal(), 2000);
+
         // Handle success - maybe show a success message or redirect the user
       } else {
-        // Handle errors - maybe show an error message to the user
-        console.error("Failed to submit data");
-        toast.success("Failed to send the Offer!")
-
-   
+        const errorData = await response.json();
+        console.error("Failed to submit data", errorData);
+        if (errorData.message.includes("already exists")) {
+          toast.error("An offer with this project ID already exists.");
+        } else {
+          toast.error("Failed to send the Offer!");
+        }   
       }
     } catch (error) {
       console.error("There was an error sending the data", error);
@@ -1060,8 +1064,8 @@ const copyToClipboard = () => {
           <input 
       className='py-4' 
       type='checkbox' 
-      checked={checkedOffers.includes(offer.projectId)}
-      onChange={() => handleCheckboxChange(offer.projectId)}
+      checked={checkedOffers.includes(offer._id)}
+      onChange={() => handleCheckboxChange(offer._id)}
         />
     </td>
 
@@ -1098,7 +1102,7 @@ const copyToClipboard = () => {
   </button>
 </td>
 
-    {!checkedOffers.includes(offer.projectId) && (
+    {!checkedOffers.includes(offer._id) && (
         <>
         
       <td className='px-4 py-4 text-sm'>
@@ -1194,7 +1198,7 @@ const copyToClipboard = () => {
         </>
     )}
     <td>
-    {!multipleOffersSelected && checkedOffers.includes(offer.projectId) && (
+    {!multipleOffersSelected && checkedOffers.includes(offer._id) && (
             <td>
               <button onClick={() => handleShareButtonClick(offer)}>
                 <FaShare className='text-xl text-gray-700 w-8' />
