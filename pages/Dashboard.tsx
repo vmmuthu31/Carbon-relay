@@ -321,7 +321,6 @@ const copyToClipboard = () => {
         const result = await response.json();
         toast.success("Offer Successfully received!")
         console.log(result);
-        closeModal()
         setIsSubmitClicked(true);
         setProjectId('');
         setQuantity('');
@@ -330,7 +329,7 @@ const copyToClipboard = () => {
         setOfferPrice('');
         setProjectData('')
         setCorisa('No');
-        
+        closeModal()
         // Handle success - maybe show a success message or redirect the user
       } else {
         // Handle errors - maybe show an error message to the user
