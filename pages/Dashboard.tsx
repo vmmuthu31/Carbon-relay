@@ -321,12 +321,14 @@ const copyToClipboard = () => {
         const result = await response.json();
         toast.success("Offer Successfully received!")
         console.log(result);
+        closeModal()
         setIsSubmitClicked(true);
         setProjectId('');
         setQuantity('');
         setStartingYear('');
         setEndingYear('');
         setOfferPrice('');
+        setProjectData('')
         setCorisa('No');
         
         // Handle success - maybe show a success message or redirect the user
@@ -335,7 +337,7 @@ const copyToClipboard = () => {
         console.error("Failed to submit data");
         toast.success("Failed to send the Offer!")
 
-        closeModal()
+   
       }
     } catch (error) {
       console.error("There was an error sending the data", error);
