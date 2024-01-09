@@ -248,19 +248,57 @@ useEffect(() => {
   const closeRowPopup = () => {
     setSelectedRowData(null);
   };
-  const [projectId, setProjectId] = useState('');
+  const [query, setQuery] = useState({
+    projectId: '',
+    quantity: '',
+    startingYear: '',
+    endingYear: '',
+    offerPrice: '',
+    corisa: '',
+    projectName: '',
+    projectType: '',
+    proponent: '',
+    country: '',
+    methodology: '',
+    sdgs: '',
+  });
   const [projectData, setProjectData] = useState({});
 
   useEffect(() => {
-    if (projectId) {
-        // Replace the following with your data fetching logic
-        // Example: Fetch data from an API endpoint using the projectId
-        fetch(`http://localhost:5000/auth/offer/${projectId}`)
-            .then(response => response.json())
-            .then(data => setProjectData(data));
+    // Construct query string from the state
+    const queryString = Object.entries(query)
+      .filter(([key, value]) => value !== '')
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
 
+    if (queryString) {
+      fetch(`http://localhost:5000/auth/offer?${queryString}`)
+        .then(response => response.json())
+        .then(data => setProjectData(data))
+        .catch(error => console.error('Error fetching data:', error));
     }
-}, [projectId]);
+  }, [query]); // Dependency array now depends on the `query` object
+  useEffect(() => {
+    // Construct query string from the state
+    const queryString = Object.entries(query)
+      .filter(([key, value]) => value !== '')
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
+
+    if (queryString) {
+      fetch(`http://localhost:5000/auth/offer?${queryString}`)
+        .then(response => response.json())
+        .then(data => setProjectData(data))
+        .catch(error => console.error('Error fetching data:', error));
+    }
+  }, [query]); // Dependency array now depends on the `query` object
+
+
+  // Handlers to update the query state
+  const handleInputChange = (e) => {
+    setQuery({ ...query, [e.target.name]: e.target.value });
+  };
+
 
 
 
@@ -278,6 +316,7 @@ useEffect(() => {
   };
   
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [projectId,setProjectId] = useState("")
   const [modalIsOpen1, setModalIsOpen1] = useState(false);
   const [modalIsOpen2, setModalIsOpen2] = useState(false);
   const [modalIsOpen5, setModalIsOpen5] = useState(false);
@@ -1008,7 +1047,9 @@ const copyToClipboard = () => {
 </div>
 
     </div>
+    
             <div>
+
               <label htmlFor="" className="block ml-1 text-blue-600 text-sm mt-2 ">Offer Price</label>
               <input className='border-black border px-4 w-[305px] py-2 rounded-md'
                  value={offerPrice || projectData?.offerPrice} 
@@ -1036,7 +1077,104 @@ const copyToClipboard = () => {
           {showInput1 && (
             <>
               <div className='bg-white px-1 py-1'>
-          <div className='flex mx-5 my-5 text-center space-x-2 justify-between'>
+        
+              <div className='flex mx-20 my-5 justify-between'>
+          {/* Offer Price Input */}
+          <div>
+            <label htmlFor="offerPrice" className="block ml-1 text-blue-600 text-sm mt-2">Offer Price</label>
+            <input 
+              name="offerPrice"
+              className='border-black border px-4 w-[305px] py-2 rounded-md'
+              value={query.offerPrice} 
+              onChange={handleInputChange}
+              type='text' 
+            />
+            <p className='text-sm'>Enter Offer Price</p>
+          </div>
+
+          {/* Vintage Selection */}
+          <div className='flex mx-20 mt-2 justify-between'>
+            <div className='flex flex-col my-1'>
+              <label className='text-blue-600'>Vintage</label>
+              <div className='flex '>
+                {/* Starting Year */}
+                <div className="relative">
+                  <select 
+                    name="startingYear"
+                    value={query.startingYear}
+                    onChange={handleInputChange}
+                    className="appearance-none text-lg my-2 pl-2 pr-9 outline-none bg-gray-100 rounded-sm border py-1 cursor-pointer"
+                  >
+                    <option value="">Year</option>
+                    {Array.from({ length: 50 }, (_, i) => 2023 - i).map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                  {/* SVG for dropdown icon */}
+                </div>
+
+                <p className='text-3xl mt-3 mx-3'><HiArrowLongRight/></p>
+
+                {/* Ending Year */}
+                <div className="relative">
+                  <select 
+                    name="endingYear"
+                    value={query.endingYear}
+                    onChange={handleInputChange}
+                    className="appearance-none text-lg my-2 pl-2 pr-9 outline-none bg-gray-100 rounded-sm border py-1 cursor-pointer"
+                  >
+                    <option value="">Year</option>
+                    {Array.from({ length: 50 }, (_, i) => 2023 - i).map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                  {/* SVG for dropdown icon */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CORISA and Quantity */}
+        <div className='flex mx-20 my-5 justify-between'>
+          <div>
+            <label htmlFor="corisa" className="block mb-2 ml-1 text-sm text-blue-600">CORISA</label>
+            <select 
+              name="corisa"
+              className='border-black border pl-5 pr-40 text-left py-2 rounded-md'    
+              value={query.corisa} 
+              onChange={handleInputChange}
+            >
+              <option value="">Select One</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="quantity" className="block mb-2 ml-1 text-blue-600 text-md">Quantity</label>
+            <div className='flex'>
+              <input 
+                name="quantity"
+                className='border-black border px-4 py-2 rounded-md' 
+                type='number' 
+                value={query.quantity} 
+                onChange={handleInputChange}
+              />
+              <div className='flex justify-center flex-col'>
+                <div>
+                  <button onClick={decreaseQuantity} className='text-2xl px-1 py-1 mx-1 ml-4 rounded-3xl bg-gray-100'>-</button>
+                  <span className='mt-2'>{query.quantity}</span>
+                  <button onClick={increaseQuantity} className='text-xl px-0.5 py-1.5 mx-1 rounded-3xl bg-gray-100'>+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          </div>
+          {/* <div className='flex mx-5 my-5 text-center  justify-between'>
+          <div className='flex mx-20   justify-between'>
+          
             <div className='w-full text-sm px-3 py-1  rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 font-semibold ml-1 mt-1 ">Project Name</label>
             <p className='text-[13px] line-clamp-3 '>{projectData?.projectName || '|'}</p>
@@ -1062,7 +1200,9 @@ const copyToClipboard = () => {
               <p className='text-[12px]'> {projectData?.sdgs || '|'}</p>
             </div>
           </div>
-          <div className='flex mx-20 my-3 text-center space-x-3 justify-between'>
+          </div>          
+
+          <div className='flex mx-20  text-center space-x-3 justify-between'>
             <div className='w-full text-sm px-3 pr-20 py-1 rounded-lg bg-white'>
               <label htmlFor="" className="block mb-2 font-semibold  ml-1 mt-4 ">Additional Certificates 1</label>
             <p className='text-[12px]'>{projectData?.additionalCertificates1 || '|'}</p>
@@ -1075,8 +1215,9 @@ const copyToClipboard = () => {
               <label htmlFor="" className="block mb-2 ml-1 font-semibold mt-4 ">Additional Certificates 3</label>
               <p className='text-[12px]'>{projectData?.additionalCertificates3 || '|'}</p>
             </div>
+          </div> */}
           </div>
-          </div>
+          
             </>
           )}
         

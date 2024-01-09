@@ -328,11 +328,14 @@ const copyToClipboard = () => {
         setEndingYear('');
         setOfferPrice('');
         setCorisa('No');
+        
         // Handle success - maybe show a success message or redirect the user
       } else {
         // Handle errors - maybe show an error message to the user
         console.error("Failed to submit data");
         toast.success("Failed to send the Offer!")
+
+        closeModal()
       }
     } catch (error) {
       console.error("There was an error sending the data", error);
