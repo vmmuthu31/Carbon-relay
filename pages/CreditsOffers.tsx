@@ -65,11 +65,11 @@ const router = useRouter();
   const [bids, setBids] = useState([]);
   console.log("bids",bids)
   const [selectedProjectId, setSelectedProjectId] = useState(null);
-  
+  const [selected_id, setSelected_id] = useState(null);
 useEffect(() => {
   const fetchOffers = async () => {
     try {
-      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/get-bids/${selectedProjectId}`, {
+      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/get-bids/${selected_id}`, {
         headers: {
           'Authorization': token
         }
@@ -156,8 +156,8 @@ const handleSend = (e) => {
   };
 //const [offers, setOffers] = useState([]);
 
-const { PID } = router.query;
-const projectIds = Array.isArray(PID) ? PID.join(',') : PID;
+const { OID } = router.query;
+const projectIds = Array.isArray(OID) ? OID.join(',') : OID;
 const fetchOffers = async () => {
   try {
     const response = await axios.get('https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/trader-offers', {
@@ -288,8 +288,9 @@ useEffect(() => {
       setModalIsOpen(true);
   }
   const [bidstatus,setBidstatus] = useState("Active");
-  const openModal1 = (projectId, quantity, offer) => {
+  const openModal1 = (projectId,_id, quantity, offer) => {
     setSelectedProjectId(projectId);
+    setSelected_id(_id)
     setSelectedProjectQuantity(quantity);
   
     if (offer.bids && offer.bids.length > 0) {
@@ -482,7 +483,7 @@ const copyToClipboard = () => {
   const handleBid = async(e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/create-bid/${selectedProjectId}`, {
+      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/create-bid/${selected_id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1162,24 +1163,24 @@ const copyToClipboard = () => {
             {offer.projectId}
             </td>
             <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice,offer); setRecipientID(offer.createdBy)}}><span className=' line-clamp-2'>{offer.projectName}</span></button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer._id,offer.offerPrice,offer); setRecipientID(offer.createdBy)}}><span className=' line-clamp-2'>{offer.projectName}</span></button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice, offer); setRecipientID(offer.createdBy)}}>{offer.projectType}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer._id,offer.offerPrice,offer); setRecipientID(offer.createdBy)}}>{offer.projectType}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice, offer); setRecipientID(offer.createdBy)}}>
+        <button onClick={() =>{ openModal1(offer.projectId,offer._id,offer.offerPrice,offer); setRecipientID(offer.createdBy)}}>
           {offer.startingYear}-{offer.endingYear}
         </button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice, offer); setRecipientID(offer.createdBy)}}>{offer.quantity}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer._id,offer.offerPrice,offer); setRecipientID(offer.createdBy)}}>{offer.quantity}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() =>{ openModal1(offer.projectId,offer.offerPrice, offer); setRecipientID(offer.createdBy)}}>${offer.offerPrice}</button>
+        <button onClick={() =>{ openModal1(offer.projectId,offer._id,offer.offerPrice,offer); setRecipientID(offer.createdBy)}}>${offer.offerPrice}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-  <button onClick={() => { openModal1(offer.projectId, offer.offerPrice, offer); setRecipientID(offer.createdBy);  }}>
+  <button onClick={() => { openModal1(offer.projectId,offer._id,offer.offerPrice,offer); setRecipientID(offer.createdBy);  }}>
   {offer.bids && offer.bids.length > 0 ? 
     `$${Math.max(...offer.bids.map(bid => bid.bidAmount))}` : 
     '-'

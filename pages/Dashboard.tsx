@@ -64,6 +64,7 @@ export default function Dashboard() {
   const router = useRouter()
   console.log("bids",bids)
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selected_id, setSelected_id] = useState(null);
   const [selectedbid, setselectedBid] = useState(null);
   const [selectedoffer, setselectedoffer] = useState(null);
   const [selectedProjectQuantity, setSelectedProjectQuantity] = useState(null);
@@ -94,7 +95,7 @@ export default function Dashboard() {
 useEffect(() => {
   const fetchOffers = async () => {
     try {
-      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/get-bids/${selectedProjectId}`, {
+      const response = await fetch(`https://carbon-relay-23a0f49f1c2f.herokuapp.com/auth/get-bids/${selected_id}`, {
         headers: {
           'Authorization': token
         }
@@ -221,8 +222,10 @@ console.log("projectdata",projectData)
   const openModal = () => {
       setModalIsOpen(true);
   }
-  const openModal1 = (projectId, quantity, offer) => {
+  const openModal1 = (projectId,_id, quantity, offer) => {
     setSelectedProjectId(projectId);
+    setSelected_id(_id);
+    
     setSelectedProjectQuantity(quantity)
     setselectedoffer(offer)
     //  setReceiptantID(createdby)
@@ -264,8 +267,8 @@ const generateShareableLink = (offer) => {
 };
 const handleShareButtonClick = () => {
   // Assuming checkedOffers is an array of projectIds that have been checked
-  const projectIdsParam = checkedOffers.join('&PID=');
-  const baseLink = 'https://carbon-relay.vercel.app/CreditsOffers?PID=';
+  const projectIdsParam = checkedOffers.join('&OID=');
+  const baseLink = 'https://carbon-relay.vercel.app/CreditsOffers?OID=';
   const combinedLink = baseLink + projectIdsParam;
 
   setShareableLink(combinedLink);
@@ -1076,24 +1079,24 @@ const copyToClipboard = () => {
             {offer.projectId}
             </td>
             <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
+        <button onClick={() => openModal1(offer.projectId,offer._id,offer.quantity,offer.offerPrice)}><span className=' line-clamp-2'>{offer.projectName}</span></button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>{offer.projectType}</button>
+        <button onClick={() => openModal1(offer.projectId,offer._id,offer.quantity,offer.offerPrice)}>{offer.projectType}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>
+        <button onClick={() => openModal1(offer.projectId,offer._id,offer.quantity,offer.offerPrice)}>
           {offer.startingYear}-{offer.endingYear}
         </button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>{offer.quantity}</button>
+        <button onClick={() => openModal1(offer.projectId,offer._id,offer.quantity,offer.offerPrice)}>{offer.quantity}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-        <button onClick={() => openModal1(offer.projectId,offer.quantity,offer.offerPrice)}>${offer.offerPrice}</button>
+        <button onClick={() => openModal1(offer.projectId,offer._id,offer.quantity,offer.offerPrice)}>${offer.offerPrice}</button>
       </td>
       <td className='px-4 py-4 text-sm'>
-  <button onClick={() => { openModal1(offer.projectId, offer.quantity,offer.offerPrice); setReceiptantID(offer.createdBy) }}>
+  <button onClick={() => { openModal1(offer.projectId,offer._id,offer.quantity,offer.offerPrice); setReceiptantID(offer.createdBy) }}>
   {offer.bids && offer.bids.length > 0 ? 
     `$${Math.max(...offer.bids.map(bid => bid.bidAmount))}` : 
     '-'
@@ -1273,7 +1276,7 @@ const copyToClipboard = () => {
                     <span className='my-2 text-center flex text-xl justify-center text-black'>Incoming Bids</span>
                 </button>
             </div>
-            <button onClick={()=>{closeModal1(); setSelectedProjectId("")}} className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+            <button onClick={()=>{closeModal1(); setSelected_id(""); setSelectedProjectId("")}} className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
                 <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414L11.414 10l2.293 2.293a1 1 0 11-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 010-1.414z" clipRule="evenodd"/>
                 </svg>
